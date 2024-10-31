@@ -202,6 +202,10 @@
         document.getElementById('loginToggle').addEventListener('click', function() {
             const forms = document.getElementById('forms');
             forms.classList.toggle('hidden'); // Toggle the visibility of the forms
+            document.getElementById('username').value = ''; // Reset fields
+            document.getElementById('password').value = '';
+            document.getElementById('loginUsername').value = '';
+            document.getElementById('loginPassword').value = '';
         });
 
         document.getElementById('signup').addEventListener('click', function() {
@@ -230,6 +234,7 @@
                 document.getElementById('profilePic').src = loggedInUser.profilePic || 'https://upload.wikimedia.org/wikipedia/commons/0/06/YouTube_icon_%282013-2017%29.png';
                 document.getElementById('userInfo').style.display = 'block';
                 document.getElementById('forms').classList.add('hidden'); // Hide the forms after login
+                document.getElementById('dropdownMenu').classList.add('hidden'); // Hide dropdown on login
             } else {
                 alert('Invalid username or password.');
             }
