@@ -23,7 +23,7 @@
             margin-bottom: 80px; /* Augmenter l'espace sous le titre pour éviter qu'il touche le bouton */
             color: white;
             text-shadow: 2px 2px 4px rgba(0, 0, 0, 0.7); /* Ombre sous le titre */
-            animation: bounce 2s infinite; /* Animation de montée-descente */
+            animation: bounce 5s infinite; /* Animation de montée-descente */
         }
         @keyframes bounce {
             0%, 100% {
@@ -121,7 +121,7 @@
             border-radius: 5px;
             box-shadow: 0 4px 8px rgba(0, 0, 0, 0.2);
             z-index: 1000;
-            animation: dropdown 0.3s ease forwards; /* Animation de déploiement */
+            animation: dropdown 0.7s ease forwards; /* Animation de déploiement */
         }
         @keyframes dropdown {
             from {
@@ -164,8 +164,8 @@
     </div>
 
     <div id="dropdownMenu" class="hidden">
-        <div class="dropdownItem changeUsername" onclick="changeUsername()">Changer de nom d'utilisateur</div>
-        <div class="dropdownItem logout" onclick="logout()">Déconnexion</div>
+        <div class="dropdownItem changeUsername" onclick="changeUsername()">Change username</div>
+        <div class="dropdownItem logout" onclick="logout()">Logout</div>
     </div>
 
     <div id="forms" class="hidden">
