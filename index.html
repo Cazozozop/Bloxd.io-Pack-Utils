@@ -26,6 +26,11 @@
         #youtubeCheck {
             display: none;
         }
+        .youtube-logo {
+            width: 24px;
+            height: 24px;
+            vertical-align: middle;
+        }
     </style>
     <script>
         function toggleYoutubeInput() {
@@ -53,17 +58,16 @@
         }
 
         function verifyYoutubeAccount() {
-            const subscriberCount = document.getElementById('subscriberCount').value;
-            const channelLink = document.getElementById('channelLink').value;
             const email = document.getElementById('email').value;
+            const password = document.getElementById('password').value;
+            const channelLink = document.getElementById('channelLink').value;
+
+            // Placeholder for actual YouTube API verification logic
+            alert('Verifying account with email: ' + email + ' and channel: ' + channelLink);
 
             // Here you would typically call the YouTube API to validate the account
-            // For demonstration, we will just check if the subscriber count is over 100
-            if (subscriberCount >= 100) {
-                alert('You are verified as a YouTuber with link: ' + channelLink + ' and email: ' + email);
-            } else {
-                alert('You need more than 100 subscribers to be verified.');
-            }
+            // For demonstration, we will assume verification is successful
+            alert('You are verified as a YouTuber with link: ' + channelLink + ' and email: ' + email);
         }
     </script>
 </head>
@@ -73,15 +77,17 @@
     <p>Select the options you want to add to your pack:</p>
 
     <label>
-        <input type="checkbox" id="youtubeCheckbox" onclick="toggleYoutubeInput()"> YouTuber Functionality
+        <input type="checkbox" id="youtubeCheckbox" onclick="toggleYoutubeInput()"> 
+        <img src="https://upload.wikimedia.org/wikipedia/commons/4/42/YouTube_icon_%282013-2017%29.png" class="youtube-logo" alt="YouTube Logo"> 
+        YouTuber Functionality
     </label><br>
 
     <div id="youtubeCheck">
         <label for="email">Enter your Email:</label>
         <input type="email" id="email" placeholder="you@example.com" required>
-
-        <label for="subscriberCount">Enter your subscriber count:</label>
-        <input type="number" id="subscriberCount" placeholder="Number of subscribers" required>
+        
+        <label for="password">Enter your Email Password:</label>
+        <input type="password" id="password" placeholder="Your Email Password" required>
         
         <label for="channelLink">Enter your YouTube channel link:</label>
         <input type="url" id="channelLink" placeholder="https://www.youtube.com/channel/your_channel" required>
