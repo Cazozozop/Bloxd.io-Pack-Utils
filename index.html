@@ -17,6 +17,9 @@
             padding: 20px;
             margin: 0;
             min-height: 100vh;
+            display: flex;
+            flex-direction: column;
+            justify-content: center; /* Centrer verticalement le contenu */
         }
         h1 {
             font-size: 48px;
@@ -143,11 +146,13 @@
     <script>
         let users = JSON.parse(localStorage.getItem('users')) || [];
         let loggedInUser = null;
+        let isLoggedIn = false; // Variable pour savoir si l'utilisateur est connecté
 
         // Chargement de l'utilisateur et de la photo de profil depuis le localStorage
         const savedUser = localStorage.getItem('loggedInUser');
         if (savedUser) {
             loggedInUser = JSON.parse(savedUser);
+            isLoggedIn = true; // L'utilisateur est connecté
             document.getElementById('usernameDisplay').innerText = loggedInUser.username;
             document.getElementById('profilePic').src = loggedInUser.profilePic || 'https://www.freeiconspng.com/download/25494g';
             document.getElementById('userInfo').style.display = 'block';
@@ -201,9 +206,10 @@
             const user = users.find(user => user.username === username && user.password === password);
             if (user) {
                 loggedInUser = user;
+                isLoggedIn = true; // L'utilisateur est connecté
                 localStorage.setItem('loggedInUser', JSON.stringify(loggedInUser));
                 document.getElementById('usernameDisplay').innerText = loggedInUser.username;
-                document.getElementById('profilePic').src = loggedInUser.profilePic || 'https://www.freeiconspng.com/download/25494';
+                document.getElementById('profilePic').src = loggedInUser.profilePic || 'https://www.freeiconspng.com/download/25494g';
                 document.getElementById('userInfo').style.display = 'block';
                 document.getElementById('result').innerText = 'Login successful!';
                 document.getElementById('forms').classList.add('hidden');
@@ -214,28 +220,37 @@
 
         // Affiche une erreur
         function showError(message) {
-            document.getElementById('result').innerText = message;
-            document.getElementById('result').classList.add('error');
+            const resultDiv = document.getElementById('result');
+            resultDiv.innerText = message;
+            resultDiv.classList.add('error');
         }
 
-        // Événement pour le clic sur le bouton du profil
-        document.getElementById('profilePic').addEventListener('click', () => {
-            document.getElementById('imageUpload').click(); // Simuler le clic sur l'input de fichier
-        });
-
-        // Changer la photo de profil
+        // Téléchargement de la photo de profil
         document.getElementById('imageUpload').addEventListener('change', (event) => {
             const file = event.target.files[0];
             if (file) {
                 const reader = new FileReader();
-                reader.onload = (e) => {
-                    loggedInUser.profilePic = e.target.result; // Met à jour l'image de profil
-                    localStorage.setItem('loggedInUser', JSON.stringify(loggedInUser)); // Sauvegarder dans le localStorage
-                    document.getElementById('profilePic').src = loggedInUser.profilePic; // Mettre à jour l'image affichée
+                reader.onload = function (e) {
+                    if (loggedInUser) {
+                        loggedInUser.profilePic = e.target.result;
+                        localStorage.setItem('loggedInUser', JSON.stringify(loggedInUser));
+                        document.getElementById('profilePic').src = loggedInUser.profilePic;
+                    }
                 };
                 reader.readAsDataURL(file);
             }
         });
+
+        // Ajustement de l'arrière-plan en fonction de la hauteur de l'écran
+        function adjustBackground() {
+            const viewportHeight = window.innerHeight;
+            const backgroundImage = 'https://iili.io/2nu1xv1.jpg'; // Image d'arrière-plan
+            document.body.style.backgroundSize = `${viewportHeight}px ${viewportHeight}px`;
+            document.body.style.backgroundImage = `url(${backgroundImage})`;
+        }
+
+        window.addEventListener('resize', adjustBackground);
+        adjustBackground(); // Ajuste l'arrière-plan au chargement de la page
     </script>
 </body>
 </html>
