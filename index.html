@@ -149,6 +149,15 @@
         let users = JSON.parse(localStorage.getItem('users')) || []; // Pour stocker les utilisateurs
         let loggedInUser = null; // Variable pour stocker l'utilisateur connecté
 
+        // Chargement de l'utilisateur et de la photo de profil depuis le localStorage
+        const savedUser = localStorage.getItem('loggedInUser');
+        if (savedUser) {
+            loggedInUser = JSON.parse(savedUser);
+            document.getElementById('usernameDisplay').innerText = loggedInUser.username;
+            document.getElementById('profilePic').src = loggedInUser.profilePic || 'https://upload.wikimedia.org/wikipedia/commons/0/06/YouTube_icon_%282013-2017%29.png'; // Définit l'image par défaut
+            document.getElementById('userInfo').style.display = 'block'; // Affiche les informations de l'utilisateur
+        }
+
         document.getElementById('loginToggle').addEventListener('click', () => {
             const formsDiv = document.getElementById('forms');
             formsDiv.classList.toggle('hidden');
@@ -162,6 +171,8 @@
             formsDiv.style.display = 'block'; // Assurez-vous qu'il est affiché
             document.getElementById('loginUsername').value = ''; // Réinitialiser les champs
             document.getElementById('loginPassword').value = '';
+            document.getElementById('username').value = ''; // Réinitialiser les champs
+            document.getElementById('password').value = '';
         });
 
         document.getElementById('signup').addEventListener('click', () => {
@@ -189,24 +200,22 @@
         });
 
         document.getElementById('login').addEventListener('click', () => {
-            const loginUsername = document.getElementById('loginUsername').value;
-            const loginPassword = document.getElementById('loginPassword').value;
+            const username = document.getElementById('loginUsername').value;
+            const password = document.getElementById('loginPassword').value;
 
-            const user = users.find(user => user.username === loginUsername && user.password === loginPassword);
+            const user = users.find(user => user.username === username && user.password === password);
             if (user) {
-                loggedInUser = user; // Stocker l'utilisateur connecté
-                document.getElementById('usernameDisplay').innerText = loggedInUser.username; // Afficher le nom d'utilisateur
-                document.getElementById('userInfo').style.display = 'block'; // Afficher les informations de l'utilisateur
+                loggedInUser = user;
+                localStorage.setItem('loggedInUser', JSON.stringify(loggedInUser)); // Enregistre l'utilisateur connecté
+                document.getElementById('usernameDisplay').innerText = loggedInUser.username;
+                document.getElementById('profilePic').src = loggedInUser.profilePic || 'https://upload.wikimedia.org/wikipedia/commons/0/06/YouTube_icon_%282013-2017%29.png';
+                document.getElementById('userInfo').style.display = 'block'; // Affiche les informations de l'utilisateur
                 document.getElementById('result').innerText = 'Logged in successfully!';
                 document.getElementById('result').classList.remove('error');
-                document.getElementById('forms').classList.add('hidden'); // Cacher le formulaire après la connexion
+                document.getElementById('forms').classList.add('hidden'); // Ferme le formulaire après la connexion
             } else {
                 showError('Invalid username or password.');
             }
-        });
-
-        document.getElementById('profilePic').addEventListener('click', () => {
-            document.getElementById('imageUpload').click(); // Simule le clic sur l'input file
         });
 
         document.getElementById('imageUpload').addEventListener('change', function() {
@@ -214,7 +223,11 @@
             if (file) {
                 const reader = new FileReader();
                 reader.onload = (e) => {
-                    document.getElementById('profilePic').src = e.target.result; // Changer l'image de profil
+                    document.getElementById('profilePic').src = e.target.result; // Change l'image de profil
+                    if (loggedInUser) {
+                        loggedInUser.profilePic = e.target.result; // Met à jour l'image dans le profil
+                        localStorage.setItem('loggedInUser', JSON.stringify(loggedInUser)); // Sauvegarde la nouvelle image
+                    }
                 };
                 reader.readAsDataURL(file);
             }
