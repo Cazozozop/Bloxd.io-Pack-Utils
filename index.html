@@ -104,6 +104,7 @@
         document.getElementById('loginToggle').addEventListener('click', () => {
             const formsDiv = document.getElementById('forms');
             formsDiv.classList.toggle('hidden');
+            formsDiv.style.display = formsDiv.style.display === 'none' ? 'block' : 'none'; // Gérer l'affichage
         });
 
         document.getElementById('signup').addEventListener('click', () => {
