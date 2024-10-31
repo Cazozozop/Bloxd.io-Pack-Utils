@@ -115,7 +115,7 @@
     </style>
 </head>
 <body>
-    <button id="accountButton">
+    <button id="accountButton" onclick="document.getElementById('imageUpload').click();">
         <img id="profilePic" src="https://upload.wikimedia.org/wikipedia/commons/0/06/YouTube_icon_%282013-2017%29.png" alt="Profile Picture"> <span id="usernameDisplay">Username</span>
     </button>
     <h1>Welcome to Bloxd.io Pack Utils</h1>
@@ -123,7 +123,7 @@
 
     <div id="userInfo">
         <span id="userGreeting">Welcome, <span id="usernameDisplay">User</span>!</span>
-        <input type="file" id="imageUpload" accept="image/*"> <!-- Champ pour télécharger la photo de profil -->
+        <input type="file" id="imageUpload" accept="image/*" style="display:none;"> <!-- Champ pour télécharger la photo de profil, caché par défaut -->
     </div>
 
     <div id="forms" class="hidden">
@@ -207,7 +207,7 @@
                 loggedInUser = user;
                 localStorage.setItem('loggedInUser', JSON.stringify(loggedInUser)); // Enregistre l'utilisateur connecté
                 document.getElementById('usernameDisplay').innerText = loggedInUser.username;
-                document.getElementById('profilePic').src = loggedInUser.profilePic || 'https://upload.wikimedia.org/wikipedia/commons/0/06/YouTube_icon_%282013-2017%29.png';
+                document.getElementById('profilePic').src = loggedInUser.profilePic || 'https://upload.wikimedia.org/wikipedia/commons/0/06/YouTube_icon_%282013-2017%29.png'; // Définit l'image par défaut
                 document.getElementById('userInfo').style.display = 'block'; // Affiche les informations de l'utilisateur
                 document.getElementById('result').innerText = 'Logged in successfully!';
                 document.getElementById('result').classList.remove('error');
