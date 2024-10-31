@@ -117,6 +117,7 @@
                     localStorage.setItem('users', JSON.stringify(users));
                     document.getElementById('result').innerText = 'Account created successfully!';
                     document.getElementById('result').classList.remove('error');
+                    document.getElementById('forms').classList.add('hidden'); // Ferme les formulaires après l'inscription
                 } else {
                     showError('Username already exists.');
                 }
