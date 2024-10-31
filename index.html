@@ -20,7 +20,7 @@
         }
         h1 {
             font-size: 48px;
-            margin: 50px 0 20px;
+            margin-bottom: 20px;
             color: white;
             text-shadow: 2px 2px 4px rgba(0, 0, 0, 0.7);
             animation: bounce 2s infinite;
@@ -45,17 +45,8 @@
             border-radius: 5px;
             transition: transform 0.2s, box-shadow 0.2s;
             box-shadow: 0 4px 8px rgba(255, 140, 0, 0.5);
-            display: flex;
-            align-items: center;
         }
-        #profilePic {
-            width: 30px;
-            height: 30px;
-            vertical-align: middle;
-            border-radius: 50%;
-            margin-right: 10px;
-        }
-        #loginButton {
+        #loginToggle {
             position: absolute;
             top: 20px;
             right: 20px;
@@ -65,111 +56,186 @@
             border: none;
             color: #333;
             border-radius: 5px;
+            transition: transform 0.2s, box-shadow 0.2s;
             box-shadow: 0 4px 8px rgba(255, 140, 0, 0.5);
         }
-        #dropdownMenu {
-            display: none;
-            position: absolute;
-            top: 60px;
-            left: 20px;
-            background-color: rgba(255, 0, 0, 0.9);
-            padding: 10px;
-            border-radius: 5px;
-            box-shadow: 0 4px 8px rgba(255, 0, 0, 0.5);
-            animation: dropdown 0.3s ease-in-out;
+        input[type="file"] {
+            display: none; /* Cacher l'input de fichier */
         }
-        @keyframes dropdown {
-            from {
-                opacity: 0;
-                transform: translateY(-10px);
-            }
-            to {
-                opacity: 1;
-                transform: translateY(0);
-            }
-        }
-        .dropdown-item {
-            color: white;
-            padding: 5px 10px;
+        button {
+            padding: 10px 20px;
+            font-size: 16px;
             cursor: pointer;
-            transition: transform 0.2s, box-shadow 0.2s;
-            text-shadow: 0 2px 4px rgba(0, 0, 0, 0.5);
+            background: linear-gradient(45deg, #FFD700, #FF8C00);
+            border: none;
+            color: #333;
             border-radius: 5px;
+            transition: transform 0.2s, box-shadow 0.2s;
+            box-shadow: 0 4px 8px rgba(255, 140, 0, 0.5);
         }
-        .dropdown-item:hover {
+        button:hover {
             transform: scale(1.05);
-            box-shadow: 0 4px 8px rgba(255, 0, 0, 0.5);
-            background-color: rgba(255, 80, 80, 0.9);
+            box-shadow: 0 8px 16px rgba(255, 140, 0, 0.5);
+        }
+        #result {
+            margin-top: 20px;
+            font-size: 20px;
+        }
+        .error {
+            color: red;
+        }
+        .hidden {
+            display: none;
+        }
+        #forms {
+            display: none;
+            margin-top: 20px;
+        }
+        .link {
+            color: blue;
+            cursor: pointer;
+            text-decoration: underline;
+        }
+        #profilePic {
+            width: 30px;
+            height: 30px;
+            vertical-align: middle;
+            border-radius: 50%;
+            cursor: pointer;
+        }
+        #userInfo {
+            display: none;
+            margin-top: 10px;
         }
     </style>
 </head>
 <body>
-    <!-- Bouton de connexion qui apparaît si l'utilisateur n'est pas connecté -->
-    <button id="loginButton">Login</button>
-    
-    <!-- Bouton de profil qui apparaît si l'utilisateur est connecté -->
-    <div id="accountButton" style="display: none;">
-        <img id="profilePic" src="https://www.freeiconspng.com/download/25494" alt="Profile Picture">
+    <button id="accountButton">
+        <img id="profilePic" src="https://www.freeiconspng.com/download/25494g" alt="Profile Picture"> 
         <span id="usernameDisplay">Username</span>
+    </button>
+    <h1>Welcome to Bloxd.io Pack Utils</h1>
+    <button id="loginToggle">Login</button>
+
+    <div id="userInfo">
+        <span id="userGreeting">Welcome, <span id="usernameDisplay">User</span>!</span>
+        <input type="file" id="imageUpload" accept="image/*"> <!-- Champ pour télécharger la photo de profil -->
     </div>
-    
-    <h1>Bloxd.io Pack Utils</h1>
-    
-    <!-- Menu déroulant pour "Logout" et "Change Username" -->
-    <div id="dropdownMenu">
-        <div class="dropdown-item" id="logout">Logout</div>
-        <div class="dropdown-item" id="changeUsername">Change Username</div>
+
+    <div id="forms" class="hidden">
+        <h2>Sign Up</h2>
+        <input type="text" id="username" placeholder="Username" maxlength="16" required>
+        <input type="password" id="password" placeholder="Password" required>
+        <button id="signup">Sign Up</button>
+
+        <h2>Login</h2>
+        <input type="text" id="loginUsername" placeholder="Username" maxlength="16" required>
+        <input type="password" id="loginPassword" placeholder="Password" required>
+        <button id="login">Login</button>
+
+        <div>
+            <p>You don't have an account? <span class="link" id="signupLink">Create an account here!</span></p>
+        </div>
     </div>
+
+    <div id="result"></div>
 
     <script>
-        // Simuler l'état de connexion
-        let isLoggedIn = false;
+        let users = JSON.parse(localStorage.getItem('users')) || [];
+        let loggedInUser = null;
 
-        const loginButton = document.getElementById('loginButton');
-        const accountButton = document.getElementById('accountButton');
-        const dropdownMenu = document.getElementById('dropdownMenu');
-
-        // Gérer la connexion et déconnexion
-        loginButton.addEventListener('click', () => {
-            isLoggedIn = true;
-            updateUI();
-        });
-
-        // Gérer le bouton de déconnexion
-        document.getElementById('logout').addEventListener('click', () => {
-            isLoggedIn = false;
-            updateUI();
-        });
-
-        // Fonction pour mettre à jour l'interface utilisateur selon l'état de connexion
-        function updateUI() {
-            if (isLoggedIn) {
-                loginButton.style.display = 'none';
-                accountButton.style.display = 'flex';
-            } else {
-                loginButton.style.display = 'block';
-                accountButton.style.display = 'none';
-                dropdownMenu.style.display = 'none';
-            }
+        // Chargement de l'utilisateur et de la photo de profil depuis le localStorage
+        const savedUser = localStorage.getItem('loggedInUser');
+        if (savedUser) {
+            loggedInUser = JSON.parse(savedUser);
+            document.getElementById('usernameDisplay').innerText = loggedInUser.username;
+            document.getElementById('profilePic').src = loggedInUser.profilePic || 'https://www.freeiconspng.com/download/25494g';
+            document.getElementById('userInfo').style.display = 'block';
         }
 
-        // Toggle menu au clic sur le nom d'utilisateur
-        accountButton.addEventListener('click', () => {
-            dropdownMenu.style.display = dropdownMenu.style.display === 'block' ? 'none' : 'block';
+        document.getElementById('loginToggle').addEventListener('click', () => {
+            const formsDiv = document.getElementById('forms');
+            formsDiv.classList.toggle('hidden');
+            formsDiv.style.display = formsDiv.style.display === 'none' ? 'block' : 'none';
         });
 
-        // Action pour le bouton "Change Username"
-        document.getElementById('changeUsername').addEventListener('click', () => {
-            const newUsername = prompt('Enter new username:');
-            if (newUsername) {
-                document.getElementById('usernameDisplay').innerText = newUsername;
-                alert('Username changed!');
-                dropdownMenu.style.display = 'none'; // Cache le menu après le clic
+        // Affiche le formulaire d'inscription lorsque l'utilisateur clique sur le lien
+        document.getElementById('signupLink').addEventListener('click', () => {
+            const formsDiv = document.getElementById('forms');
+            formsDiv.classList.remove('hidden');
+            formsDiv.style.display = 'block';
+            document.getElementById('loginUsername').value = '';
+            document.getElementById('loginPassword').value = '';
+            document.getElementById('username').value = '';
+            document.getElementById('password').value = '';
+        });
+
+        document.getElementById('signup').addEventListener('click', () => {
+            const username = document.getElementById('username').value;
+            const password = document.getElementById('password').value;
+
+            if (username && password) {
+                if (username.length > 16) {
+                    showError('Username cannot exceed 16 characters.');
+                    return;
+                }
+                const userExists = users.some(user => user.username === username);
+                if (!userExists) {
+                    users.push({ username, password });
+                    localStorage.setItem('users', JSON.stringify(users));
+                    document.getElementById('result').innerText = 'Account created successfully!';
+                    document.getElementById('result').classList.remove('error');
+                    document.getElementById('forms').classList.add('hidden');
+                } else {
+                    showError('Username already exists.');
+                }
+            } else {
+                showError('Please fill in all fields.');
             }
         });
 
-        // Initialisation de l'interface utilisateur
-        updateUI();
+        document.getElementById('login').addEventListener('click', () => {
+            const username = document.getElementById('loginUsername').value;
+            const password = document.getElementById('loginPassword').value;
+
+            const user = users.find(user => user.username === username && user.password === password);
+            if (user) {
+                loggedInUser = user;
+                localStorage.setItem('loggedInUser', JSON.stringify(loggedInUser));
+                document.getElementById('usernameDisplay').innerText = loggedInUser.username;
+                document.getElementById('profilePic').src = loggedInUser.profilePic || 'https://www.freeiconspng.com/download/25494';
+                document.getElementById('userInfo').style.display = 'block';
+                document.getElementById('result').innerText = 'Login successful!';
+                document.getElementById('forms').classList.add('hidden');
+            } else {
+                showError('Invalid username or password.');
+            }
+        });
+
+        // Affiche une erreur
+        function showError(message) {
+            document.getElementById('result').innerText = message;
+            document.getElementById('result').classList.add('error');
+        }
+
+        // Événement pour le clic sur le bouton du profil
+        document.getElementById('profilePic').addEventListener('click', () => {
+            document.getElementById('imageUpload').click(); // Simuler le clic sur l'input de fichier
+        });
+
+        // Changer la photo de profil
+        document.getElementById('imageUpload').addEventListener('change', (event) => {
+            const file = event.target.files[0];
+            if (file) {
+                const reader = new FileReader();
+                reader.onload = (e) => {
+                    loggedInUser.profilePic = e.target.result; // Met à jour l'image de profil
+                    localStorage.setItem('loggedInUser', JSON.stringify(loggedInUser)); // Sauvegarder dans le localStorage
+                    document.getElementById('profilePic').src = loggedInUser.profilePic; // Mettre à jour l'image affichée
+                };
+                reader.readAsDataURL(file);
+            }
+        });
     </script>
 </body>
 </html>
