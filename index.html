@@ -46,7 +46,6 @@
             const reader = new FileReader();
             reader.onloadend = function() {
                 alert("Image uploaded as Base64: " + reader.result);
-                // Here, you can also set the Base64 result to a variable or an input field for later use.
             }
             if (file) {
                 reader.readAsDataURL(file); // Convert image to Base64
@@ -55,9 +54,9 @@
 
         function verifyYoutubeAccount() {
             const subscriberCount = document.getElementById('subscriberCount').value;
+            const channelLink = document.getElementById('channelLink').value;
             if (subscriberCount >= 100) {
-                alert('You are verified as a YouTuber!');
-                // Additional logic to handle verified users
+                alert('You are verified as a YouTuber with link: ' + channelLink);
             } else {
                 alert('You need more than 100 subscribers to be verified.');
             }
@@ -75,9 +74,14 @@
 
     <div id="youtubeCheck">
         <label for="subscriberCount">Enter your subscriber count:</label>
-        <input type="number" id="subscriberCount" placeholder="Number of subscribers">
+        <input type="number" id="subscriberCount" placeholder="Number of subscribers" required>
+        
+        <label for="channelLink">Enter your YouTube channel link:</label>
+        <input type="url" id="channelLink" placeholder="https://www.youtube.com/channel/your_channel" required>
+        
         <button onclick="verifyYoutubeAccount()">Verify</button>
         <br><br>
+        
         <label for="customImage">Upload Custom Image:</label>
         <input type="file" id="customImage" accept="image/*" onchange="handleImageUpload(event)">
     </div>
