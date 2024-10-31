@@ -108,14 +108,22 @@
             border-radius: 50%; /* Rendre l'image circulaire */
             cursor: pointer; /* Indiquer que l'image est cliquable */
         }
+        #userInfo {
+            display: none; /* Cacher le nom d'utilisateur par défaut */
+            margin-top: 10px;
+        }
     </style>
 </head>
 <body>
     <button id="accountButton">
-        <img id="profilePic" src="https://upload.wikimedia.org/wikipedia/commons/0/06/YouTube_icon_%282013-2017%29.png" alt="Profile Picture"> Username
+        <img id="profilePic" src="https://upload.wikimedia.org/wikipedia/commons/0/06/YouTube_icon_%282013-2017%29.png" alt="Profile Picture"> <span id="usernameDisplay">Username</span>
     </button>
     <h1>Welcome to Bloxd.io Pack Utils</h1>
     <button id="loginToggle">Login</button>
+
+    <div id="userInfo">
+        <span id="userGreeting">Welcome, <span id="usernameDisplay">User</span>!</span>
+    </div>
 
     <div id="forms" class="hidden">
         <h2>Sign Up</h2>
@@ -139,6 +147,7 @@
 
     <script>
         let users = JSON.parse(localStorage.getItem('users')) || []; // Pour stocker les utilisateurs
+        let loggedInUser = null; // Variable pour stocker l'utilisateur connecté
 
         document.getElementById('loginToggle').addEventListener('click', () => {
             const formsDiv = document.getElementById('forms');
@@ -181,9 +190,12 @@
 
             const user = users.find(user => user.username === loginUsername && user.password === loginPassword);
             if (user) {
+                loggedInUser = user; // Stocker l'utilisateur connecté
+                document.getElementById('usernameDisplay').innerText = loggedInUser.username; // Afficher le nom d'utilisateur
+                document.getElementById('userInfo').style.display = 'block'; // Afficher les informations de l'utilisateur
                 document.getElementById('result').innerText = 'Logged in successfully!';
                 document.getElementById('result').classList.remove('error');
-                // Rediriger ou faire d'autres actions après la connexion
+                document.getElementById('forms').classList.add('hidden'); // Cacher le formulaire après la connexion
             } else {
                 showError('Invalid username or password.');
             }
@@ -198,7 +210,7 @@
             if (file) {
                 const reader = new FileReader();
                 reader.onload = (e) => {
-                    document.getElementById('profilePic').src = e.target.result; // Change l'image de profil
+                    document.getElementById('profilePic').src = e.target.result; // Changer l'image de profil
                 };
                 reader.readAsDataURL(file);
             }
