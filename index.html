@@ -93,7 +93,7 @@
             display: none;
         }
         #forms {
-            display: none;
+            display: none; /* Initial state is hidden */
             margin-top: 20px;
         }
         .link {
@@ -200,7 +200,7 @@
 
         document.getElementById('loginToggle').addEventListener('click', function() {
             const forms = document.getElementById('forms');
-            forms.classList.toggle('hidden'); // Affiche ou cache le formulaire
+            forms.classList.toggle('hidden'); // Toggle the visibility of the forms
         });
 
         document.getElementById('signup').addEventListener('click', function() {
@@ -228,7 +228,7 @@
                 document.getElementById('usernameDisplay').innerText = loggedInUser.username;
                 document.getElementById('profilePic').src = loggedInUser.profilePic || 'https://upload.wikimedia.org/wikipedia/commons/0/06/YouTube_icon_%282013-2017%29.png';
                 document.getElementById('userInfo').style.display = 'block';
-                document.getElementById('forms').classList.add('hidden');
+                document.getElementById('forms').classList.add('hidden'); // Hide the forms after login
             } else {
                 alert('Invalid username or password.');
             }
@@ -236,7 +236,7 @@
 
         document.getElementById('signupLink').addEventListener('click', function() {
             const forms = document.getElementById('forms');
-            forms.classList.toggle('hidden'); // Affiche ou cache le formulaire
+            forms.classList.toggle('hidden'); // Toggle the forms visibility
         });
 
         function toggleDropdown() {
