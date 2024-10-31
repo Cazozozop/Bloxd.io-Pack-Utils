@@ -4,196 +4,169 @@
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
     <title>Bloxd.io Pack Utils</title>
+    <link href="https://fonts.googleapis.com/css2?family=Pixelify+Sans&display=swap" rel="stylesheet">
     <style>
         body {
-            background: url('https://iili.io/2nu1xv1.jpg') no-repeat center center fixed;
-            background-size: cover;
             font-family: 'Pixelify Sans', sans-serif;
-            color: white;
-            height: 100vh;
             margin: 0;
+            height: 100vh;
+            background-image: url('https://iili.io/2nu1xv1.jpg');
+            background-size: cover;
             display: flex;
             flex-direction: column;
             align-items: center;
             justify-content: center;
-            position: relative;
         }
 
         h1 {
-            text-align: center;
-            animation: move 3s ease-in-out infinite;
-            text-shadow: 2px 2px 5px black;
+            color: white;
+            text-shadow: 2px 2px 5px rgba(0, 0, 0, 0.7);
+            animation: slide-down 2s ease-in-out infinite alternate;
             margin-bottom: 20px;
         }
 
-        @keyframes move {
+        @keyframes slide-down {
             0% { transform: translateY(0); }
-            50% { transform: translateY(-10px); }
-            100% { transform: translateY(0); }
-        }
-
-        #userInfo {
-            position: absolute;
-            top: 10px;
-            left: 10px;
-            display: none;
+            100% { transform: translateY(10px); }
         }
 
         .button {
-            background-color: rgba(255, 215, 0, 0.8);
-            border: none;
-            color: white;
             padding: 10px 20px;
-            text-align: center;
-            text-decoration: none;
-            display: inline-block;
-            margin: 4px 2px;
+            margin: 5px;
+            border: none;
+            border-radius: 5px;
             cursor: pointer;
-            box-shadow: 0 4px 8px rgba(0, 0, 0, 0.5);
-            transition: background-color 0.3s, transform 0.3s;
+            transition: all 0.3s;
             position: relative;
-            overflow: hidden;
         }
 
         .button:hover {
-            background-color: rgba(255, 215, 0, 1);
-            transform: translateY(-2px);
+            transform: scale(1.05);
         }
 
-        #dropdownMenu {
-            display: none;
-            position: absolute;
-            top: 50px;
-            left: 10px;
-            background-color: rgba(0, 0, 0, 0.7);
+        .login {
+            background-color: #ffcc00;
+            color: black;
             box-shadow: 0 4px 8px rgba(0, 0, 0, 0.5);
-            z-index: 1;
         }
 
-        #dropdownMenu button {
-            background-color: transparent;
-            border: none;
-            color: white;
-            padding: 10px;
-            text-align: left;
-            width: 100%;
-            cursor: pointer;
+        .login:hover {
+            background-color: #ffb300;
         }
 
-        #dropdownMenu button:hover {
-            background-color: rgba(255, 215, 0, 0.3);
+        .user {
+            background-color: #ffa500;
+            color: black;
+            box-shadow: 0 4px 8px rgba(0, 0, 0, 0.5);
         }
 
-        #forms {
-            display: block;
-        }
-
-        input {
-            padding: 10px;
-            margin: 10px 0;
-            width: 200px;
-            border: none;
-            border-radius: 4px;
-            box-shadow: 0 2px 4px rgba(0, 0, 0, 0.5);
+        .user:hover {
+            background-color: #ff8c00;
         }
 
         .hidden {
             display: none;
         }
+
+        .profile-info {
+            display: none;
+            background-color: rgba(255, 255, 255, 0.9);
+            padding: 10px;
+            border-radius: 5px;
+            position: absolute;
+            top: 50px;
+            right: 20px;
+            z-index: 10;
+        }
+
+        .error {
+            color: red;
+        }
+
+        .account-button {
+            position: absolute;
+            top: 20px;
+            left: 20px;
+            background: linear-gradient(orange, yellow);
+            padding: 10px;
+            border-radius: 5px;
+            box-shadow: 0 4px 8px rgba(0, 0, 0, 0.5);
+        }
+
+        .account-button img {
+            width: 20px;
+            height: 20px;
+            margin-right: 5px;
+        }
     </style>
 </head>
 <body>
-    <h1>Welcome to Bloxd.io Pack Utils</h1>
-    <div id="userInfo">
-        <button class="button" onclick="toggleDropdown()">User: <span id="usernameDisplay"></span></button>
-        <div id="dropdownMenu">
-            <button onclick="changeUsername()">Change Username</button>
-            <button onclick="logout()">Logout</button>
-        </div>
+
+    <div class="account-button" onclick="toggleProfile()">
+        <img src="https://iili.io/2nu1xv1.jpg" alt="Profile Icon">
+        <span id="usernameDisplay" class="hidden">Username</span>
     </div>
-    <button class="button" id="loginButton" onclick="toggleForms()">Login</button>
-    <div id="forms">
-        <div id="loginForm">
-            <input type="text" id="loginUsername" placeholder="Username" maxlength="16">
-            <button class="button" onclick="login()">Login</button>
-        </div>
-        <div id="signupForm" class="hidden">
-            <input type="text" id="signupUsername" placeholder="Username" maxlength="16">
-            <button class="button" onclick="signup()">Sign Up</button>
-            <span>Already have an account? <a href="#" onclick="toggleForms()">Click here</a></span>
-        </div>
+
+    <h1>Welcome to Bloxd.io Pack Utils</h1>
+
+    <button class="button login" onclick="toggleLogin()">Login</button>
+
+    <div id="loginForm" class="hidden">
+        <input type="text" id="username" placeholder="Username (max 16 chars)" maxlength="16">
+        <button onclick="submitLogin()">Submit</button>
+        <p id="error" class="error hidden">Error: Username is required!</p>
+    </div>
+
+    <div class="profile-info" id="profileInfo">
+        <button class="button user" onclick="changeUsername()">Change Username</button>
+        <button class="button user" onclick="logout()">Logout</button>
     </div>
 
     <script>
         let isLoggedIn = false;
-        let username = '';
 
-        function toggleForms() {
-            const loginForm = document.getElementById('loginForm');
-            const signupForm = document.getElementById('signupForm');
-            if (loginForm.classList.contains('hidden')) {
-                loginForm.classList.remove('hidden');
-                signupForm.classList.add('hidden');
+        function toggleLogin() {
+            const loginForm = document.getElementById("loginForm");
+            loginForm.classList.toggle("hidden");
+        }
+
+        function submitLogin() {
+            const usernameInput = document.getElementById("username");
+            const error = document.getElementById("error");
+            if (usernameInput.value.trim() === "") {
+                error.classList.remove("hidden");
             } else {
-                signupForm.classList.remove('hidden');
-                loginForm.classList.add('hidden');
+                isLoggedIn = true;
+                document.getElementById("usernameDisplay").innerText = usernameInput.value;
+                document.getElementById("usernameDisplay").classList.remove("hidden");
+                usernameInput.value = "";
+                error.classList.add("hidden");
+                toggleLogin();
+                showProfileInfo();
             }
         }
 
-        function login() {
-            const loginUsername = document.getElementById('loginUsername').value;
-            if (loginUsername) {
-                username = loginUsername;
-                isLoggedIn = true;
-                document.getElementById('userInfo').style.display = 'block';
-                document.getElementById('usernameDisplay').innerText = username;
-                document.getElementById('forms').style.display = 'none';
-                toggleDropdown(); // Hide dropdown initially
-            }
+        function showProfileInfo() {
+            document.getElementById("profileInfo").style.display = "block";
         }
 
-        function signup() {
-            const signupUsername = document.getElementById('signupUsername').value;
-            if (signupUsername) {
-                username = signupUsername;
-                isLoggedIn = true;
-                document.getElementById('userInfo').style.display = 'block';
-                document.getElementById('usernameDisplay').innerText = username;
-                document.getElementById('forms').style.display = 'none';
-                toggleDropdown(); // Hide dropdown initially
+        function toggleProfile() {
+            const profileInfo = document.getElementById("profileInfo");
+            profileInfo.classList.toggle("hidden");
+        }
+
+        function changeUsername() {
+            const newUsername = prompt("Enter new username (max 16 chars):");
+            if (newUsername && newUsername.length <= 16) {
+                document.getElementById("usernameDisplay").innerText = newUsername;
             }
         }
 
         function logout() {
             isLoggedIn = false;
-            username = '';
-            document.getElementById('userInfo').style.display = 'none';
-            document.getElementById('forms').style.display = 'block';
-            document.getElementById('loginUsername').value = '';
-            document.getElementById('signupUsername').value = '';
+            document.getElementById("usernameDisplay").classList.add("hidden");
+            document.getElementById("profileInfo").style.display = "none";
         }
-
-        function toggleDropdown() {
-            const dropdownMenu = document.getElementById('dropdownMenu');
-            dropdownMenu.style.display = dropdownMenu.style.display === 'block' ? 'none' : 'block';
-        }
-
-        function changeUsername() {
-            const newUsername = prompt('Enter new username (max 16 characters):');
-            if (newUsername && newUsername.length <= 16) {
-                username = newUsername;
-                document.getElementById('usernameDisplay').innerText = username;
-            } else {
-                alert('Username must be 16 characters or less.');
-            }
-        }
-
-        // To adjust the background size
-        window.addEventListener('resize', () => {
-            document.body.style.height = `${window.innerHeight}px`;
-        });
-        // Set initial height
-        document.body.style.height = `${window.innerHeight}px`;
     </script>
 </body>
 </html>
