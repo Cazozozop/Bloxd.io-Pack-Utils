@@ -23,6 +23,28 @@
             margin-bottom: 20px;
             color: white;
             text-shadow: 2px 2px 4px rgba(0, 0, 0, 0.7); /* Ombre sous le titre */
+            animation: bounce 2s infinite; /* Animation de montée-descente */
+        }
+        @keyframes bounce {
+            0%, 100% {
+                transform: translateY(0);
+            }
+            50% {
+                transform: translateY(-10px); /* Montée de 10 pixels */
+            }
+        }
+        #accountButton {
+            position: absolute;
+            top: 20px;
+            left: 20px;
+            padding: 10px 20px;
+            cursor: pointer;
+            background: linear-gradient(45deg, #FFD700, #FF8C00);
+            border: none;
+            color: #333;
+            border-radius: 5px;
+            transition: transform 0.2s, box-shadow 0.2s;
+            box-shadow: 0 4px 8px rgba(255, 140, 0, 0.5);
         }
         #loginToggle {
             position: absolute;
@@ -74,9 +96,24 @@
             display: none;
             margin-top: 20px;
         }
+        .link {
+            color: blue;
+            cursor: pointer;
+            text-decoration: underline;
+        }
+        #profilePic {
+            width: 30px;
+            height: 30px;
+            vertical-align: middle;
+            border-radius: 50%; /* Rendre l'image circulaire */
+            cursor: pointer; /* Indiquer que l'image est cliquable */
+        }
     </style>
 </head>
 <body>
+    <button id="accountButton">
+        <img id="profilePic" src="https://upload.wikimedia.org/wikipedia/commons/0/06/YouTube_icon_%282013-2017%29.png" alt="Profile Picture"> Username
+    </button>
     <h1>Welcome to Bloxd.io Pack Utils</h1>
     <button id="loginToggle">Login</button>
 
@@ -92,11 +129,13 @@
         <button id="login">Login</button>
 
         <div>
-            <p>You don't have an account? Create an account here!</p>
+            <p>You don't have an account? <span class="link" id="signupLink">Create an account here!</span></p>
         </div>
     </div>
 
     <div id="result"></div>
+
+    <input type="file" id="imageUpload" accept="image/*" class="hidden">
 
     <script>
         let users = JSON.parse(localStorage.getItem('users')) || []; // Pour stocker les utilisateurs
@@ -105,6 +144,15 @@
             const formsDiv = document.getElementById('forms');
             formsDiv.classList.toggle('hidden');
             formsDiv.style.display = formsDiv.style.display === 'none' ? 'block' : 'none'; // Gérer l'affichage
+        });
+
+        // Affiche le formulaire d'inscription lorsque l'utilisateur clique sur le lien
+        document.getElementById('signupLink').addEventListener('click', () => {
+            const formsDiv = document.getElementById('forms');
+            formsDiv.classList.remove('hidden');
+            formsDiv.style.display = 'block'; // Assurez-vous qu'il est affiché
+            document.getElementById('loginUsername').value = ''; // Réinitialiser les champs
+            document.getElementById('loginPassword').value = '';
         });
 
         document.getElementById('signup').addEventListener('click', () => {
@@ -138,6 +186,21 @@
                 // Rediriger ou faire d'autres actions après la connexion
             } else {
                 showError('Invalid username or password.');
+            }
+        });
+
+        document.getElementById('profilePic').addEventListener('click', () => {
+            document.getElementById('imageUpload').click(); // Simule le clic sur l'input file
+        });
+
+        document.getElementById('imageUpload').addEventListener('change', (event) => {
+            const file = event.target.files[0];
+            if (file) {
+                const reader = new FileReader();
+                reader.onload = (e) => {
+                    document.getElementById('profilePic').src = e.target.result; // Change l'image de profil
+                };
+                reader.readAsDataURL(file);
             }
         });
 
