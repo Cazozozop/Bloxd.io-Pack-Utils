@@ -127,12 +127,12 @@
 
     <div id="forms" class="hidden">
         <h2>Sign Up</h2>
-        <input type="text" id="username" placeholder="Username" required>
+        <input type="text" id="username" placeholder="Username" maxlength="16" required>
         <input type="password" id="password" placeholder="Password" required>
         <button id="signup">Sign Up</button>
 
         <h2>Login</h2>
-        <input type="text" id="loginUsername" placeholder="Username" required>
+        <input type="text" id="loginUsername" placeholder="Username" maxlength="16" required>
         <input type="password" id="loginPassword" placeholder="Password" required>
         <button id="login">Login</button>
 
@@ -169,6 +169,10 @@
             const password = document.getElementById('password').value;
 
             if (username && password) {
+                if (username.length > 16) {
+                    showError('Username cannot exceed 16 characters.');
+                    return; // Sortir si la longueur du nom d'utilisateur dépasse 16 caractères
+                }
                 const userExists = users.some(user => user.username === username);
                 if (!userExists) {
                     users.push({ username, password });
@@ -205,8 +209,8 @@
             document.getElementById('imageUpload').click(); // Simule le clic sur l'input file
         });
 
-        document.getElementById('imageUpload').addEventListener('change', (event) => {
-            const file = event.target.files[0];
+        document.getElementById('imageUpload').addEventListener('change', function() {
+            const file = this.files[0];
             if (file) {
                 const reader = new FileReader();
                 reader.onload = (e) => {
