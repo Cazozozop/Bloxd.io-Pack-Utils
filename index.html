@@ -1,4 +1,4 @@
-<!DOCTYPE html><!DOCTYPE html>
+<!DOCTYPE html>
 <html lang="en">
 <head>
     <meta charset="UTF-8">
@@ -16,21 +16,21 @@
             text-align: center;
             padding: 20px;
             margin: 0;
-            min-height: 100vh; /* S'assure que le corps prend toute la hauteur de l'écran */
+            min-height: 100vh;
         }
         h1 {
             font-size: 48px;
-            margin-bottom: 80px; /* Augmenter l'espace sous le titre pour éviter qu'il touche le bouton */
+            margin-bottom: 80px;
             color: white;
-            text-shadow: 2px 2px 4px rgba(0, 0, 0, 0.7); /* Ombre sous le titre */
-            animation: bounce 5s infinite; /* Animation de montée-descente */
+            text-shadow: 2px 2px 4px rgba(0, 0, 0, 0.7);
+            animation: bounce 5s infinite;
         }
         @keyframes bounce {
             0%, 100% {
                 transform: translateY(0);
             }
             50% {
-                transform: translateY(-10px); /* Montée de 10 pixels */
+                transform: translateY(-10px);
             }
         }
         #accountButton {
@@ -105,23 +105,23 @@
             width: 30px;
             height: 30px;
             vertical-align: middle;
-            border-radius: 50%; /* Rendre l'image circulaire */
-            cursor: pointer; /* Indiquer que l'image est cliquable */
+            border-radius: 50%;
+            cursor: pointer;
         }
         #userInfo {
-            display: none; /* Cacher le nom d'utilisateur par défaut */
+            display: none;
             margin-top: 10px;
         }
         #dropdownMenu {
             display: none;
             position: absolute;
-            top: 60px; /* Positionné juste sous le bouton utilisateur */
+            top: 60px;
             left: 20px;
             background: white;
             border-radius: 5px;
             box-shadow: 0 4px 8px rgba(0, 0, 0, 0.2);
             z-index: 1000;
-            animation: dropdown 0.7s ease forwards; /* Animation de déploiement */
+            animation: dropdown 0.7s ease forwards;
         }
         @keyframes dropdown {
             from {
@@ -142,12 +142,12 @@
             background: rgba(255, 140, 0, 0.2);
         }
         .logout {
-            color: red; /* Couleur rouge pour le texte de déconnexion */
-            text-shadow: 1px 1px 2px rgba(0, 0, 0, 0.7); /* Ombre pour le texte de déconnexion */
+            color: red;
+            text-shadow: 1px 1px 2px rgba(0, 0, 0, 0.7);
         }
         .changeUsername {
-            color: blue; /* Couleur bleue pour le changement de nom d'utilisateur */
-            text-shadow: 1px 1px 2px rgba(0, 0, 0, 0.7); /* Ombre pour le texte de changement de nom d'utilisateur */
+            color: blue;
+            text-shadow: 1px 1px 2px rgba(0, 0, 0, 0.7);
         }
     </style>
 </head>
@@ -160,7 +160,7 @@
 
     <div id="userInfo">
         <span id="userGreeting">Welcome, <span id="usernameDisplay">User</span>!</span>
-        <input type="file" id="imageUpload" accept="image/*" style="display:none;"> <!-- Champ pour télécharger la photo de profil, caché par défaut -->
+        <input type="file" id="imageUpload" accept="image/*" style="display:none;">
     </div>
 
     <div id="dropdownMenu" class="hidden">
@@ -187,16 +187,15 @@
     <div id="result"></div>
 
     <script>
-        let users = JSON.parse(localStorage.getItem('users')) || []; // Pour stocker les utilisateurs
-        let loggedInUser = null; // Variable pour stocker l'utilisateur connecté
+        let users = JSON.parse(localStorage.getItem('users')) || [];
+        let loggedInUser = null;
 
-        // Chargement de l'utilisateur et de la photo de profil depuis le localStorage
         const savedUser = localStorage.getItem('loggedInUser');
         if (savedUser) {
             loggedInUser = JSON.parse(savedUser);
             document.getElementById('usernameDisplay').innerText = loggedInUser.username;
-            document.getElementById('profilePic').src = loggedInUser.profilePic || 'https://upload.wikimedia.org/wikipedia/commons/0/06/YouTube_icon_%282013-2017%29.png'; // Définit l'image par défaut
-            document.getElementById('userInfo').style.display = 'block'; // Affiche les informations de l'utilisateur
+            document.getElementById('profilePic').src = loggedInUser.profilePic || 'https://upload.wikimedia.org/wikipedia/commons/0/06/YouTube_icon_%282013-2017%29.png';
+            document.getElementById('userInfo').style.display = 'block';
         }
 
         document.getElementById('loginToggle').addEventListener('click', function() {
@@ -210,11 +209,11 @@
 
             if (username && password) {
                 users.push({ username, password, profilePic: '' });
-                localStorage.setItem('users', JSON.stringify(users)); // Enregistre les utilisateurs dans le localStorage
-                alert('User registered successfully!'); // Message de succès
-                document.getElementById('forms').classList.add('hidden'); // Cache le formulaire après l'inscription
+                localStorage.setItem('users', JSON.stringify(users));
+                alert('User registered successfully!');
+                document.getElementById('forms').classList.add('hidden');
             } else {
-                alert('Please fill in all fields.'); // Message d'erreur
+                alert('Please fill in all fields.');
             }
         });
 
@@ -225,62 +224,43 @@
             const user = users.find(user => user.username === username && user.password === password);
             if (user) {
                 loggedInUser = user;
-                localStorage.setItem('loggedInUser', JSON.stringify(loggedInUser)); // Enregistre l'utilisateur connecté
+                localStorage.setItem('loggedInUser', JSON.stringify(loggedInUser));
                 document.getElementById('usernameDisplay').innerText = loggedInUser.username;
-                document.getElementById('profilePic').src = loggedInUser.profilePic || 'https://upload.wikimedia.org/wikipedia/commons/0/06/YouTube_icon_%282013-2017%29.png'; // Définit l'image par défaut
-                document.getElementById('userInfo').style.display = 'block'; // Affiche les informations de l'utilisateur
-                document.getElementById('result').innerText = 'Logged in successfully!';
-                document.getElementById('result').classList.remove('error');
-                document.getElementById('forms').classList.add('hidden'); // Ferme le formulaire après la connexion
+                document.getElementById('profilePic').src = loggedInUser.profilePic || 'https://upload.wikimedia.org/wikipedia/commons/0/06/YouTube_icon_%282013-2017%29.png';
+                document.getElementById('userInfo').style.display = 'block';
+                document.getElementById('forms').classList.add('hidden');
             } else {
-                showError('Invalid username or password.');
+                alert('Invalid username or password.');
             }
         });
 
-        document.getElementById('imageUpload').addEventListener('change', function() {
-            const file = this.files[0];
-            if (file) {
-                const reader = new FileReader();
-                reader.onload = (e) => {
-                    document.getElementById('profilePic').src = e.target.result; // Change l'image de profil
-                    if (loggedInUser) {
-                        loggedInUser.profilePic = e.target.result; // Met à jour l'image dans le profil
-                        localStorage.setItem('loggedInUser', JSON.stringify(loggedInUser)); // Sauvegarde la nouvelle image
-                    }
-                };
-                reader.readAsDataURL(file);
-            }
+        document.getElementById('signupLink').addEventListener('click', function() {
+            const forms = document.getElementById('forms');
+            forms.classList.toggle('hidden'); // Affiche ou cache le formulaire
         });
 
         function toggleDropdown() {
-            const dropdownMenu = document.getElementById('dropdownMenu');
-            dropdownMenu.style.display = dropdownMenu.style.display === 'block' ? 'none' : 'block'; // Alterne l'affichage
+            const dropdown = document.getElementById('dropdownMenu');
+            dropdown.classList.toggle('hidden');
         }
 
         function logout() {
-            loggedInUser = null; // Réinitialiser l'utilisateur connecté
-            localStorage.removeItem('loggedInUser'); // Supprime l'utilisateur du localStorage
-            document.getElementById('usernameDisplay').innerText = 'Username'; // Réinitialise l'affichage du nom d'utilisateur
-            document.getElementById('profilePic').src = 'https://upload.wikimedia.org/wikipedia/commons/0/06/YouTube_icon_%282013-2017%29.png'; // Réinitialise l'image de profil
-            document.getElementById('userInfo').style.display = 'none'; // Cache les informations de l'utilisateur
-            document.getElementById('result').innerText = 'Logged out successfully!'; // Message de déconnexion
+            localStorage.removeItem('loggedInUser');
+            loggedInUser = null;
+            document.getElementById('usernameDisplay').innerText = 'Username';
+            document.getElementById('profilePic').src = 'https://upload.wikimedia.org/wikipedia/commons/0/06/YouTube_icon_%282013-2017%29.png';
+            document.getElementById('userInfo').style.display = 'none';
+            alert('Logged out successfully!');
         }
 
         function changeUsername() {
-            const newUsername = prompt("Enter new username:");
-            if (newUsername && newUsername.length <= 16) {
+            const newUsername = prompt('Enter new username:');
+            if (newUsername) {
                 loggedInUser.username = newUsername;
-                localStorage.setItem('loggedInUser', JSON.stringify(loggedInUser)); // Met à jour le localStorage
-                document.getElementById('usernameDisplay').innerText = loggedInUser.username; // Met à jour l'affichage
-            } else {
-                alert('Username must be 16 characters or less.');
+                localStorage.setItem('loggedInUser', JSON.stringify(loggedInUser));
+                document.getElementById('usernameDisplay').innerText = newUsername;
+                alert('Username updated successfully!');
             }
-        }
-
-        function showError(message) {
-            const resultDiv = document.getElementById('result');
-            resultDiv.innerText = message;
-            resultDiv.classList.add('error');
         }
     </script>
 </body>
