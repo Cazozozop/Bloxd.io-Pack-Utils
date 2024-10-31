@@ -3,218 +3,85 @@
 <head>
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
-    <title>Bloxd.io Pack Utils</title>
-    <link href="https://fonts.googleapis.com/css2?family=Pixelify+Sans&display=swap" rel="stylesheet">
+    <title>Login and Signup</title>
     <style>
+        @import url('https://fonts.googleapis.com/css2?family=Pixelify&display=swap');
+
         body {
-            font-family: 'Pixelify Sans', sans-serif;
-            background-image: url('https://iili.io/2nu1xv1.jpg');
-            background-size: cover;
-            background-repeat: no-repeat;
-            background-attachment: fixed;
-            color: #333;
+            font-family: 'Pixelify', sans-serif; /* Utilisation de la police Pixelify */
+            background-color: #f0f0f0;
             text-align: center;
-            padding: 20px;
-            margin: 0;
-            min-height: 100vh; /* S'assure que le corps prend toute la hauteur de l'écran */
-        }
-        h1 {
-            font-size: 48px;
-            margin-bottom: 80px; /* Augmenter l'espace sous le titre pour éviter qu'il touche le bouton */
-            color: white;
-            text-shadow: 2px 2px 4px rgba(0, 0, 0, 0.7); /* Ombre sous le titre */
-            animation: bounce 2s infinite; /* Animation de montée-descente */
-        }
-        @keyframes bounce {
-            0%, 100% {
-                transform: translateY(0);
-            }
-            50% {
-                transform: translateY(-10px); /* Montée de 10 pixels */
-            }
-        }
-        #accountButton {
-            position: absolute;
-            top: 20px;
-            left: 20px;
-            padding: 10px 20px;
-            cursor: pointer;
-            background: linear-gradient(45deg, #FFD700, #FF8C00);
-            border: none;
-            color: #333;
-            border-radius: 5px;
-            transition: transform 0.2s, box-shadow 0.2s;
-            box-shadow: 0 4px 8px rgba(255, 140, 0, 0.5);
-        }
-        #loginToggle {
-            position: absolute;
-            top: 20px;
-            right: 20px;
-            padding: 10px 20px;
-            cursor: pointer;
-            background: linear-gradient(45deg, #FFD700, #FF8C00);
-            border: none;
-            color: #333;
-            border-radius: 5px;
-            transition: transform 0.2s, box-shadow 0.2s;
-            box-shadow: 0 4px 8px rgba(255, 140, 0, 0.5);
-        }
-        input {
-            padding: 10px;
-            font-size: 16px;
-            width: 300px;
-            margin-bottom: 10px;
-            border: 2px solid #FFA500;
-            border-radius: 5px;
-        }
-        button {
-            padding: 10px 20px;
-            font-size: 16px;
-            cursor: pointer;
-            background: linear-gradient(45deg, #FFD700, #FF8C00);
-            border: none;
-            color: #333;
-            border-radius: 5px;
-            transition: transform 0.2s, box-shadow 0.2s;
-            box-shadow: 0 4px 8px rgba(255, 140, 0, 0.5);
-        }
-        button:hover {
-            transform: scale(1.05);
-            box-shadow: 0 8px 16px rgba(255, 140, 0, 0.5);
-        }
-        #result {
-            margin-top: 20px;
-            font-size: 20px;
-        }
-        .error {
-            color: red;
+            padding: 50px;
         }
         .hidden {
             display: none;
         }
-        #forms {
-            display: none;
+        #userInfo {
             margin-top: 20px;
         }
-        .link {
-            color: blue;
-            cursor: pointer;
-            text-decoration: underline;
-        }
-        #profilePic {
-            width: 30px;
-            height: 30px;
-            vertical-align: middle;
-            border-radius: 50%; /* Rendre l'image circulaire */
-            cursor: pointer; /* Indiquer que l'image est cliquable */
-        }
-        #userInfo {
-            display: none; /* Cacher le nom d'utilisateur par défaut */
-            margin-top: 10px;
-        }
-        #dropdownMenu {
-            display: none;
-            position: absolute;
-            top: 60px; /* Positionné juste sous le bouton utilisateur */
-            left: 20px;
-            background: white;
+        button {
+            background: linear-gradient(90deg, yellow, orange);
+            border: none;
             border-radius: 5px;
-            box-shadow: 0 4px 8px rgba(0, 0, 0, 0.2);
-            z-index: 1000;
-            animation: dropdown 0.3s ease forwards; /* Animation de déploiement */
-        }
-        @keyframes dropdown {
-            from {
-                opacity: 0;
-                transform: translateY(-10px);
-            }
-            to {
-                opacity: 1;
-                transform: translateY(0);
-            }
-        }
-        .dropdownItem {
-            padding: 10px;
+            padding: 10px 20px;
             cursor: pointer;
-            transition: background 0.2s;
+            margin-top: 10px;
+            transition: all 0.3s;
         }
-        .dropdownItem:hover {
-            background: rgba(255, 140, 0, 0.2);
-        }
-        .logout {
-            color: red; /* Couleur rouge pour le texte de déconnexion */
-            text-shadow: 1px 1px 2px rgba(0, 0, 0, 0.7); /* Ombre pour le texte de déconnexion */
-        }
-        .changeUsername {
-            color: blue; /* Couleur bleue pour le changement de nom d'utilisateur */
-            text-shadow: 1px 1px 2px rgba(0, 0, 0, 0.7); /* Ombre pour le texte de changement de nom d'utilisateur */
+        button:hover {
+            transform: scale(1.05);
         }
     </style>
 </head>
 <body>
-    <button id="accountButton" onclick="toggleDropdown()">
-        <img id="profilePic" src="https://upload.wikimedia.org/wikipedia/commons/0/06/YouTube_icon_%282013-2017%29.png" alt="Profile Picture"> <span id="usernameDisplay">Username</span>
-    </button>
-    <h1>Welcome to Bloxd.io Pack Utils</h1>
-    <button id="loginToggle">Login</button>
-
-    <div id="userInfo">
-        <span id="userGreeting">Welcome, <span id="usernameDisplay">User</span>!</span>
-        <input type="file" id="imageUpload" accept="image/*" style="display:none;"> <!-- Champ pour télécharger la photo de profil, caché par défaut -->
+    <h1>Welcome to Our App</h1>
+    <div id="userInfo" class="hidden">
+        <img id="profilePic" src="https://upload.wikimedia.org/wikipedia/commons/0/06/YouTube_icon_%282013-2017%29.png" alt="Profile Picture" width="50">
+        <span id="usernameDisplay">Username</span>
+        <button onclick="logout()">Logout</button>
+        <button onclick="changeUsername()">Change Username</button>
     </div>
-
-    <div id="dropdownMenu" class="hidden">
-        <div class="dropdownItem changeUsername" onclick="changeUsername()">Changer de nom d'utilisateur</div>
-        <div class="dropdownItem logout" onclick="logout()">Déconnexion</div>
-    </div>
-
-    <div id="forms" class="hidden">
-        <h2>Sign Up</h2>
-        <input type="text" id="username" placeholder="Username" maxlength="16" required>
-        <input type="password" id="password" placeholder="Password" required>
-        <button id="signup">Sign Up</button>
-
-        <h2>Login</h2>
-        <input type="text" id="loginUsername" placeholder="Username" maxlength="16" required>
-        <input type="password" id="loginPassword" placeholder="Password" required>
-        <button id="login">Login</button>
-
+    <div id="forms">
         <div>
-            <p>You don't have an account? <span class="link" id="signupLink">Create an account here!</span></p>
+            <h2>Login</h2>
+            <input type="text" id="loginUsername" placeholder="Username">
+            <input type="password" id="loginPassword" placeholder="Password">
+            <button id="login">Login</button>
+            <p id="result"></p>
         </div>
+        <div class="hidden">
+            <h2>Sign Up</h2>
+            <input type="text" id="username" placeholder="Username">
+            <input type="password" id="password" placeholder="Password">
+            <button id="signup">Create Account</button>
+            <p id="resultSignup"></p>
+        </div>
+        <p><a href="#" id="signupLink">Create an account here</a></p>
     </div>
-
-    <div id="result"></div>
 
     <script>
-        let users = JSON.parse(localStorage.getItem('users')) || []; // Pour stocker les utilisateurs
-        let loggedInUser = null; // Variable pour stocker l'utilisateur connecté
+        let users = JSON.parse(localStorage.getItem('users')) || [];
+        let loggedInUser = JSON.parse(localStorage.getItem('loggedInUser'));
 
-        // Chargement de l'utilisateur et de la photo de profil depuis le localStorage
-        const savedUser = localStorage.getItem('loggedInUser');
-        if (savedUser) {
-            loggedInUser = JSON.parse(savedUser);
+        // Affiche ou cache les informations de l'utilisateur selon le statut de connexion
+        if (loggedInUser) {
             document.getElementById('usernameDisplay').innerText = loggedInUser.username;
-            document.getElementById('profilePic').src = loggedInUser.profilePic || 'https://upload.wikimedia.org/wikipedia/commons/0/06/YouTube_icon_%282013-2017%29.png'; // Définit l'image par défaut
-            document.getElementById('userInfo').style.display = 'block'; // Affiche les informations de l'utilisateur
+            document.getElementById('profilePic').src = loggedInUser.profilePic || 'https://upload.wikimedia.org/wikipedia/commons/0/06/YouTube_icon_%282013-2017%29.png';
+            document.getElementById('userInfo').style.display = 'block';
+            document.getElementById('forms').style.display = 'none'; // Cache les formulaires de connexion et d'inscription
         }
-
-        document.getElementById('loginToggle').addEventListener('click', function() {
-            const forms = document.getElementById('forms');
-            forms.classList.toggle('hidden'); // Affiche ou cache le formulaire
-        });
 
         document.getElementById('signup').addEventListener('click', function() {
             const username = document.getElementById('username').value;
             const password = document.getElementById('password').value;
 
             if (username && password) {
-                users.push({ username, password, profilePic: '' });
+                users.push({ username, password });
                 localStorage.setItem('users', JSON.stringify(users));
-                document.getElementById('result').innerText = 'User signed up successfully!';
+                document.getElementById('resultSignup').innerText = 'User signed up successfully!';
                 clearForm();
             } else {
-                document.getElementById('result').innerText = 'Please fill in all fields!';
+                document.getElementById('resultSignup').innerText = 'Please fill in all fields!';
             }
         });
 
@@ -225,10 +92,11 @@
             const user = users.find(user => user.username === username && user.password === password);
             if (user) {
                 loggedInUser = user;
-                localStorage.setItem('loggedInUser', JSON.stringify(user)); // Enregistre l'utilisateur dans le localStorage
+                localStorage.setItem('loggedInUser', JSON.stringify(user));
                 document.getElementById('usernameDisplay').innerText = user.username;
                 document.getElementById('profilePic').src = user.profilePic || 'https://upload.wikimedia.org/wikipedia/commons/0/06/YouTube_icon_%282013-2017%29.png';
                 document.getElementById('userInfo').style.display = 'block'; // Affiche les informations de l'utilisateur
+                document.getElementById('forms').style.display = 'none'; // Cache les formulaires
                 document.getElementById('result').innerText = 'User logged in successfully!';
                 clearForm();
             } else {
@@ -238,7 +106,10 @@
 
         document.getElementById('signupLink').addEventListener('click', function() {
             const forms = document.getElementById('forms');
-            forms.classList.toggle('hidden'); // Affiche le formulaire d'inscription
+            const signupForm = forms.querySelectorAll('div')[1];
+            const loginForm = forms.querySelectorAll('div')[0];
+            loginForm.classList.add('hidden'); // Cache le formulaire de connexion
+            signupForm.classList.remove('hidden'); // Affiche le formulaire d'inscription
         });
 
         function clearForm() {
@@ -248,17 +119,13 @@
             document.getElementById('loginPassword').value = '';
         }
 
-        function toggleDropdown() {
-            const dropdown = document.getElementById('dropdownMenu');
-            dropdown.classList.toggle('hidden');
-        }
-
         function logout() {
             loggedInUser = null;
             localStorage.removeItem('loggedInUser');
             document.getElementById('usernameDisplay').innerText = 'Username';
             document.getElementById('profilePic').src = 'https://upload.wikimedia.org/wikipedia/commons/0/06/YouTube_icon_%282013-2017%29.png'; // Réinitialise l'image par défaut
             document.getElementById('userInfo').style.display = 'none'; // Cache les informations de l'utilisateur
+            document.getElementById('forms').style.display = 'block'; // Affiche les formulaires
             document.getElementById('result').innerText = 'User logged out successfully!';
         }
 
