@@ -111,7 +111,7 @@
 </head>
 <body>
     <button id="accountButton">
-        <img id="profilePic" src="https://upload.wikimedia.org/wikipedia/commons/0/06/YouTube_icon_%282013-2017%29.png" alt="Profile Picture"> 
+        <img id="profilePic" src="https://www.freeiconspng.com/download/25494" alt="Profile Picture"> 
         <span id="usernameDisplay">Username</span>
     </button>
     <h1>Welcome to Bloxd.io Pack Utils</h1>
@@ -149,7 +149,7 @@
         if (savedUser) {
             loggedInUser = JSON.parse(savedUser);
             document.getElementById('usernameDisplay').innerText = loggedInUser.username;
-            document.getElementById('profilePic').src = loggedInUser.profilePic || 'https://upload.wikimedia.org/wikipedia/commons/0/06/YouTube_icon_%282013-2017%29.png';
+            document.getElementById('profilePic').src = loggedInUser.profilePic || 'https://www.freeiconspng.com/download/25494';
             document.getElementById('userInfo').style.display = 'block';
         }
 
@@ -203,7 +203,7 @@
                 loggedInUser = user;
                 localStorage.setItem('loggedInUser', JSON.stringify(loggedInUser));
                 document.getElementById('usernameDisplay').innerText = loggedInUser.username;
-                document.getElementById('profilePic').src = loggedInUser.profilePic || 'https://upload.wikimedia.org/wikipedia/commons/0/06/YouTube_icon_%282013-2017%29.png';
+                document.getElementById('profilePic').src = loggedInUser.profilePic || 'https://www.freeiconspng.com/download/25494';
                 document.getElementById('userInfo').style.display = 'block';
                 document.getElementById('result').innerText = 'Login successful!';
                 document.getElementById('forms').classList.add('hidden');
