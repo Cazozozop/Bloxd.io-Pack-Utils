@@ -17,9 +17,6 @@
             padding: 20px;
             margin: 0;
             min-height: 100vh;
-            display: flex;
-            flex-direction: column;
-            justify-content: center; /* Centrer verticalement le contenu */
         }
         h1 {
             font-size: 48px;
@@ -110,6 +107,27 @@
             display: none;
             margin-top: 10px;
         }
+        #backgroundSelector {
+            margin: 20px 0;
+            display: flex;
+            flex-wrap: wrap;
+            justify-content: center;
+        }
+        .background-option {
+            margin: 10px;
+            cursor: pointer;
+            border: 2px solid transparent;
+            border-radius: 5px;
+            transition: border 0.2s;
+        }
+        .background-option:hover {
+            border: 2px solid #FFD700; /* Bordure dorée au survol */
+        }
+        .background-option img {
+            width: 100px; /* Largeur des images */
+            height: 100px; /* Hauteur des images */
+            border-radius: 5px;
+        }
     </style>
 </head>
 <body>
@@ -123,6 +141,28 @@
     <div id="userInfo">
         <span id="userGreeting">Welcome, <span id="usernameDisplay">User</span>!</span>
         <input type="file" id="imageUpload" accept="image/*"> <!-- Champ pour télécharger la photo de profil -->
+    </div>
+
+    <div id="backgroundSelector">
+        <h2>Select Background:</h2>
+        <div class="background-option" data-background="https://iili.io/2nu1xv1.jpg">
+            <img src="https://iili.io/2nu1xv1.jpg" alt="Background 1">
+        </div>
+        <div class="background-option" data-background="https://iili.io/2nu1xv1.jpg">
+            <img src="https://iili.io/2nu1xv1.jpg" alt="Background 2">
+        </div>
+        <div class="background-option" data-background="https://iili.io/2nu1xv1.jpg">
+            <img src="https://iili.io/2nu1xv1.jpg" alt="Background 3">
+        </div>
+        <div class="background-option" data-background="https://iili.io/2nu1xv1.jpg">
+            <img src="https://iili.io/2nu1xv1.jpg" alt="Background 4">
+        </div>
+        <div class="background-option" data-background="https://iili.io/2nu1xv1.jpg">
+            <img src="https://iili.io/2nu1xv1.jpg" alt="Background 5">
+        </div>
+        <div class="background-option" data-background="https://iili.io/2nu1xv1.jpg">
+            <img src="https://iili.io/2nu1xv1.jpg" alt="Background 6">
+        </div>
     </div>
 
     <div id="forms" class="hidden">
@@ -146,17 +186,23 @@
     <script>
         let users = JSON.parse(localStorage.getItem('users')) || [];
         let loggedInUser = null;
-        let isLoggedIn = false; // Variable pour savoir si l'utilisateur est connecté
 
         // Chargement de l'utilisateur et de la photo de profil depuis le localStorage
         const savedUser = localStorage.getItem('loggedInUser');
         if (savedUser) {
             loggedInUser = JSON.parse(savedUser);
-            isLoggedIn = true; // L'utilisateur est connecté
             document.getElementById('usernameDisplay').innerText = loggedInUser.username;
             document.getElementById('profilePic').src = loggedInUser.profilePic || 'https://www.freeiconspng.com/download/25494g';
             document.getElementById('userInfo').style.display = 'block';
         }
+
+        // Changer l'arrière-plan
+        document.querySelectorAll('.background-option').forEach(option => {
+            option.addEventListener('click', () => {
+                const backgroundUrl = option.getAttribute('data-background');
+                document.body.style.backgroundImage = `url('${backgroundUrl}')`;
+            });
+        });
 
         document.getElementById('loginToggle').addEventListener('click', () => {
             const formsDiv = document.getElementById('forms');
@@ -166,13 +212,8 @@
 
         // Affiche le formulaire d'inscription lorsque l'utilisateur clique sur le lien
         document.getElementById('signupLink').addEventListener('click', () => {
-            const formsDiv = document.getElementById('forms');
-            formsDiv.classList.remove('hidden');
-            formsDiv.style.display = 'block';
-            document.getElementById('loginUsername').value = '';
-            document.getElementById('loginPassword').value = '';
-            document.getElementById('username').value = '';
-            document.getElementById('password').value = '';
+            document.getElementById('forms').classList.remove('hidden');
+            document.getElementById('signupLink').parentElement.style.display = 'none';
         });
 
         document.getElementById('signup').addEventListener('click', () => {
@@ -180,77 +221,52 @@
             const password = document.getElementById('password').value;
 
             if (username && password) {
-                if (username.length > 16) {
-                    showError('Username cannot exceed 16 characters.');
-                    return;
-                }
-                const userExists = users.some(user => user.username === username);
-                if (!userExists) {
-                    users.push({ username, password });
-                    localStorage.setItem('users', JSON.stringify(users));
-                    document.getElementById('result').innerText = 'Account created successfully!';
-                    document.getElementById('result').classList.remove('error');
-                    document.getElementById('forms').classList.add('hidden');
-                } else {
-                    showError('Username already exists.');
-                }
-            } else {
-                showError('Please fill in all fields.');
+                users.push({ username, password });
+                localStorage.setItem('users', JSON.stringify(users));
+                showError('User registered successfully! You can now log in.');
+                document.getElementById('username').value = '';
+                document.getElementById('password').value = '';
             }
         });
 
         document.getElementById('login').addEventListener('click', () => {
             const username = document.getElementById('loginUsername').value;
             const password = document.getElementById('loginPassword').value;
+            loggedInUser = users.find(user => user.username === username && user.password === password);
 
-            const user = users.find(user => user.username === username && user.password === password);
-            if (user) {
-                loggedInUser = user;
-                isLoggedIn = true; // L'utilisateur est connecté
+            if (loggedInUser) {
                 localStorage.setItem('loggedInUser', JSON.stringify(loggedInUser));
                 document.getElementById('usernameDisplay').innerText = loggedInUser.username;
                 document.getElementById('profilePic').src = loggedInUser.profilePic || 'https://www.freeiconspng.com/download/25494g';
                 document.getElementById('userInfo').style.display = 'block';
-                document.getElementById('result').innerText = 'Login successful!';
+                document.getElementById('result').innerText = 'Logged in successfully!';
+                document.getElementById('result').classList.remove('error');
                 document.getElementById('forms').classList.add('hidden');
             } else {
                 showError('Invalid username or password.');
             }
         });
 
-        // Affiche une erreur
-        function showError(message) {
-            const resultDiv = document.getElementById('result');
-            resultDiv.innerText = message;
-            resultDiv.classList.add('error');
-        }
-
-        // Téléchargement de la photo de profil
         document.getElementById('imageUpload').addEventListener('change', (event) => {
             const file = event.target.files[0];
             if (file) {
                 const reader = new FileReader();
-                reader.onload = function (e) {
+                reader.onload = function(e) {
                     if (loggedInUser) {
                         loggedInUser.profilePic = e.target.result;
                         localStorage.setItem('loggedInUser', JSON.stringify(loggedInUser));
-                        document.getElementById('profilePic').src = loggedInUser.profilePic;
+                        document.getElementById('profilePic').src = e.target.result;
                     }
                 };
                 reader.readAsDataURL(file);
             }
         });
 
-        // Ajustement de l'arrière-plan en fonction de la hauteur de l'écran
-        function adjustBackground() {
-            const viewportHeight = window.innerHeight;
-            const backgroundImage = 'https://iili.io/2nu1xv1.jpg'; // Image d'arrière-plan
-            document.body.style.backgroundSize = `${viewportHeight}px ${viewportHeight}px`;
-            document.body.style.backgroundImage = `url(${backgroundImage})`;
+        function showError(message) {
+            const resultDiv = document.getElementById('result');
+            resultDiv.innerText = message;
+            resultDiv.classList.add('error');
         }
-
-        window.addEventListener('resize', adjustBackground);
-        adjustBackground(); // Ajuste l'arrière-plan au chargement de la page
     </script>
 </body>
 </html>
