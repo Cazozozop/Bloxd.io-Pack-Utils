@@ -1,0 +1,112 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Bloxd.io Pack Utils</title>
+    <link href="https://fonts.googleapis.com/css2?family=Pixelify+Sans&display=swap" rel="stylesheet">
+    <style>
+        /* Style général */
+        body {
+            font-family: 'Pixelify Sans', sans-serif;
+            background-image: url('https://iili.io/2nu1xv1.jpg');
+            background-size: cover;
+            background-attachment: fixed;
+            color: #333;
+            text-align: center;
+            padding: 20px;
+            margin: 0;
+            min-height: 100vh;
+        }
+
+        /* Arrière-plan et boutons */
+        h1 { font-size: 48px; color: white; text-shadow: 2px 2px 4px rgba(0, 0, 0, 0.7); }
+        button, .background-option { cursor: pointer; transition: transform 0.2s; }
+        .background-option {
+            display: inline-block; width: 100px; height: 60px; margin: 10px;
+            background-size: cover; border: 2px solid #ddd; position: relative;
+        }
+        .locked::before {
+            content: "Custom"; color: white; font-size: 16px; font-weight: bold;
+            position: absolute; top: 50%; left: 50%; transform: translate(-50%, -50%);
+            background-color: rgba(0, 0, 0, 0.5); padding: 2px 6px; border-radius: 5px;
+        }
+
+        /* Cacher l'input de fichier */
+        input[type="file"] { display: none; }
+    </style>
+</head>
+<body>
+    <h1>Welcome to Bloxd.io Pack Utils</h1>
+
+    <!-- Images de fond d'écran à sélectionner -->
+    <div id="backgroundOptions">
+        <div class="background-option" style="background-image: url('https://iili.io/dm4vP9t.jpg');" data-url="https://iili.io/dm4vP9t.jpg"></div>
+        <div class="background-option" style="background-image: url('https://wallpapercave.com/wp/wp7560600.jpg');" data-url="https://wallpapercave.com/wp/wp7560600.jpg"></div>
+        <div class="background-option" style="background-image: url('https://iili.io/2najZFI.png');" data-url="https://iili.io/2najZFI.png"></div>
+        <div class="background-option" style="background-image: url('https://wallpapercave.com/wp/wp9093209.jpg');" data-url="https://wallpapercave.com/wp/wp9093209.jpg"></div>
+        <div class="background-option" style="background-image: url('https://iili.io/2najL6N.jpg');" data-url="https://iili.io/2najL6N.jpg"></div>
+        <div id="customBackground" class="background-option locked" style="background-image: url('');">
+            <input type="file" id="customImageUpload" accept="image/*">
+        </div>
+    </div>
+    <button id="applyButton">Appliquer le fond d'écran</button>
+
+    <script>
+        let selectedBackgroundUrl = '';
+
+        // Vérifier si l'utilisateur est connecté
+        const savedUser = localStorage.getItem('loggedInUser');
+        const customBackground = document.getElementById('customBackground');
+
+        if (savedUser) {
+            // Si l'utilisateur est connecté, déverrouiller l'option custom
+            customBackground.classList.remove('locked');
+            customBackground.addEventListener('click', () => {
+                document.getElementById('customImageUpload').click();
+            });
+        } else {
+            // Si non connecté, laisser le fond custom verrouillé
+            customBackground.addEventListener('click', () => {
+                alert("Connectez-vous pour utiliser un fond personnalisé.");
+            });
+        }
+
+        // Sélection d'un fond d'écran
+        document.querySelectorAll('.background-option').forEach(option => {
+            option.addEventListener('click', function() {
+                selectedBackgroundUrl = this.getAttribute('data-url') || '';
+                document.querySelectorAll('.background-option').forEach(opt => opt.style.borderColor = '#ddd');
+                this.style.borderColor = '#FFD700';
+            });
+        });
+
+        // Charger une image custom et convertir en base64
+        document.getElementById('customImageUpload').addEventListener('change', (event) => {
+            const file = event.target.files[0];
+            if (file) {
+                const reader = new FileReader();
+                reader.onload = () => {
+                    selectedBackgroundUrl = reader.result;
+                    customBackground.style.backgroundImage = `url(${reader.result})`;
+                };
+                reader.readAsDataURL(file);
+            }
+        });
+
+        // Appliquer le fond d'écran et générer le CSS
+        document.getElementById('applyButton').addEventListener('click', () => {
+            if (!selectedBackgroundUrl) {
+                alert("Veuillez sélectionner un fond d'écran.");
+                return;
+            }
+            const cssContent = `.HomeBackground { background-image: url('${selectedBackgroundUrl}') !important; }`;
+            const blob = new Blob([cssContent], { type: 'text/css' });
+            const link = document.createElement('a');
+            link.href = URL.createObjectURL(blob);
+            link.download = 'BloxdPackUtils.css';
+            link.click();
+        });
+    </script>
+</body>
+</html>
