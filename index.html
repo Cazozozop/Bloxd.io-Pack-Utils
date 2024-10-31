@@ -128,6 +128,10 @@
             height: 100px; /* Hauteur des images */
             border-radius: 5px;
         }
+        .selected {
+            border: 2px solid #FFD700; /* Contour jaune pour l'option sélectionnée */
+            opacity: 0.5; /* Griser l'option sélectionnée */
+        }
     </style>
 </head>
 <body>
@@ -199,23 +203,25 @@
         // Changer l'arrière-plan
         document.querySelectorAll('.background-option').forEach(option => {
             option.addEventListener('click', () => {
-                const backgroundUrl = option.getAttribute('data-background');
-                document.body.style.backgroundImage = `url('${backgroundUrl}')`;
+                // Retirer la classe 'selected' de toutes les options
+                document.querySelectorAll('.background-option').forEach(opt => {
+                    opt.classList.remove('selected');
+                });
+                // Ajouter la classe 'selected' à l'option actuelle
+                option.classList.add('selected');
+
+                // Changer l'arrière-plan
+                document.body.style.backgroundImage = `url('${option.getAttribute('data-background')}')`;
             });
         });
 
+        // Afficher ou cacher le formulaire d'inscription/connexion
         document.getElementById('loginToggle').addEventListener('click', () => {
-            const formsDiv = document.getElementById('forms');
-            formsDiv.classList.toggle('hidden');
-            formsDiv.style.display = formsDiv.style.display === 'none' ? 'block' : 'none';
+            document.getElementById('forms').classList.toggle('hidden');
+            document.getElementById('signupLink').parentElement.style.display = document.getElementById('forms').classList.contains('hidden') ? 'none' : 'block';
         });
 
-        // Affiche le formulaire d'inscription lorsque l'utilisateur clique sur le lien
-        document.getElementById('signupLink').addEventListener('click', () => {
-            document.getElementById('forms').classList.remove('hidden');
-            document.getElementById('signupLink').parentElement.style.display = 'none';
-        });
-
+        // Inscription
         document.getElementById('signup').addEventListener('click', () => {
             const username = document.getElementById('username').value;
             const password = document.getElementById('password').value;
@@ -229,6 +235,7 @@
             }
         });
 
+        // Connexion
         document.getElementById('login').addEventListener('click', () => {
             const username = document.getElementById('loginUsername').value;
             const password = document.getElementById('loginPassword').value;
@@ -247,6 +254,7 @@
             }
         });
 
+        // Changement de la photo de profil
         document.getElementById('imageUpload').addEventListener('change', (event) => {
             const file = event.target.files[0];
             if (file) {
@@ -262,6 +270,7 @@
             }
         });
 
+        // Affichage d'erreur
         function showError(message) {
             const resultDiv = document.getElementById('result');
             resultDiv.innerText = message;
