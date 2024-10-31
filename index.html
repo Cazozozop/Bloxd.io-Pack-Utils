@@ -11,41 +11,47 @@
             background-image: url('https://iili.io/2nu1xv1.jpg');
             background-size: cover;
             background-repeat: no-repeat;
-            color: #fff;
+            color: #333;
             text-align: center;
             padding: 20px;
         }
         h1 {
             font-size: 48px;
             margin-bottom: 20px;
+            color: #FFA500; /* Orange */
         }
         input {
             padding: 10px;
             font-size: 16px;
             width: 300px;
             margin-bottom: 10px;
+            border: 2px solid #FFA500; /* Orange */
+            border-radius: 5px;
         }
         button {
             padding: 10px 20px;
             font-size: 16px;
             cursor: pointer;
-            background-color: #007BFF;
+            background-color: #FFD700; /* Jaune */
             border: none;
-            color: white;
+            color: #333;
             border-radius: 5px;
         }
         button:hover {
-            background-color: #0056b3;
+            background-color: #FFC107; /* Jaune clair */
         }
         #result {
             margin-top: 20px;
             font-size: 20px;
         }
+        .error {
+            color: red; /* Rouge pour les messages d'erreur */
+        }
     </style>
 </head>
 <body>
     <h1>Welcome to Bloxd.io Pack Utils</h1>
-    <input type="text" id="channelId" placeholder="Enter YouTube Channel ID (optional)">
+    <input type="text" id="channelUrl" placeholder="Enter YouTube Channel URL">
     <button id="checkSubscribers">Check Subscribers</button>
     <div id="result"></div>
 
@@ -53,7 +59,8 @@
         const apiKey = 'AIzaSyA8N2TCt2o5ruucOQ5AHEeqiGU-LdE6IIw';
 
         document.getElementById('checkSubscribers').addEventListener('click', () => {
-            const channelId = document.getElementById('channelId').value;
+            const channelUrl = document.getElementById('channelUrl').value;
+            const channelId = extractChannelId(channelUrl);
             const url = channelId ? 
                 `https://www.googleapis.com/youtube/v3/channels?part=statistics&id=${channelId}&key=${apiKey}` : 
                 null;
@@ -65,18 +72,31 @@
                         if (data.items.length > 0) {
                             const subscribers = data.items[0].statistics.subscriberCount;
                             document.getElementById('result').innerText = `Subscribers: ${subscribers}`;
+                            document.getElementById('result').classList.remove('error'); // Enlève la classe d'erreur
                         } else {
-                            document.getElementById('result').innerText = 'Channel not found.';
+                            showError('Channel not found.');
                         }
                     })
                     .catch(error => {
                         console.error('Error:', error);
-                        document.getElementById('result').innerText = 'An error occurred. Please try again.';
+                        showError('An error occurred. Please try again.');
                     });
             } else {
-                document.getElementById('result').innerText = 'You can enter a channel ID to check subscribers.';
+                showError('Please enter a valid channel URL.');
             }
         });
+
+        function extractChannelId(url) {
+            const regex = /(?:https?:\/\/)?(?:www\.)?(?:youtube\.com\/(?:channel\/|c\/|user\/|v\/|embed\/|)([A-Za-z0-9_-]+)|youtu\.be\/([A-Za-z0-9_-]+))/;
+            const match = url.match(regex);
+            return match ? match[1] || match[2] : null;
+        }
+
+        function showError(message) {
+            const resultDiv = document.getElementById('result');
+            resultDiv.innerText = message;
+            resultDiv.classList.add('error'); // Ajoute la classe d'erreur
+        }
     </script>
 </body>
 </html>
