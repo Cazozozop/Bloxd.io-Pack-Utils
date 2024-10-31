@@ -32,18 +32,51 @@
             vertical-align: middle;
         }
     </style>
+    <script src="https://apis.google.com/js/api.js"></script>
     <script>
-        function toggleYoutubeInput() {
-            const checkbox = document.getElementById('youtubeCheckbox');
-            const input = document.getElementById('customImage');
-            const check = document.getElementById('youtubeCheck');
-            if (checkbox.checked) {
-                input.style.display = 'block'; // Show image upload
-                check.style.display = 'block'; // Show youtube verification
+        let CLIENT_ID = 'YOUR_CLIENT_ID'; // Remplace par ton Client ID
+        let API_KEY = 'YOUR_API_KEY'; // Remplace par ta clé API
+        let DISCOVERY_DOCS = ["https://www.googleapis.com/discovery/v1/apis/youtube/v3/rest"];
+        let SCOPES = "https://www.googleapis.com/auth/youtube.readonly";
+
+        function handleClientLoad() {
+            gapi.load('client:auth2', initClient);
+        }
+
+        async function initClient() {
+            await gapi.client.init({
+                apiKey: API_KEY,
+                clientId: CLIENT_ID,
+                discoveryDocs: DISCOVERY_DOCS,
+                scope: SCOPES
+            });
+            gapi.auth2.getAuthInstance().isSignedIn.listen(updateSigninStatus);
+            updateSigninStatus(gapi.auth2.getAuthInstance().isSignedIn.get());
+        }
+
+        function updateSigninStatus(isSignedIn) {
+            if (isSignedIn) {
+                document.getElementById('youtubeCheck').style.display = 'block';
+                // Optionnel : Tu peux récupérer des infos ici, comme le nom de l'utilisateur
             } else {
-                input.style.display = 'none'; // Hide image upload
-                check.style.display = 'none'; // Hide youtube verification
+                document.getElementById('youtubeCheck').style.display = 'none';
             }
+        }
+
+        function handleAuthClick() {
+            gapi.auth2.getAuthInstance().signIn();
+        }
+
+        function verifyYoutubeAccount() {
+            gapi.client.youtube.channels.list({
+                part: 'statistics',
+                mine: true
+            }).then(function(response) {
+                const subscribers = response.result.items[0].statistics.subscriberCount;
+                alert('You have ' + subscribers + ' subscribers!');
+            }, function(error) {
+                console.error("Error fetching data: ", error);
+            });
         }
 
         function handleImageUpload(event) {
@@ -56,22 +89,9 @@
                 reader.readAsDataURL(file);
             }
         }
-
-        function verifyYoutubeAccount() {
-            const email = document.getElementById('email').value;
-            const password = document.getElementById('password').value;
-            const channelLink = document.getElementById('channelLink').value;
-
-            // Placeholder for actual YouTube API verification logic
-            alert('Verifying account with email: ' + email + ' and channel: ' + channelLink);
-
-            // Here you would typically call the YouTube API to validate the account
-            // For demonstration, we will assume verification is successful
-            alert('You are verified as a YouTuber with link: ' + channelLink + ' and email: ' + email);
-        }
     </script>
 </head>
-<body>
+<body onload="handleClientLoad()">
     <h1>Customize Your Bloxd.io Texture Pack</h1>
     
     <p>Select the options you want to add to your pack:</p>
@@ -83,15 +103,7 @@
     </label><br>
 
     <div id="youtubeCheck">
-        <label for="email">Enter your Email:</label>
-        <input type="email" id="email" placeholder="you@example.com" required>
-        
-        <label for="password">Enter your Email Password:</label>
-        <input type="password" id="password" placeholder="Your Email Password" required>
-        
-        <label for="channelLink">Enter your YouTube channel link:</label>
-        <input type="url" id="channelLink" placeholder="https://www.youtube.com/channel/your_channel" required>
-        
+        <button onclick="handleAuthClick()">Sign in with YouTube</button>
         <button onclick="verifyYoutubeAccount()">Verify</button>
         <br><br>
         
