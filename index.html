@@ -18,84 +18,96 @@
         h1 {
             font-size: 48px;
             margin-bottom: 20px;
-            color: white; /* Changement de couleur à blanc */
+            color: white;
         }
         input {
             padding: 10px;
             font-size: 16px;
             width: 300px;
             margin-bottom: 10px;
-            border: 2px solid #FFA500; /* Orange */
+            border: 2px solid #FFA500;
             border-radius: 5px;
         }
         button {
             padding: 10px 20px;
             font-size: 16px;
             cursor: pointer;
-            background-color: #FFD700; /* Jaune */
+            background-color: #FFD700;
             border: none;
             color: #333;
             border-radius: 5px;
         }
         button:hover {
-            background-color: #FFC107; /* Jaune clair */
+            background-color: #FFC107;
         }
         #result {
             margin-top: 20px;
             font-size: 20px;
         }
         .error {
-            color: red; /* Rouge pour les messages d'erreur */
+            color: red;
         }
     </style>
 </head>
 <body>
     <h1>Welcome to Bloxd.io Pack Utils</h1>
-    <input type="text" id="channelUrl" placeholder="Enter YouTube Channel URL">
-    <button id="checkSubscribers">Check Subscribers</button>
+
+    <!-- Formulaire d'inscription -->
+    <h2>Sign Up</h2>
+    <input type="text" id="username" placeholder="Username">
+    <input type="email" id="email" placeholder="Email">
+    <input type="password" id="password" placeholder="Password">
+    <button id="signup">Sign Up</button>
+
+    <!-- Formulaire de connexion -->
+    <h2>Login</h2>
+    <input type="text" id="loginUsername" placeholder="Username">
+    <input type="password" id="loginPassword" placeholder="Password">
+    <button id="login">Login</button>
+
     <div id="result"></div>
 
     <script>
-        const apiKey = 'AIzaSyA8N2TCt2o5ruucOQ5AHEeqiGU-LdE6IIw';
+        let users = JSON.parse(localStorage.getItem('users')) || []; // Pour stocker les utilisateurs
 
-        document.getElementById('checkSubscribers').addEventListener('click', () => {
-            const channelUrl = document.getElementById('channelUrl').value;
-            const channelId = extractChannelId(channelUrl);
-            const url = channelId ? 
-                `https://www.googleapis.com/youtube/v3/channels?part=statistics&id=${channelId}&key=${apiKey}` : 
-                null;
+        document.getElementById('signup').addEventListener('click', () => {
+            const username = document.getElementById('username').value;
+            const email = document.getElementById('email').value;
+            const password = document.getElementById('password').value;
 
-            if (url) {
-                fetch(url)
-                    .then(response => response.json())
-                    .then(data => {
-                        if (data.items.length > 0) {
-                            const subscribers = data.items[0].statistics.subscriberCount;
-                            document.getElementById('result').innerText = `Subscribers: ${subscribers}`;
-                            document.getElementById('result').classList.remove('error'); // Enlève la classe d'erreur
-                        } else {
-                            showError('Channel not found.');
-                        }
-                    })
-                    .catch(error => {
-                        console.error('Error:', error);
-                        showError('An error occurred. Please try again.');
-                    });
+            if (username && email && password) {
+                const userExists = users.some(user => user.username === username);
+                if (!userExists) {
+                    users.push({ username, email, password });
+                    localStorage.setItem('users', JSON.stringify(users));
+                    document.getElementById('result').innerText = 'Account created successfully!';
+                    document.getElementById('result').classList.remove('error');
+                } else {
+                    showError('Username already exists.');
+                }
             } else {
-                showError('Please enter a valid channel URL.');
+                showError('Please fill in all fields.');
             }
         });
 
-        function extractChannelId(url) {
-            const regex = /(?:https?:\/\/)?(?:www\.)?(?:youtube\.com\/(?:channel\/|c\/|user\/|v\/|embed\/|)([A-Za-z0-9_-]+)|youtu\.be\/([A-Za-z0-9_-]+))/;
-            const match = url.match(regex);
-            return match ? match[1] || match[2] : null;
-        }
+        document.getElementById('login').addEventListener('click', () => {
+            const loginUsername = document.getElementById('loginUsername').value;
+            const loginPassword = document.getElementById('loginPassword').value;
+
+            const user = users.find(user => user.username === loginUsername && user.password === loginPassword);
+            if (user) {
+                document.getElementById('result').innerText = 'Logged in successfully!';
+                document.getElementById('result').classList.remove('error');
+                // Rediriger ou faire d'autres actions après la connexion
+            } else {
+                showError('Invalid username or password.');
+            }
+        });
 
         function showError(message) {
             const resultDiv = document.getElementById('result');
             resultDiv.innerText = message;
-            resultDiv.classList.add('error'); // Ajoute la classe d'erreur
+            resultDiv.classList.add('error');
         }
     </script>
 </body>
