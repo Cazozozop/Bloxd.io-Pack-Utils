@@ -20,7 +20,49 @@
             text-align: center; /* Centers the text */
             margin-top: 20px; /* Space above the text */
         }
+        #customImage {
+            display: none; /* Hide image input by default */
+        }
+        #youtubeCheck {
+            display: none; /* Hide youtube verification by default */
+        }
     </style>
+    <script>
+        function toggleYoutubeInput() {
+            const checkbox = document.getElementById('youtubeCheckbox');
+            const input = document.getElementById('customImage');
+            const check = document.getElementById('youtubeCheck');
+            if (checkbox.checked) {
+                input.style.display = 'block'; // Show image upload
+                check.style.display = 'block'; // Show youtube verification
+            } else {
+                input.style.display = 'none'; // Hide image upload
+                check.style.display = 'none'; // Hide youtube verification
+            }
+        }
+
+        function handleImageUpload(event) {
+            const file = event.target.files[0];
+            const reader = new FileReader();
+            reader.onloadend = function() {
+                alert("Image uploaded as Base64: " + reader.result);
+                // Here, you can also set the Base64 result to a variable or an input field for later use.
+            }
+            if (file) {
+                reader.readAsDataURL(file); // Convert image to Base64
+            }
+        }
+
+        function verifyYoutubeAccount() {
+            const subscriberCount = document.getElementById('subscriberCount').value;
+            if (subscriberCount >= 100) {
+                alert('You are verified as a YouTuber!');
+                // Additional logic to handle verified users
+            } else {
+                alert('You need more than 100 subscribers to be verified.');
+            }
+        }
+    </script>
 </head>
 <body>
     <h1>Customize Your Bloxd.io Texture Pack</h1>
@@ -28,16 +70,33 @@
     <p>Select the options you want to add to your pack:</p>
 
     <label>
-        <input type="checkbox" id="crosshair"> Custom Crosshair
+        <input type="checkbox" id="youtubeCheckbox" onclick="toggleYoutubeInput()"> YouTuber Functionality
     </label><br>
-    
-    <label>
-        <input type="checkbox" id="background"> Custom Background
-    </label><br>
-    
-    <label>
-        <input type="checkbox" id="skybox"> Custom Skybox
-    </label><br><br>
+
+    <div id="youtubeCheck">
+        <label for="subscriberCount">Enter your subscriber count:</label>
+        <input type="number" id="subscriberCount" placeholder="Number of subscribers">
+        <button onclick="verifyYoutubeAccount()">Verify</button>
+        <br><br>
+        <label for="customImage">Upload Custom Image:</label>
+        <input type="file" id="customImage" accept="image/*" onchange="handleImageUpload(event)">
+    </div>
+
+    <label for="backgroundSelect">Choose Custom Background:</label>
+    <select id="backgroundSelect">
+        <option value="background1.jpg">Background 1</option>
+        <option value="background2.jpg">Background 2</option>
+        <option value="background3.jpg">Background 3</option>
+        <!-- Add more options as needed -->
+    </select><br><br>
+
+    <label for="skyboxSelect">Choose Custom Skybox:</label>
+    <select id="skyboxSelect">
+        <option value="skybox1.jpg">Skybox 1</option>
+        <option value="skybox2.jpg">Skybox 2</option>
+        <option value="skybox3.jpg">Skybox 3</option>
+        <!-- Add more options as needed -->
+    </select><br><br>
 
     <button onclick="alert('Functionality coming soon!')">Generate My CSS File</button>
 
