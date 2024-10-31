@@ -1,0 +1,44 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Bloxd.io Pack Utils</title>
+    <style>
+        body {
+            background-image: url('https://iili.io/2nu1xv1.jpg'); /* Your background image */
+            background-size: cover; /* Adjusts the image to cover the entire background */
+            background-position: center; /* Centers the background image */
+            color: white; /* Text color */
+            font-family: Arial, sans-serif; /* Font style */
+        }
+        h1, p {
+            text-align: center; /* Centers the text */
+        }
+    </style>
+</head>
+<body>
+    <h1>Customize Your Bloxd.io Texture Pack</h1>
+    
+    <p>Select the options you want to add to your pack:</p>
+
+    <label>
+        <input type="checkbox" id="crosshair"> Custom Crosshair
+    </label><br>
+    
+    <label>
+        <input type="checkbox" id="background"> Custom Background
+    </label><br>
+    
+    <label>
+        <input type="checkbox" id="skybox"> Custom Skybox
+    </label><br><br>
+
+    <button onclick="generateCSS()">Generate My CSS File</button>
+
+    <a id="downloadLink" style="display:none">Download My CSS File</a>
+
+    <!-- Link to the JavaScript file -->
+    <script src="generateCSS.js"></script>
+</body>
+</html>
