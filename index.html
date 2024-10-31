@@ -14,6 +14,7 @@
             color: #333;
             text-align: center;
             padding: 20px;
+            margin: 0;
         }
         h1 {
             font-size: 48px;
@@ -50,27 +51,44 @@
         .error {
             color: red;
         }
+        .hidden {
+            display: none;
+        }
+        #forms {
+            display: none;
+            margin-top: 20px;
+        }
     </style>
 </head>
 <body>
     <h1>Welcome to Bloxd.io Pack Utils</h1>
+    <button id="loginToggle">Login</button>
 
-    <!-- Formulaire d'inscription -->
-    <h2>Sign Up</h2>
-    <input type="text" id="username" placeholder="Username" required>
-    <input type="password" id="password" placeholder="Password" required>
-    <button id="signup">Sign Up</button>
+    <div id="forms" class="hidden">
+        <h2>Sign Up</h2>
+        <input type="text" id="username" placeholder="Username" required>
+        <input type="password" id="password" placeholder="Password" required>
+        <button id="signup">Sign Up</button>
 
-    <!-- Formulaire de connexion -->
-    <h2>Login</h2>
-    <input type="text" id="loginUsername" placeholder="Username" required>
-    <input type="password" id="loginPassword" placeholder="Password" required>
-    <button id="login">Login</button>
+        <h2>Login</h2>
+        <input type="text" id="loginUsername" placeholder="Username" required>
+        <input type="password" id="loginPassword" placeholder="Password" required>
+        <button id="login">Login</button>
+
+        <div>
+            <p>You don't have an account? Create an account here!</p>
+        </div>
+    </div>
 
     <div id="result"></div>
 
     <script>
         let users = JSON.parse(localStorage.getItem('users')) || []; // Pour stocker les utilisateurs
+
+        document.getElementById('loginToggle').addEventListener('click', () => {
+            const formsDiv = document.getElementById('forms');
+            formsDiv.classList.toggle('hidden');
+        });
 
         document.getElementById('signup').addEventListener('click', () => {
             const username = document.getElementById('username').value;
