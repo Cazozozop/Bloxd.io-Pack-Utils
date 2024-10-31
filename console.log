@@ -1,0 +1,5 @@
+document.getElementById('loginToggle').addEventListener('click', function() {
+    const forms = document.getElementById('forms');
+    forms.classList.toggle('hidden'); // Affiche ou cache le formulaire
+    console.log('Login button clicked'); // Debug
+});
