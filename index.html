@@ -16,21 +16,21 @@
             text-align: center;
             padding: 20px;
             margin: 0;
-            min-height: 100vh; /* S'assure que le corps prend toute la hauteur de l'écran */
+            min-height: 100vh;
         }
         h1 {
             font-size: 48px;
             margin-bottom: 20px;
             color: white;
-            text-shadow: 2px 2px 4px rgba(0, 0, 0, 0.7); /* Ombre sous le titre */
-            animation: bounce 2s infinite; /* Animation de montée-descente */
+            text-shadow: 2px 2px 4px rgba(0, 0, 0, 0.7);
+            animation: bounce 2s infinite;
         }
         @keyframes bounce {
             0%, 100% {
                 transform: translateY(0);
             }
             50% {
-                transform: translateY(-10px); /* Montée de 10 pixels */
+                transform: translateY(-10px);
             }
         }
         #accountButton {
@@ -59,13 +59,8 @@
             transition: transform 0.2s, box-shadow 0.2s;
             box-shadow: 0 4px 8px rgba(255, 140, 0, 0.5);
         }
-        input {
-            padding: 10px;
-            font-size: 16px;
-            width: 300px;
-            margin-bottom: 10px;
-            border: 2px solid #FFA500;
-            border-radius: 5px;
+        input[type="file"] {
+            display: none; /* Cacher l'input de fichier */
         }
         button {
             padding: 10px 20px;
@@ -105,18 +100,19 @@
             width: 30px;
             height: 30px;
             vertical-align: middle;
-            border-radius: 50%; /* Rendre l'image circulaire */
-            cursor: pointer; /* Indiquer que l'image est cliquable */
+            border-radius: 50%;
+            cursor: pointer;
         }
         #userInfo {
-            display: none; /* Cacher le nom d'utilisateur par défaut */
+            display: none;
             margin-top: 10px;
         }
     </style>
 </head>
 <body>
     <button id="accountButton">
-        <img id="profilePic" src="https://upload.wikimedia.org/wikipedia/commons/0/06/YouTube_icon_%282013-2017%29.png" alt="Profile Picture"> <span id="usernameDisplay">Username</span>
+        <img id="profilePic" src="https://upload.wikimedia.org/wikipedia/commons/0/06/YouTube_icon_%282013-2017%29.png" alt="Profile Picture"> 
+        <span id="usernameDisplay">Username</span>
     </button>
     <h1>Welcome to Bloxd.io Pack Utils</h1>
     <button id="loginToggle">Login</button>
@@ -145,32 +141,32 @@
     <div id="result"></div>
 
     <script>
-        let users = JSON.parse(localStorage.getItem('users')) || []; // Pour stocker les utilisateurs
-        let loggedInUser = null; // Variable pour stocker l'utilisateur connecté
+        let users = JSON.parse(localStorage.getItem('users')) || [];
+        let loggedInUser = null;
 
         // Chargement de l'utilisateur et de la photo de profil depuis le localStorage
         const savedUser = localStorage.getItem('loggedInUser');
         if (savedUser) {
             loggedInUser = JSON.parse(savedUser);
             document.getElementById('usernameDisplay').innerText = loggedInUser.username;
-            document.getElementById('profilePic').src = loggedInUser.profilePic || 'https://upload.wikimedia.org/wikipedia/commons/0/06/YouTube_icon_%282013-2017%29.png'; // Définit l'image par défaut
-            document.getElementById('userInfo').style.display = 'block'; // Affiche les informations de l'utilisateur
+            document.getElementById('profilePic').src = loggedInUser.profilePic || 'https://upload.wikimedia.org/wikipedia/commons/0/06/YouTube_icon_%282013-2017%29.png';
+            document.getElementById('userInfo').style.display = 'block';
         }
 
         document.getElementById('loginToggle').addEventListener('click', () => {
             const formsDiv = document.getElementById('forms');
             formsDiv.classList.toggle('hidden');
-            formsDiv.style.display = formsDiv.style.display === 'none' ? 'block' : 'none'; // Gérer l'affichage
+            formsDiv.style.display = formsDiv.style.display === 'none' ? 'block' : 'none';
         });
 
         // Affiche le formulaire d'inscription lorsque l'utilisateur clique sur le lien
         document.getElementById('signupLink').addEventListener('click', () => {
             const formsDiv = document.getElementById('forms');
             formsDiv.classList.remove('hidden');
-            formsDiv.style.display = 'block'; // Assurez-vous qu'il est affiché
-            document.getElementById('loginUsername').value = ''; // Réinitialiser les champs
+            formsDiv.style.display = 'block';
+            document.getElementById('loginUsername').value = '';
             document.getElementById('loginPassword').value = '';
-            document.getElementById('username').value = ''; // Réinitialiser les champs
+            document.getElementById('username').value = '';
             document.getElementById('password').value = '';
         });
 
@@ -181,7 +177,7 @@
             if (username && password) {
                 if (username.length > 16) {
                     showError('Username cannot exceed 16 characters.');
-                    return; // Sortir si la longueur du nom d'utilisateur dépasse 16 caractères
+                    return;
                 }
                 const userExists = users.some(user => user.username === username);
                 if (!userExists) {
@@ -189,7 +185,7 @@
                     localStorage.setItem('users', JSON.stringify(users));
                     document.getElementById('result').innerText = 'Account created successfully!';
                     document.getElementById('result').classList.remove('error');
-                    document.getElementById('forms').classList.add('hidden'); // Ferme les formulaires après l'inscription
+                    document.getElementById('forms').classList.add('hidden');
                 } else {
                     showError('Username already exists.');
                 }
@@ -205,38 +201,41 @@
             const user = users.find(user => user.username === username && user.password === password);
             if (user) {
                 loggedInUser = user;
-                localStorage.setItem('loggedInUser', JSON.stringify(loggedInUser)); // Enregistre l'utilisateur connecté
+                localStorage.setItem('loggedInUser', JSON.stringify(loggedInUser));
                 document.getElementById('usernameDisplay').innerText = loggedInUser.username;
                 document.getElementById('profilePic').src = loggedInUser.profilePic || 'https://upload.wikimedia.org/wikipedia/commons/0/06/YouTube_icon_%282013-2017%29.png';
-                document.getElementById('userInfo').style.display = 'block'; // Affiche les informations de l'utilisateur
-                document.getElementById('result').innerText = 'Logged in successfully!';
-                document.getElementById('result').classList.remove('error');
-                document.getElementById('forms').classList.add('hidden'); // Ferme le formulaire après la connexion
+                document.getElementById('userInfo').style.display = 'block';
+                document.getElementById('result').innerText = 'Login successful!';
+                document.getElementById('forms').classList.add('hidden');
             } else {
                 showError('Invalid username or password.');
             }
         });
 
-        document.getElementById('imageUpload').addEventListener('change', function() {
-            const file = this.files[0];
+        // Affiche une erreur
+        function showError(message) {
+            document.getElementById('result').innerText = message;
+            document.getElementById('result').classList.add('error');
+        }
+
+        // Événement pour le clic sur le bouton du profil
+        document.getElementById('profilePic').addEventListener('click', () => {
+            document.getElementById('imageUpload').click(); // Simuler le clic sur l'input de fichier
+        });
+
+        // Changer la photo de profil
+        document.getElementById('imageUpload').addEventListener('change', (event) => {
+            const file = event.target.files[0];
             if (file) {
                 const reader = new FileReader();
                 reader.onload = (e) => {
-                    document.getElementById('profilePic').src = e.target.result; // Change l'image de profil
-                    if (loggedInUser) {
-                        loggedInUser.profilePic = e.target.result; // Met à jour l'image dans le profil
-                        localStorage.setItem('loggedInUser', JSON.stringify(loggedInUser)); // Sauvegarde la nouvelle image
-                    }
+                    loggedInUser.profilePic = e.target.result; // Met à jour l'image de profil
+                    localStorage.setItem('loggedInUser', JSON.stringify(loggedInUser)); // Sauvegarder dans le localStorage
+                    document.getElementById('profilePic').src = loggedInUser.profilePic; // Mettre à jour l'image affichée
                 };
                 reader.readAsDataURL(file);
             }
         });
-
-        function showError(message) {
-            const resultDiv = document.getElementById('result');
-            resultDiv.innerText = message;
-            resultDiv.classList.add('error');
-        }
     </script>
 </body>
 </html>
