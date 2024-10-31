@@ -123,6 +123,7 @@
 
     <div id="userInfo">
         <span id="userGreeting">Welcome, <span id="usernameDisplay">User</span>!</span>
+        <input type="file" id="imageUpload" accept="image/*"> <!-- Champ pour télécharger la photo de profil -->
     </div>
 
     <div id="forms" class="hidden">
@@ -142,8 +143,6 @@
     </div>
 
     <div id="result"></div>
-
-    <input type="file" id="imageUpload" accept="image/*" class="hidden">
 
     <script>
         let users = JSON.parse(localStorage.getItem('users')) || []; // Pour stocker les utilisateurs
