@@ -13,6 +13,7 @@
             color: white;
             overflow: hidden; /* Empêche le défilement */
             height: 100vh; /* Prend toute la hauteur de la fenêtre */
+            position: relative; /* Permet de positionner les éléments */
         }
 
         /* Skybox */
@@ -57,16 +58,12 @@
             padding: 50px;
             background: linear-gradient(135deg, #CC7722, #FF8C00);
             max-width: 800px;
-            margin: auto;
+            margin: 0 auto;
             border-radius: 10px;
             box-shadow: 0px 0px 15px rgba(0, 0, 0, 0.5);
             position: relative;
             z-index: 2;
-            /* Assurer que le header ne défile pas */
-            position: absolute;
             top: 20px; /* Ajuste la position si nécessaire */
-            left: 50%;
-            transform: translateX(-50%);
         }
 
         /* Style du titre */
@@ -121,12 +118,14 @@
 
         /* Section principale pour les packs */
         .packs-section {
-            margin: 50px auto;
+            margin: 150px auto 0; /* Espace pour le header */
             max-width: 800px;
             text-align: left;
             padding: 10px;
             position: relative;
             z-index: 1;
+            overflow-y: auto; /* Permet le défilement dans cette section */
+            max-height: calc(100vh - 200px); /* Limite la hauteur de la section pour garder le header visible */
         }
 
         .packs-list {
@@ -205,7 +204,7 @@
             </div>
             <div class="pack-item">
                 <div class="pack-title">Pack 8: Nature’s Essence</div>
-                <div class="pack-description">Organic textures inspired by natural landscapes.</div>
+                <div class="pack-description">Textures inspired by nature and the outdoors.</div>
             </div>
             <div class="pack-item">
                 <div class="pack-title">Pack 9: Cyberpunk Dream</div>
