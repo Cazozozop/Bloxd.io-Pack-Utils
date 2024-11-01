@@ -18,8 +18,8 @@
             overflow-x: hidden;
         }
 
-        /* Container principal avec dégradé ocre-orange */
-        .container {
+        /* Header avec le dégradé ocre-orange */
+        .header {
             text-align: center;
             padding: 50px;
             background: linear-gradient(135deg, #CC7722, #FF8C00); /* Dégradé ocre vers orange */
@@ -79,12 +79,15 @@
             background: linear-gradient(135deg, #D4A76A, #FF6E1A); /* Effet de reflet en couleur */
         }
 
-        /* Style pour la liste des faux packs */
-        .packs-list {
-            margin-top: 30px;
+        /* Section principale pour les packs */
+        .packs-section {
+            margin: 50px auto;
+            max-width: 800px;
             text-align: left;
-            max-width: 700px;
-            margin: 30px auto;
+            padding: 10px;
+        }
+
+        .packs-list {
             color: #FFF;
         }
 
@@ -109,17 +112,17 @@
     </style>
 </head>
 <body>
-    <div class="container">
-        <!-- Titre principal -->
+    <!-- Header avec titre et barre de recherche -->
+    <div class="header">
         <h1 class="title">Welcome to Bloxd.io Pack Utils</h1>
-
-        <!-- Barre de recherche -->
         <div class="search-bar">
             <input type="text" placeholder="Search for packs...">
             <button>Search</button>
         </div>
-        
-        <!-- Liste des faux packs pour tests -->
+    </div>
+
+    <!-- Section des faux packs pour tests -->
+    <div class="packs-section">
         <div class="packs-list">
             <div class="pack-item">
                 <div class="pack-title">Pack 1: Awesome Texture</div>
@@ -132,6 +135,34 @@
             <div class="pack-item">
                 <div class="pack-title">Pack 3: High Contrast</div>
                 <div class="pack-description">Bold colors and sharp edges for a unique look.</div>
+            </div>
+            <div class="pack-item">
+                <div class="pack-title">Pack 4: Minimalist Style</div>
+                <div class="pack-description">Simple and clean textures with pastel colors.</div>
+            </div>
+            <div class="pack-item">
+                <div class="pack-title">Pack 5: Fantasy World</div>
+                <div class="pack-description">Magical textures with fantasy-themed elements.</div>
+            </div>
+            <div class="pack-item">
+                <div class="pack-title">Pack 6: Dark Mode</div>
+                <div class="pack-description">A dark-themed texture pack for low-light environments.</div>
+            </div>
+            <div class="pack-item">
+                <div class="pack-title">Pack 7: Pixel Perfection</div>
+                <div class="pack-description">A classic 8-bit look with pixel-perfect designs.</div>
+            </div>
+            <div class="pack-item">
+                <div class="pack-title">Pack 8: Nature’s Essence</div>
+                <div class="pack-description">Organic textures inspired by natural landscapes.</div>
+            </div>
+            <div class="pack-item">
+                <div class="pack-title">Pack 9: Cyberpunk Glow</div>
+                <div class="pack-description">Futuristic textures with neon accents.</div>
+            </div>
+            <div class="pack-item">
+                <div class="pack-title">Pack 10: Vintage Grunge</div>
+                <div class="pack-description">A gritty, worn-out look with muted colors.</div>
             </div>
         </div>
     </div>
