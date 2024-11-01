@@ -78,6 +78,34 @@
             box-shadow: 4px 6px 12px rgba(0, 0, 0, 0.4); /* Ombrage accentué */
             background: linear-gradient(135deg, #D4A76A, #FF6E1A); /* Effet de reflet en couleur */
         }
+
+        /* Style pour la liste des faux packs */
+        .packs-list {
+            margin-top: 30px;
+            text-align: left;
+            max-width: 700px;
+            margin: 30px auto;
+            color: #FFF;
+        }
+
+        .pack-item {
+            background-color: rgba(0, 0, 0, 0.4);
+            padding: 15px;
+            border-radius: 5px;
+            margin-bottom: 15px;
+            box-shadow: 0px 2px 5px rgba(0, 0, 0, 0.3);
+        }
+
+        .pack-title {
+            font-size: 1.5em;
+            font-weight: bold;
+            color: #FFD700;
+        }
+
+        .pack-description {
+            font-size: 1em;
+            color: #FFEFD5;
+        }
     </style>
 </head>
 <body>
@@ -89,6 +117,22 @@
         <div class="search-bar">
             <input type="text" placeholder="Search for packs...">
             <button>Search</button>
+        </div>
+        
+        <!-- Liste des faux packs pour tests -->
+        <div class="packs-list">
+            <div class="pack-item">
+                <div class="pack-title">Pack 1: Awesome Texture</div>
+                <div class="pack-description">A test texture pack with vibrant colors.</div>
+            </div>
+            <div class="pack-item">
+                <div class="pack-title">Pack 2: Retro Vibes</div>
+                <div class="pack-description">A nostalgic pack inspired by classic games.</div>
+            </div>
+            <div class="pack-item">
+                <div class="pack-title">Pack 3: High Contrast</div>
+                <div class="pack-description">Bold colors and sharp edges for a unique look.</div>
+            </div>
         </div>
     </div>
 </body>
