@@ -6,22 +6,43 @@
     <title>Bloxd.io Pack Utils</title>
     <link rel="stylesheet" href="https://fonts.googleapis.com/css2?family=Pixelify+Sans&display=swap">
     <style>
+        /* Style de l'arrière-plan */
         body {
             margin: 0;
             font-family: 'Pixelify Sans', sans-serif;
             color: white;
-            overflow: hidden;
-            height: 100vh;
-            position: relative;
+            overflow: hidden; /* Empêche le défilement */
+            height: 100vh; /* Prend toute la hauteur de la fenêtre */
+            position: relative; /* Permet de positionner les éléments */
+            background-color: #000; /* Fond noir pour contraster avec les images */
         }
 
-        canvas {
+        /* Section de panorama */
+        .panorama {
             position: absolute;
             top: 0;
             left: 0;
-            z-index: -1;
+            width: 100%;
+            height: 100%;
+            display: flex;
+            animation: scroll 20s linear infinite; /* Animation de défilement */
+            z-index: -1; /* Pour que le panorama reste derrière le contenu */
         }
 
+        /* Images du panorama */
+        .panorama img {
+            width: 100vw; /* Prend toute la largeur de la fenêtre */
+            height: 100%; /* Prend toute la hauteur */
+            object-fit: cover; /* Remplit l'espace sans déformer */
+        }
+
+        /* Animation de défilement */
+        @keyframes scroll {
+            0% { transform: translateX(0); }
+            100% { transform: translateX(-400%); } /* Ajuster le pourcentage en fonction du nombre d'images */
+        }
+
+        /* Header avec le dégradé ocre-orange */
         .header {
             text-align: center;
             padding: 50px;
@@ -32,9 +53,10 @@
             box-shadow: 0px 0px 15px rgba(0, 0, 0, 0.5);
             position: relative;
             z-index: 2;
-            top: 20px;
+            top: 20px; /* Ajuste la position si nécessaire */
         }
 
+        /* Style du titre */
         .title {
             font-size: 3em;
             margin-bottom: 20px;
@@ -43,11 +65,13 @@
             animation: textAnim 2s infinite alternate;
         }
 
+        /* Animation du titre */
         @keyframes textAnim {
             0% { transform: scale(1); color: #CC7722; }
             100% { transform: scale(1.1); color: #FF4500; }
         }
 
+        /* Barre de recherche */
         .search-bar {
             margin-top: 20px;
         }
@@ -61,6 +85,7 @@
             box-shadow: 0px 0px 10px rgba(0, 0, 0, 0.2);
         }
 
+        /* Bouton de recherche avec dégradé ocre-orange et ombrage */
         .search-bar button {
             margin-top: 10px;
             padding: 10px 20px;
@@ -74,21 +99,23 @@
             transition: transform 0.2s, box-shadow 0.2s;
         }
 
+        /* Effet au survol */
         .search-bar button:hover {
             transform: scale(1.1);
             box-shadow: 4px 6px 12px rgba(0, 0, 0, 0.4);
             background: linear-gradient(135deg, #D4A76A, #FF6E1A);
         }
 
+        /* Section principale pour les packs */
         .packs-section {
-            margin: 150px auto 0;
+            margin: 150px auto 0; /* Espace pour le header */
             max-width: 800px;
             text-align: left;
             padding: 10px;
             position: relative;
             z-index: 1;
-            overflow-y: auto;
-            max-height: calc(100vh - 200px);
+            overflow-y: auto; /* Permet le défilement dans cette section */
+            max-height: calc(100vh - 200px); /* Limite la hauteur de la section pour garder le header visible */
         }
 
         .packs-list {
@@ -116,8 +143,16 @@
     </style>
 </head>
 <body>
-    <canvas id="canvas"></canvas>
+    <!-- Section de panorama -->
+    <div class="panorama">
+        <img src="https://iili.io/2nPAVBR.png" alt="Panorama Image 1">
+        <img src="https://iili.io/2nPAj2I.png" alt="Panorama Image 2">
+        <img src="https://iili.io/2nPAXrN.png" alt="Panorama Image 3">
+        <img src="https://iili.io/2nPANkX.png" alt="Panorama Image 4">
+        <img src="https://iili.io/2nPAVBR.png" alt="Panorama Image 1"> <!-- Répète la première image pour un défilement continu -->
+    </div>
 
+    <!-- Header avec titre et barre de recherche -->
     <div class="header">
         <h1 class="title">Welcome to Bloxd.io Pack Utils</h1>
         <div class="search-bar">
@@ -126,88 +161,50 @@
         </div>
     </div>
 
+    <!-- Section des faux packs pour tests -->
     <div class="packs-section">
         <div class="packs-list">
-            <!-- Liste de packs -->
-            <div class="pack-item"><div class="pack-title">Pack 1: Awesome Texture</div><div class="pack-description">A test texture pack with vibrant colors.</div></div>
-            <div class="pack-item"><div class="pack-title">Pack 2: Retro Vibes</div><div class="pack-description">A nostalgic pack inspired by classic games.</div></div>
-            <div class="pack-item"><div class="pack-title">Pack 3: High Contrast</div><div class="pack-description">Bold colors and sharp edges for a unique look.</div></div>
-            <div class="pack-item"><div class="pack-title">Pack 4: Minimalist Style</div><div class="pack-description">Simple and clean textures with pastel colors.</div></div>
-            <div class="pack-item"><div class="pack-title">Pack 5: Fantasy World</div><div class="pack-description">Magical textures with fantasy-themed elements.</div></div>
-            <div class="pack-item"><div class="pack-title">Pack 6: Dark Mode</div><div class="pack-description">A dark-themed texture pack for low-light environments.</div></div>
-            <div class="pack-item"><div class="pack-title">Pack 7: Pixel Perfection</div><div class="pack-description">A classic 8-bit look with pixel-perfect designs.</div></div>
-            <div class="pack-item"><div class="pack-title">Pack 8: Nature's Touch</div><div class="pack-description">Textures inspired by nature and landscapes.</div></div>
-            <div class="pack-item"><div class="pack-title">Pack 9: Cyberpunk Dream</div><div class="pack-description">Futuristic textures with neon colors and cyber themes.</div></div>
-            <div class="pack-item"><div class="pack-title">Pack 10: Ocean Breeze</div><div class="pack-description">Relaxing textures inspired by the ocean and beaches.</div></div>
+            <div class="pack-item">
+                <div class="pack-title">Pack 1: Awesome Texture</div>
+                <div class="pack-description">A test texture pack with vibrant colors.</div>
+            </div>
+            <div class="pack-item">
+                <div class="pack-title">Pack 2: Retro Vibes</div>
+                <div class="pack-description">A nostalgic pack inspired by classic games.</div>
+            </div>
+            <div class="pack-item">
+                <div class="pack-title">Pack 3: High Contrast</div>
+                <div class="pack-description">Bold colors and sharp edges for a unique look.</div>
+            </div>
+            <div class="pack-item">
+                <div class="pack-title">Pack 4: Minimalist Style</div>
+                <div class="pack-description">Simple and clean textures with pastel colors.</div>
+            </div>
+            <div class="pack-item">
+                <div class="pack-title">Pack 5: Fantasy World</div>
+                <div class="pack-description">Magical textures with fantasy-themed elements.</div>
+            </div>
+            <div class="pack-item">
+                <div class="pack-title">Pack 6: Dark Mode</div>
+                <div class="pack-description">A dark-themed texture pack for low-light environments.</div>
+            </div>
+            <div class="pack-item">
+                <div class="pack-title">Pack 7: Pixel Perfection</div>
+                <div class="pack-description">A classic 8-bit look with pixel-perfect designs.</div>
+            </div>
+            <div class="pack-item">
+                <div class="pack-title">Pack 8: Nature's Touch</div>
+                <div class="pack-description">Textures inspired by nature and landscapes.</div>
+            </div>
+            <div class="pack-item">
+                <div class="pack-title">Pack 9: Cyberpunk Dream</div>
+                <div class="pack-description">Futuristic textures with neon colors and cyber themes.</div>
+            </div>
+            <div class="pack-item">
+                <div class="pack-title">Pack 10: Ocean Breeze</div>
+                <div class="pack-description">Relaxing textures inspired by the ocean and beaches.</div>
+            </div>
         </div>
     </div>
-
-    <script src="https://cdnjs.cloudflare.com/ajax/libs/three.js/r128/three.min.js"></script>
-    <script>
-        const scene = new THREE.Scene();
-        const camera = new THREE.PerspectiveCamera(75, window.innerWidth / window.innerHeight, 0.1, 1000);
-        const renderer = new THREE.WebGLRenderer({ canvas: document.getElementById('canvas'), alpha: true });
-        renderer.setClearColor(0x87CEEB); // Couleur de fond pour simuler le ciel bleu
-        renderer.setSize(window.innerWidth, window.innerHeight);
-        document.body.appendChild(renderer.domElement);
-
-        // Création d'un ciel bleu avec un gradient
-        const skyGeometry = new THREE.SphereGeometry(100, 32, 32);
-        const skyMaterial = new THREE.MeshBasicMaterial({
-            color: 0x87CEEB,
-            side: THREE.BackSide
-        });
-        const sky = new THREE.Mesh(skyGeometry, skyMaterial);
-        scene.add(sky);
-
-        // Fonction pour générer des nuages
-        function createCloud() {
-            const cloudGeometry = new THREE.PlaneGeometry(60, 40);
-            const cloudTexture = new THREE.TextureLoader().load('https://iili.io/2nPAw7t.png'); // Texture des nuages
-            const cloudMaterial = new THREE.MeshBasicMaterial({ map: cloudTexture, transparent: true });
-            const cloud = new THREE.Mesh(cloudGeometry, cloudMaterial);
-
-            cloud.position.set(Math.random() * 200 - 100, Math.random() * 100 - 50, -50);
-            cloud.userData = { speed: Math.random() * 0.1 + 0.05 }; // Vitesse aléatoire pour le vent
-            scene.add(cloud);
-            return cloud;
-        }
-
-        // Générer des nuages
-        const clouds = [];
-        for (let i = 0; i < 10; i++) {
-            clouds.push(createCloud());
-        }
-
-        // Création d'un soleil
-        const sunGeometry = new THREE.CircleGeometry(10, 32);
-        const sunMaterial = new THREE.MeshBasicMaterial({ color: 0xFFD700 });
-        const sun = new THREE.Mesh(sunGeometry, sunMaterial);
-        sun.position.set(40, 50, -30);
-        scene.add(sun);
-
-        camera.position.z = 50; // Position de la caméra
-
-        // Animation des nuages
-        function animate() {
-            requestAnimationFrame(animate);
-            clouds.forEach(cloud => {
-                cloud.position.x += cloud.userData.speed;
-                if (cloud.position.x > 120) {
-                    cloud.position.x = -120; // Réinitialiser la position pour simuler le vent
-                }
-            });
-            renderer.render(scene, camera);
-        }
-
-        animate();
-
-        // Gestion de la taille de la fenêtre
-        window.addEventListener('resize', () => {
-            camera.aspect = window.innerWidth / window.innerHeight;
-            camera.updateProjectionMatrix();
-            renderer.setSize(window.innerWidth, window.innerHeight);
-        });
-    </script>
 </body>
 </html>
