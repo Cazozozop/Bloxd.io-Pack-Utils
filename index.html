@@ -20,12 +20,12 @@
             width: 100vw; /* Remplit toute la largeur de la fenêtre */
             height: 100vh; /* Remplit toute la hauteur de la fenêtre */
             overflow: hidden; /* Empêche le débordement */
+            display: flex;
+            animation: scroll 60s linear infinite; /* Animation de défilement */
         }
 
         .panorama {
             display: flex;
-            width: calc(4 * 4036px); /* Largeur totale pour 4 images */
-            animation: scroll 60s linear infinite; /* Animation de défilement */
         }
 
         .panorama img {
@@ -79,17 +79,15 @@
         <div class="panorama">
             <img src="https://iili.io/2niQVUX.png" alt="Panorama">
             <img src="https://iili.io/2niQVUX.png" alt="Panorama">
-            <img src="https://iili.io/2niQVUX.png" alt="Panorama">
-            <img src="https://iili.io/2niQVUX.png" alt="Panorama">
         </div>
     </div>
     
     <div class="content">
         <h1>Welcome to Bloxd.io Pack Utils</h1>
-        <input type="text" placeholder="Search for packs..." />
+        <input type="text" id="searchInput" placeholder="Search for packs..." onkeyup="filterPacks()" />
     </div>
 
-    <div class="packs">
+    <div class="packs" id="packsContainer">
         <!-- Faux packs pour le test -->
         <div class="pack">Pack 1</div>
         <div class="pack">Pack 2</div>
@@ -102,5 +100,21 @@
         <div class="pack">Pack 9</div>
         <div class="pack">Pack 10</div>
     </div>
+
+    <script>
+        function filterPacks() {
+            const searchInput = document.getElementById('searchInput').value.toLowerCase();
+            const packs = document.querySelectorAll('.pack');
+            
+            packs.forEach(pack => {
+                const packName = pack.textContent.toLowerCase();
+                if (packName.includes(searchInput)) {
+                    pack.style.display = ''; // Afficher le pack
+                } else {
+                    pack.style.display = 'none'; // Cacher le pack
+                }
+            });
+        }
+    </script>
 </body>
 </html>
