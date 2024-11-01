@@ -11,7 +11,8 @@
             margin: 0;
             font-family: 'Pixelify Sans', sans-serif;
             color: white;
-            overflow: hidden; /* Empêche le défilement horizontal */
+            overflow: hidden; /* Empêche le défilement */
+            height: 100vh; /* Prend toute la hauteur de la fenêtre */
         }
 
         /* Skybox */
@@ -61,6 +62,11 @@
             box-shadow: 0px 0px 15px rgba(0, 0, 0, 0.5);
             position: relative;
             z-index: 2;
+            /* Assurer que le header ne défile pas */
+            position: absolute;
+            top: 20px; /* Ajuste la position si nécessaire */
+            left: 50%;
+            transform: translateX(-50%);
         }
 
         /* Style du titre */
@@ -202,7 +208,7 @@
                 <div class="pack-description">Organic textures inspired by natural landscapes.</div>
             </div>
             <div class="pack-item">
-                <div class="pack-title">Pack 9: Cyberpunk Glow</div>
+                <div class="pack-title">Pack 9: Cyberpunk Dream</div>
                 <div class="pack-description">Futuristic textures with neon colors and cyber themes.</div>
             </div>
         </div>
