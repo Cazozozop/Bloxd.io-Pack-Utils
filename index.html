@@ -32,19 +32,19 @@
         /* Faces de la skybox */
         .skybox div {
             position: absolute;
-            width: 200%; /* Augmenter la taille de chaque face */
-            height: 200%; /* Augmenter la taille de chaque face */
+            width: 100%; /* Taille à 100% */
+            height: 100%; /* Taille à 100% */
             background-size: cover;
             background-position: center;
         }
 
         /* Images pour chaque face */
-        .skybox .front  { background-image: url('https://iili.io/2nPAW1p.png'); transform: rotateY(0deg) translateZ(500px); }
-        .skybox .back   { background-image: url('https://iili.io/2nPAVBR.png'); transform: rotateY(180deg) translateZ(500px); }
-        .skybox .right  { background-image: url('https://iili.io/2nPAj2I.png'); transform: rotateY(90deg) translateZ(500px); }
-        .skybox .left   { background-image: url('https://iili.io/2nPAXrN.png'); transform: rotateY(-90deg) translateZ(500px); }
-        .skybox .top    { background-image: url('https://iili.io/2nPANkX.png'); transform: rotateX(90deg) translateZ(500px); }
-        .skybox .bottom { background-image: url('https://iili.io/2nPAw7t.png'); transform: rotateX(-90deg) translateZ(500px); }
+        .skybox .front  { background-image: url('https://iili.io/2nPAW1p.png'); transform: rotateY(0deg) translateZ(300px); } /* Avancé à 300px */
+        .skybox .back   { background-image: url('https://iili.io/2nPAVBR.png'); transform: rotateY(180deg) translateZ(300px); }
+        .skybox .right  { background-image: url('https://iili.io/2nPAj2I.png'); transform: rotateY(90deg) translateZ(300px); }
+        .skybox .left   { background-image: url('https://iili.io/2nPAXrN.png'); transform: rotateY(-90deg) translateZ(300px); }
+        .skybox .top    { background-image: url('https://iili.io/2nPANkX.png'); transform: rotateX(90deg) translateZ(300px); }
+        .skybox .bottom { background-image: url('https://iili.io/2nPAw7t.png'); transform: rotateX(-90deg) translateZ(300px); }
 
         /* Animation de rotation */
         @keyframes rotate {
