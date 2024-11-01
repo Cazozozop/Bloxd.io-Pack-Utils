@@ -10,29 +10,32 @@
             margin: 0;
             font-family: 'Pixelify Sans', sans-serif;
             overflow: hidden; /* Cache la barre de défilement */
+            background-color: #f0f0f0; /* Couleur de fond générale */
         }
 
-        .panorama {
+        .panorama-container {
             position: absolute;
             top: 0;
             left: 0;
             width: 100vw; /* Remplit toute la largeur de la fenêtre */
             height: 100vh; /* Remplit toute la hauteur de la fenêtre */
             overflow: hidden; /* Empêche le débordement */
+        }
+
+        .panorama {
             display: flex;
+            width: calc(4 * 4036px); /* Largeur totale pour 4 images */
             animation: scroll 60s linear infinite; /* Animation de défilement */
         }
 
         .panorama img {
-            width: auto; /* Ne pas forcer la largeur */
-            height: 100%; /* Prendre toute la hauteur du conteneur */
-            min-width: 100%; /* S'assurer que l'image prend au moins 100% de la largeur */
-            object-fit: cover; /* Garde les proportions sans étirer */
+            width: 4036px; /* Largeur originale de l'image */
+            height: auto; /* Conserve les proportions */
         }
 
         @keyframes scroll {
             0% { transform: translateX(0); }
-            100% { transform: translateX(-50%); } /* Déplace vers la gauche de 50% */
+            100% { transform: translateX(-4036px); } /* Déplace vers la gauche de la largeur d'une image */
         }
 
         .content {
@@ -69,14 +72,16 @@
             border-radius: 10px;
             box-shadow: 0 2px 5px rgba(0, 0, 0, 0.3);
         }
-
-        /* Autres styles ici */
     </style>
 </head>
 <body>
-    <div class="panorama">
-        <img src="https://iili.io/2niQVUX.png" alt="Panorama">
-        <img src="https://iili.io/2niQVUX.png" alt="Panorama">
+    <div class="panorama-container">
+        <div class="panorama">
+            <img src="https://iili.io/2niQVUX.png" alt="Panorama">
+            <img src="https://iili.io/2niQVUX.png" alt="Panorama">
+            <img src="https://iili.io/2niQVUX.png" alt="Panorama">
+            <img src="https://iili.io/2niQVUX.png" alt="Panorama">
+        </div>
     </div>
     
     <div class="content">
