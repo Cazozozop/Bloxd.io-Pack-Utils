@@ -1,5 +1,5 @@
 <!DOCTYPE html>
-<html lang="fr">
+<html lang="en">
 <head>
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
@@ -18,11 +18,11 @@
             overflow-x: hidden;
         }
 
-        /* Container principal */
+        /* Container principal avec dégradé jaune-orangé */
         .container {
             text-align: center;
             padding: 50px;
-            background-color: rgba(255, 165, 0, 0.8); /* Couleur orange/jaune */
+            background: linear-gradient(135deg, #FFD700, #FF8C00); /* Dégradé jaune vers orange */
             max-width: 800px;
             margin: auto;
             border-radius: 10px;
@@ -58,11 +58,12 @@
             box-shadow: 0px 0px 10px rgba(0, 0, 0, 0.2);
         }
 
+        /* Bouton de recherche avec dégradé jaune-orangé */
         .search-bar button {
             margin-top: 10px;
             padding: 10px 20px;
             font-size: 1em;
-            background-color: #FF4500;
+            background: linear-gradient(135deg, #FFD700, #FF8C00); /* Dégradé jaune vers orange */
             color: white;
             border: none;
             border-radius: 5px;
@@ -72,7 +73,7 @@
 
         .search-bar button:hover {
             transform: scale(1.1);
-            background-color: #FF6347;
+            background: linear-gradient(135deg, #FFB800, #FF4500);
         }
     </style>
 </head>
@@ -83,8 +84,8 @@
 
         <!-- Barre de recherche -->
         <div class="search-bar">
-            <input type="text" placeholder="Rechercher des packs...">
-            <button>Rechercher</button>
+            <input type="text" placeholder="Search for packs...">
+            <button>Search</button>
         </div>
     </div>
 </body>
