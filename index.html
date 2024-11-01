@@ -1,281 +1,91 @@
 <!DOCTYPE html>
-<html lang="en">
+<html lang="fr">
 <head>
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
     <title>Bloxd.io Pack Utils</title>
-    <link href="https://fonts.googleapis.com/css2?family=Pixelify+Sans&display=swap" rel="stylesheet">
+    <link rel="stylesheet" href="https://fonts.googleapis.com/css2?family=Pixelify+Sans&display=swap">
     <style>
+        /* Style de l'arrière-plan */
         body {
+            margin: 0;
             font-family: 'Pixelify Sans', sans-serif;
+            color: white;
             background-image: url('https://iili.io/2nu1xv1.jpg');
             background-size: cover;
-            background-repeat: no-repeat;
             background-attachment: fixed;
-            color: #333;
-            text-align: center;
-            padding: 20px;
-            margin: 0;
-            min-height: 100vh;
+            background-repeat: no-repeat;
+            overflow-x: hidden;
         }
-        h1 {
-            font-size: 48px;
+
+        /* Container principal */
+        .container {
+            text-align: center;
+            padding: 50px;
+            background-color: rgba(255, 165, 0, 0.8); /* Couleur orange/jaune */
+            max-width: 800px;
+            margin: auto;
+            border-radius: 10px;
+            box-shadow: 0px 0px 15px rgba(0, 0, 0, 0.5);
+        }
+
+        /* Style du titre */
+        .title {
+            font-size: 3em;
             margin-bottom: 20px;
             color: white;
-            text-shadow: 2px 2px 4px rgba(0, 0, 0, 0.7);
-            animation: bounce 2s infinite;
+            text-shadow: 2px 2px 5px rgba(0, 0, 0, 0.7);
+            animation: textAnim 2s infinite alternate;
         }
-        @keyframes bounce {
-            0%, 100% {
-                transform: translateY(0);
-            }
-            50% {
-                transform: translateY(-10px);
-            }
+
+        /* Animation du titre */
+        @keyframes textAnim {
+            0% { transform: scale(1); color: #FFD700; }
+            100% { transform: scale(1.1); color: #FF4500; }
         }
-        #accountButton {
-            position: absolute;
-            top: 20px;
-            left: 20px;
-            padding: 10px 20px;
-            cursor: pointer;
-            background: linear-gradient(45deg, #FFD700, #FF8C00);
-            border: none;
-            color: #333;
-            border-radius: 5px;
-            transition: transform 0.2s, box-shadow 0.2s;
-            box-shadow: 0 4px 8px rgba(255, 140, 0, 0.5);
-        }
-        #loginToggle {
-            position: absolute;
-            top: 20px;
-            right: 20px;
-            padding: 10px 20px;
-            cursor: pointer;
-            background: linear-gradient(45deg, #FFD700, #FF8C00);
-            border: none;
-            color: #333;
-            border-radius: 5px;
-            transition: transform 0.2s, box-shadow 0.2s;
-            box-shadow: 0 4px 8px rgba(255, 140, 0, 0.5);
-        }
-        input[type="file"] {
-            display: none; /* Cacher l'input de fichier */
-        }
-        button {
-            padding: 10px 20px;
-            font-size: 16px;
-            cursor: pointer;
-            background: linear-gradient(45deg, #FFD700, #FF8C00);
-            border: none;
-            color: #333;
-            border-radius: 5px;
-            transition: transform 0.2s, box-shadow 0.2s;
-            box-shadow: 0 4px 8px rgba(255, 140, 0, 0.5);
-        }
-        button:hover {
-            transform: scale(1.05);
-            box-shadow: 0 8px 16px rgba(255, 140, 0, 0.5);
-        }
-        #result {
-            margin-top: 20px;
-            font-size: 20px;
-        }
-        .error {
-            color: red;
-        }
-        .hidden {
-            display: none;
-        }
-        #forms {
-            display: none;
+
+        /* Barre de recherche */
+        .search-bar {
             margin-top: 20px;
         }
-        .link {
-            color: blue;
-            cursor: pointer;
-            text-decoration: underline;
+
+        .search-bar input[type="text"] {
+            width: 100%;
+            padding: 10px;
+            font-size: 1.2em;
+            border: none;
+            border-radius: 5px;
+            box-shadow: 0px 0px 10px rgba(0, 0, 0, 0.2);
         }
-        #profilePic {
-            width: 30px;
-            height: 30px;
-            vertical-align: middle;
-            border-radius: 50%;
-            cursor: pointer;
-        }
-        #userInfo {
-            display: none;
+
+        .search-bar button {
             margin-top: 10px;
-        }
-        #backgroundSelector {
-            margin: 20px 0;
-            display: flex;
-            flex-wrap: wrap;
-            justify-content: center;
-        }
-        .background-option {
-            margin: 10px;
+            padding: 10px 20px;
+            font-size: 1em;
+            background-color: #FF4500;
+            color: white;
+            border: none;
+            border-radius: 5px;
             cursor: pointer;
-            border: 2px solid transparent;
-            border-radius: 5px;
-            transition: border 0.2s;
+            transition: transform 0.2s;
         }
-        .background-option:hover {
-            border: 2px solid #FFD700; /* Bordure dorée au survol */
-        }
-        .background-option img {
-            width: 100px; /* Largeur des images */
-            height: 100px; /* Hauteur des images */
-            border-radius: 5px;
-        }
-        .selected {
-            border: 2px solid #FFD700; /* Contour jaune pour l'option sélectionnée */
-            opacity: 0.5; /* Griser l'option sélectionnée */
+
+        .search-bar button:hover {
+            transform: scale(1.1);
+            background-color: #FF6347;
         }
     </style>
 </head>
 <body>
-    <button id="accountButton">
-        <img id="profilePic" src="https://www.freeiconspng.com/download/25494g" alt="Profile Picture"> 
-        <span id="usernameDisplay">Username</span>
-    </button>
-    <h1>Welcome to Bloxd.io Pack Utils</h1>
-    <button id="loginToggle">Login</button>
+    <div class="container">
+        <!-- Titre principal -->
+        <h1 class="title">Welcome to Bloxd.io Pack Utils</h1>
 
-    <div id="userInfo">
-        <span id="userGreeting">Welcome, <span id="usernameDisplay">User</span>!</span>
-        <input type="file" id="imageUpload" accept="image/*"> <!-- Champ pour télécharger la photo de profil -->
-    </div>
-
-    <div id="backgroundSelector">
-        <h2>Select Background:</h2>
-        <div class="background-option" data-background="https://iili.io/2nu1xv1.jpg">
-            <img src="https://iili.io/2nu1xv1.jpg" alt="Background 1">
-        </div>
-        <div class="background-option" data-background="https://iili.io/2nu1xv1.jpg">
-            <img src="https://iili.io/2nu1xv1.jpg" alt="Background 2">
-        </div>
-        <div class="background-option" data-background="https://iili.io/2nu1xv1.jpg">
-            <img src="https://iili.io/2nu1xv1.jpg" alt="Background 3">
-        </div>
-        <div class="background-option" data-background="https://iili.io/2nu1xv1.jpg">
-            <img src="https://iili.io/2nu1xv1.jpg" alt="Background 4">
-        </div>
-        <div class="background-option" data-background="https://iili.io/2nu1xv1.jpg">
-            <img src="https://iili.io/2nu1xv1.jpg" alt="Background 5">
-        </div>
-        <div class="background-option" data-background="https://iili.io/2nu1xv1.jpg">
-            <img src="https://iili.io/2nu1xv1.jpg" alt="Background 6">
+        <!-- Barre de recherche -->
+        <div class="search-bar">
+            <input type="text" placeholder="Rechercher des packs...">
+            <button>Rechercher</button>
         </div>
     </div>
-
-    <div id="forms" class="hidden">
-        <h2>Sign Up</h2>
-        <input type="text" id="username" placeholder="Username" maxlength="16" required>
-        <input type="password" id="password" placeholder="Password" required>
-        <button id="signup">Sign Up</button>
-
-        <h2>Login</h2>
-        <input type="text" id="loginUsername" placeholder="Username" maxlength="16" required>
-        <input type="password" id="loginPassword" placeholder="Password" required>
-        <button id="login">Login</button>
-
-        <div>
-            <p>You don't have an account? <span class="link" id="signupLink">Create an account here!</span></p>
-        </div>
-    </div>
-
-    <div id="result"></div>
-
-    <script>
-        let users = JSON.parse(localStorage.getItem('users')) || [];
-        let loggedInUser = null;
-
-        // Chargement de l'utilisateur et de la photo de profil depuis le localStorage
-        const savedUser = localStorage.getItem('loggedInUser');
-        if (savedUser) {
-            loggedInUser = JSON.parse(savedUser);
-            document.getElementById('usernameDisplay').innerText = loggedInUser.username;
-            document.getElementById('profilePic').src = loggedInUser.profilePic || 'https://www.freeiconspng.com/download/25494g';
-            document.getElementById('userInfo').style.display = 'block';
-        }
-
-        // Changer l'arrière-plan
-        document.querySelectorAll('.background-option').forEach(option => {
-            option.addEventListener('click', () => {
-                // Retirer la classe 'selected' de toutes les options
-                document.querySelectorAll('.background-option').forEach(opt => {
-                    opt.classList.remove('selected');
-                });
-                // Ajouter la classe 'selected' à l'option actuelle
-                option.classList.add('selected');
-
-                // Changer l'arrière-plan
-                document.body.style.backgroundImage = `url('${option.getAttribute('data-background')}')`;
-            });
-        });
-
-        // Afficher ou cacher le formulaire d'inscription/connexion
-        document.getElementById('loginToggle').addEventListener('click', () => {
-            document.getElementById('forms').classList.toggle('hidden');
-            document.getElementById('signupLink').parentElement.style.display = document.getElementById('forms').classList.contains('hidden') ? 'none' : 'block';
-        });
-
-        // Inscription
-        document.getElementById('signup').addEventListener('click', () => {
-            const username = document.getElementById('username').value;
-            const password = document.getElementById('password').value;
-
-            if (username && password) {
-                users.push({ username, password });
-                localStorage.setItem('users', JSON.stringify(users));
-                showError('User registered successfully! You can now log in.');
-                document.getElementById('username').value = '';
-                document.getElementById('password').value = '';
-            }
-        });
-
-        // Connexion
-        document.getElementById('login').addEventListener('click', () => {
-            const username = document.getElementById('loginUsername').value;
-            const password = document.getElementById('loginPassword').value;
-            loggedInUser = users.find(user => user.username === username && user.password === password);
-
-            if (loggedInUser) {
-                localStorage.setItem('loggedInUser', JSON.stringify(loggedInUser));
-                document.getElementById('usernameDisplay').innerText = loggedInUser.username;
-                document.getElementById('profilePic').src = loggedInUser.profilePic || 'https://www.freeiconspng.com/download/25494g';
-                document.getElementById('userInfo').style.display = 'block';
-                document.getElementById('result').innerText = 'Logged in successfully!';
-                document.getElementById('result').classList.remove('error');
-                document.getElementById('forms').classList.add('hidden');
-            } else {
-                showError('Invalid username or password.');
-            }
-        });
-
-        // Changement de la photo de profil
-        document.getElementById('imageUpload').addEventListener('change', (event) => {
-            const file = event.target.files[0];
-            if (file) {
-                const reader = new FileReader();
-                reader.onload = function(e) {
-                    if (loggedInUser) {
-                        loggedInUser.profilePic = e.target.result;
-                        localStorage.setItem('loggedInUser', JSON.stringify(loggedInUser));
-                        document.getElementById('profilePic').src = e.target.result;
-                    }
-                };
-                reader.readAsDataURL(file);
-            }
-        });
-
-        // Affichage d'erreur
-        function showError(message) {
-            const resultDiv = document.getElementById('result');
-            resultDiv.innerText = message;
-            resultDiv.classList.add('error');
-        }
-    </script>
 </body>
 </html>
