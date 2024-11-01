@@ -13,16 +13,21 @@
         }
 
         .panorama {
-            position: relative;
-            width: 200%; /* Pour permettre le défilement fluide */
-            height: 100vh; /* Prend toute la hauteur de la fenêtre */
+            position: absolute;
+            top: 0;
+            left: 0;
+            width: 100vw; /* Remplit toute la largeur de la fenêtre */
+            height: 100vh; /* Remplit toute la hauteur de la fenêtre */
+            overflow: hidden; /* Empêche le débordement */
+            display: flex;
             animation: scroll 60s linear infinite; /* Animation de défilement */
-            display: flex; /* Utiliser flex pour aligner les images */
         }
 
         .panorama img {
-            width: 50%; /* Chaque image prend 50% de l'espace */
-            height: auto; /* Conserve les proportions de l'image */
+            width: auto; /* Ne pas forcer la largeur */
+            height: 100%; /* Prendre toute la hauteur du conteneur */
+            min-width: 100%; /* S'assurer que l'image prend au moins 100% de la largeur */
+            object-fit: cover; /* Garde les proportions sans étirer */
         }
 
         @keyframes scroll {
@@ -65,7 +70,7 @@
             box-shadow: 0 2px 5px rgba(0, 0, 0, 0.3);
         }
 
-        /* Ajoute d'autres styles ici selon besoin */
+        /* Autres styles ici */
     </style>
 </head>
 <body>
