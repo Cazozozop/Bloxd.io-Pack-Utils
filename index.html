@@ -22,16 +22,16 @@
             position: absolute;
             top: 0;
             left: 0;
-            width: 400%; /* Ajuste la largeur pour accueillir les images */
+            width: 200%; /* Ajuste la largeur pour accueillir l'image fusionnée et le clone */
             height: 100%;
             display: flex;
-            animation: scroll 40s linear infinite; /* Animation de défilement ralentit à 40 secondes */
+            animation: scroll 60s linear infinite; /* Animation de défilement à 60 secondes */
             z-index: -1; /* Pour que le panorama reste derrière le contenu */
         }
 
-        /* Images du panorama */
+        /* Image du panorama */
         .panorama img {
-            width: 25%; /* Chaque image prend 25% de la largeur totale */
+            width: 50%; /* Chaque image prend 50% de la largeur totale */
             height: 100%; /* Prend toute la hauteur */
             object-fit: cover; /* Remplit l'espace sans déformer */
         }
@@ -39,7 +39,7 @@
         /* Animation de défilement */
         @keyframes scroll {
             0% { transform: translateX(0); }
-            100% { transform: translateX(-75%); } /* Ajusté pour faire défiler correctement */
+            100% { transform: translateX(-50%); } /* Fait défiler l'image de moitié de la largeur totale */
         }
 
         /* Header avec le dégradé ocre-orange */
@@ -145,11 +145,8 @@
 <body>
     <!-- Section de panorama -->
     <div class="panorama">
-        <img src="https://iili.io/2nPAVBR.png" alt="Panorama Image 1">
-        <img src="https://iili.io/2nPAj2I.png" alt="Panorama Image 2">
-        <img src="https://iili.io/2nPAXrN.png" alt="Panorama Image 3">
-        <img src="https://iili.io/2nPANkX.png" alt="Panorama Image 4">
-        <img src="https://iili.io/2nPAVBR.png" alt="Panorama Image 1"> <!-- Répète la première image pour un défilement continu -->
+        <img src="https://iili.io/2niQVUX.png" alt="Panorama Image"> <!-- Image fusionnée -->
+        <img src="https://iili.io/2niQVUX.png" alt="Panorama Image Clone"> <!-- Clone de l'image pour le défilement perpétuel -->
     </div>
 
     <!-- Header avec titre et barre de recherche -->
