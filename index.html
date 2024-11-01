@@ -1,207 +1,96 @@
 <!DOCTYPE html>
-<html lang="fr">
+<html lang="en">
 <head>
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
     <title>Bloxd.io Pack Utils</title>
-    <link rel="stylesheet" href="https://fonts.googleapis.com/css2?family=Pixelify+Sans&display=swap">
+    <link href="https://fonts.googleapis.com/css2?family=Pixelify+Sans&display=swap" rel="stylesheet">
     <style>
-        /* Style de l'arrière-plan */
         body {
             margin: 0;
             font-family: 'Pixelify Sans', sans-serif;
-            color: white;
-            overflow: hidden; /* Empêche le défilement */
-            height: 100vh; /* Prend toute la hauteur de la fenêtre */
-            position: relative; /* Permet de positionner les éléments */
-            background-color: #000; /* Fond noir pour contraster avec les images */
+            overflow: hidden; /* Cache la barre de défilement */
         }
 
-        /* Section de panorama */
         .panorama {
-            position: absolute;
-            top: 0;
-            left: 0;
-            width: 200%; /* Ajuste la largeur pour accueillir l'image fusionnée et le clone */
-            height: 100%;
-            display: flex;
-            animation: scroll 60s linear infinite; /* Animation de défilement à 60 secondes */
-            z-index: -1; /* Pour que le panorama reste derrière le contenu */
+            position: relative;
+            width: 200%; /* Pour permettre le défilement fluide */
+            height: 100vh; /* Prend toute la hauteur de la fenêtre */
+            animation: scroll 60s linear infinite; /* Animation de défilement */
+            display: flex; /* Utiliser flex pour aligner les images */
         }
 
-        /* Image du panorama */
         .panorama img {
-            width: 50%; /* Chaque image prend 50% de la largeur totale */
-            height: 100%; /* Prend toute la hauteur */
-            object-fit: cover; /* Remplit l'espace sans déformer */
+            width: 50%; /* Chaque image prend 50% de l'espace */
+            height: auto; /* Conserve les proportions de l'image */
         }
 
-        /* Animation de défilement */
         @keyframes scroll {
             0% { transform: translateX(0); }
-            100% { transform: translateX(-50%); } /* Fait défiler l'image de moitié de la largeur totale */
+            100% { transform: translateX(-50%); } /* Déplace vers la gauche de 50% */
         }
 
-        /* Header avec le dégradé ocre-orange */
-        .header {
-            text-align: center;
-            padding: 50px;
-            background: linear-gradient(135deg, #CC7722, #FF8C00);
-            max-width: 800px;
-            margin: 0 auto;
-            border-radius: 10px;
-            box-shadow: 0px 0px 15px rgba(0, 0, 0, 0.5);
-            position: relative;
-            z-index: 2;
-            top: 20px; /* Ajuste la position si nécessaire */
+        .content {
+            position: absolute;
+            top: 20px;
+            left: 20px;
+            color: white; /* Texte blanc */
+            text-shadow: 2px 2px 5px rgba(0, 0, 0, 0.5); /* Ombre pour le texte */
         }
 
-        /* Style du titre */
-        .title {
+        h1 {
             font-size: 3em;
             margin-bottom: 20px;
-            color: white;
-            text-shadow: 2px 2px 5px rgba(0, 0, 0, 0.7);
-            animation: textAnim 2s infinite alternate;
         }
 
-        /* Animation du titre */
-        @keyframes textAnim {
-            0% { transform: scale(1); color: #CC7722; }
-            100% { transform: scale(1.1); color: #FF4500; }
-        }
-
-        /* Barre de recherche */
-        .search-bar {
-            margin-top: 20px;
-        }
-
-        .search-bar input[type="text"] {
-            width: 100%;
+        input[type="text"] {
             padding: 10px;
             font-size: 1.2em;
             border: none;
             border-radius: 5px;
-            box-shadow: 0px 0px 10px rgba(0, 0, 0, 0.2);
+            box-shadow: 0 2px 5px rgba(0, 0, 0, 0.5);
         }
 
-        /* Bouton de recherche avec dégradé ocre-orange et ombrage */
-        .search-bar button {
-            margin-top: 10px;
-            padding: 10px 20px;
-            font-size: 1em;
-            background: linear-gradient(135deg, #D28C47, #FF8C00);
-            color: white;
-            border: none;
-            border-radius: 5px;
-            cursor: pointer;
-            box-shadow: 2px 4px 8px rgba(0, 0, 0, 0.3);
-            transition: transform 0.2s, box-shadow 0.2s;
+        .packs {
+            display: flex;
+            flex-direction: column;
+            margin-top: 100px; /* Espace pour que le contenu ne soit pas caché */
         }
 
-        /* Effet au survol */
-        .search-bar button:hover {
-            transform: scale(1.1);
-            box-shadow: 4px 6px 12px rgba(0, 0, 0, 0.4);
-            background: linear-gradient(135deg, #D4A76A, #FF6E1A);
-        }
-
-        /* Section principale pour les packs */
-        .packs-section {
-            margin: 150px auto 0; /* Espace pour le header */
-            max-width: 800px;
-            text-align: left;
-            padding: 10px;
-            position: relative;
-            z-index: 1;
-            overflow-y: auto; /* Permet le défilement dans cette section */
-            max-height: calc(100vh - 200px); /* Limite la hauteur de la section pour garder le header visible */
-        }
-
-        .packs-list {
-            color: #FFF;
-        }
-
-        .pack-item {
-            background-color: rgba(0, 0, 0, 0.4);
+        .pack {
+            background-color: rgba(255, 255, 255, 0.8); /* Couleur de fond des packs */
+            margin: 10px;
             padding: 15px;
-            border-radius: 5px;
-            margin-bottom: 15px;
-            box-shadow: 0px 2px 5px rgba(0, 0, 0, 0.3);
+            border-radius: 10px;
+            box-shadow: 0 2px 5px rgba(0, 0, 0, 0.3);
         }
 
-        .pack-title {
-            font-size: 1.5em;
-            font-weight: bold;
-            color: #FFD700;
-        }
-
-        .pack-description {
-            font-size: 1em;
-            color: #FFEFD5;
-        }
+        /* Ajoute d'autres styles ici selon besoin */
     </style>
 </head>
 <body>
-    <!-- Section de panorama -->
     <div class="panorama">
-        <img src="https://iili.io/2niQVUX.png" alt="Panorama Image"> <!-- Image fusionnée -->
-        <img src="https://iili.io/2niQVUX.png" alt="Panorama Image Clone"> <!-- Clone de l'image pour le défilement perpétuel -->
+        <img src="https://iili.io/2niQVUX.png" alt="Panorama">
+        <img src="https://iili.io/2niQVUX.png" alt="Panorama">
+    </div>
+    
+    <div class="content">
+        <h1>Welcome to Bloxd.io Pack Utils</h1>
+        <input type="text" placeholder="Search for packs..." />
     </div>
 
-    <!-- Header avec titre et barre de recherche -->
-    <div class="header">
-        <h1 class="title">Welcome to Bloxd.io Pack Utils</h1>
-        <div class="search-bar">
-            <input type="text" placeholder="Search for packs...">
-            <button>Search</button>
-        </div>
-    </div>
-
-    <!-- Section des faux packs pour tests -->
-    <div class="packs-section">
-        <div class="packs-list">
-            <div class="pack-item">
-                <div class="pack-title">Pack 1: Awesome Texture</div>
-                <div class="pack-description">A test texture pack with vibrant colors.</div>
-            </div>
-            <div class="pack-item">
-                <div class="pack-title">Pack 2: Retro Vibes</div>
-                <div class="pack-description">A nostalgic pack inspired by classic games.</div>
-            </div>
-            <div class="pack-item">
-                <div class="pack-title">Pack 3: High Contrast</div>
-                <div class="pack-description">Bold colors and sharp edges for a unique look.</div>
-            </div>
-            <div class="pack-item">
-                <div class="pack-title">Pack 4: Minimalist Style</div>
-                <div class="pack-description">Simple and clean textures with pastel colors.</div>
-            </div>
-            <div class="pack-item">
-                <div class="pack-title">Pack 5: Fantasy World</div>
-                <div class="pack-description">Magical textures with fantasy-themed elements.</div>
-            </div>
-            <div class="pack-item">
-                <div class="pack-title">Pack 6: Dark Mode</div>
-                <div class="pack-description">A dark-themed texture pack for low-light environments.</div>
-            </div>
-            <div class="pack-item">
-                <div class="pack-title">Pack 7: Pixel Perfection</div>
-                <div class="pack-description">A classic 8-bit look with pixel-perfect designs.</div>
-            </div>
-            <div class="pack-item">
-                <div class="pack-title">Pack 8: Nature's Touch</div>
-                <div class="pack-description">Textures inspired by nature and landscapes.</div>
-            </div>
-            <div class="pack-item">
-                <div class="pack-title">Pack 9: Cyberpunk Dream</div>
-                <div class="pack-description">Futuristic textures with neon colors and cyber themes.</div>
-            </div>
-            <div class="pack-item">
-                <div class="pack-title">Pack 10: Ocean Breeze</div>
-                <div class="pack-description">Textures inspired by the sea and ocean waves.</div>
-            </div>
-        </div>
+    <div class="packs">
+        <!-- Faux packs pour le test -->
+        <div class="pack">Pack 1</div>
+        <div class="pack">Pack 2</div>
+        <div class="pack">Pack 3</div>
+        <div class="pack">Pack 4</div>
+        <div class="pack">Pack 5</div>
+        <div class="pack">Pack 6</div>
+        <div class="pack">Pack 7</div>
+        <div class="pack">Pack 8</div>
+        <div class="pack">Pack 9</div>
+        <div class="pack">Pack 10</div>
     </div>
 </body>
 </html>
