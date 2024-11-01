@@ -147,7 +147,7 @@
         const scene = new THREE.Scene();
         const camera = new THREE.PerspectiveCamera(75, window.innerWidth / window.innerHeight, 0.1, 1000);
         const renderer = new THREE.WebGLRenderer({ canvas: document.getElementById('canvas'), alpha: true });
-
+        renderer.setClearColor(0x87CEEB); // Couleur de fond pour simuler le ciel bleu
         renderer.setSize(window.innerWidth, window.innerHeight);
         document.body.appendChild(renderer.domElement);
 
@@ -162,13 +162,12 @@
 
         // Fonction pour générer des nuages
         function createCloud() {
-            const cloudGeometry = new THREE.SpriteGeometry(50, 50);
+            const cloudGeometry = new THREE.PlaneGeometry(60, 40);
             const cloudTexture = new THREE.TextureLoader().load('https://iili.io/2nPAw7t.png'); // Texture des nuages
-            const cloudMaterial = new THREE.SpriteMaterial({ map: cloudTexture, transparent: true });
-            const cloud = new THREE.Sprite(cloudMaterial);
+            const cloudMaterial = new THREE.MeshBasicMaterial({ map: cloudTexture, transparent: true });
+            const cloud = new THREE.Mesh(cloudGeometry, cloudMaterial);
 
             cloud.position.set(Math.random() * 200 - 100, Math.random() * 100 - 50, -50);
-            cloud.scale.set(1 + Math.random() * 2, 1 + Math.random() * 1, 1);
             cloud.userData = { speed: Math.random() * 0.1 + 0.05 }; // Vitesse aléatoire pour le vent
             scene.add(cloud);
             return cloud;
@@ -184,14 +183,14 @@
         const sunGeometry = new THREE.CircleGeometry(10, 32);
         const sunMaterial = new THREE.MeshBasicMaterial({ color: 0xFFD700 });
         const sun = new THREE.Mesh(sunGeometry, sunMaterial);
-        sun.position.set(0, 40, 0);
+        sun.position.set(40, 50, -30);
         scene.add(sun);
 
-        camera.position.z = 50;
+        camera.position.z = 50; // Position de la caméra
 
+        // Animation des nuages
         function animate() {
             requestAnimationFrame(animate);
-            // Animation des nuages
             clouds.forEach(cloud => {
                 cloud.position.x += cloud.userData.speed;
                 if (cloud.position.x > 120) {
