@@ -22,16 +22,16 @@
             position: absolute;
             top: 0;
             left: 0;
-            width: 100%;
+            width: 400%; /* Ajuste la largeur pour accueillir les images */
             height: 100%;
             display: flex;
-            animation: scroll 20s linear infinite; /* Animation de défilement */
+            animation: scroll 40s linear infinite; /* Animation de défilement ralentit à 40 secondes */
             z-index: -1; /* Pour que le panorama reste derrière le contenu */
         }
 
         /* Images du panorama */
         .panorama img {
-            width: 100vw; /* Prend toute la largeur de la fenêtre */
+            width: 25%; /* Chaque image prend 25% de la largeur totale */
             height: 100%; /* Prend toute la hauteur */
             object-fit: cover; /* Remplit l'espace sans déformer */
         }
@@ -39,7 +39,7 @@
         /* Animation de défilement */
         @keyframes scroll {
             0% { transform: translateX(0); }
-            100% { transform: translateX(-400%); } /* Ajuster le pourcentage en fonction du nombre d'images */
+            100% { transform: translateX(-75%); } /* Ajusté pour faire défiler correctement */
         }
 
         /* Header avec le dégradé ocre-orange */
@@ -202,7 +202,7 @@
             </div>
             <div class="pack-item">
                 <div class="pack-title">Pack 10: Ocean Breeze</div>
-                <div class="pack-description">Relaxing textures inspired by the ocean and beaches.</div>
+                <div class="pack-description">Textures inspired by the sea and ocean waves.</div>
             </div>
         </div>
     </div>
