@@ -18,11 +18,11 @@
             overflow-x: hidden;
         }
 
-        /* Container principal avec dégradé jaune-orangé */
+        /* Container principal avec dégradé ocre-orange */
         .container {
             text-align: center;
             padding: 50px;
-            background: linear-gradient(135deg, #FFD700, #FF8C00); /* Dégradé jaune vers orange */
+            background: linear-gradient(135deg, #CC7722, #FF8C00); /* Dégradé ocre vers orange */
             max-width: 800px;
             margin: auto;
             border-radius: 10px;
@@ -40,7 +40,7 @@
 
         /* Animation du titre */
         @keyframes textAnim {
-            0% { transform: scale(1); color: #FFD700; }
+            0% { transform: scale(1); color: #CC7722; }
             100% { transform: scale(1.1); color: #FF4500; }
         }
 
@@ -58,22 +58,25 @@
             box-shadow: 0px 0px 10px rgba(0, 0, 0, 0.2);
         }
 
-        /* Bouton de recherche avec dégradé jaune-orangé */
+        /* Bouton de recherche avec dégradé ocre-orange et ombrage */
         .search-bar button {
             margin-top: 10px;
             padding: 10px 20px;
             font-size: 1em;
-            background: linear-gradient(135deg, #FFD700, #FF8C00); /* Dégradé jaune vers orange */
+            background: linear-gradient(135deg, #D28C47, #FF8C00); /* Dégradé ocre vers orange */
             color: white;
             border: none;
             border-radius: 5px;
             cursor: pointer;
-            transition: transform 0.2s;
+            box-shadow: 2px 4px 8px rgba(0, 0, 0, 0.3); /* Ombrage sous le bouton */
+            transition: transform 0.2s, box-shadow 0.2s;
         }
 
+        /* Effet au survol */
         .search-bar button:hover {
             transform: scale(1.1);
-            background: linear-gradient(135deg, #FFB800, #FF4500);
+            box-shadow: 4px 6px 12px rgba(0, 0, 0, 0.4); /* Ombrage accentué */
+            background: linear-gradient(135deg, #D4A76A, #FF6E1A); /* Effet de reflet en couleur */
         }
     </style>
 </head>
