@@ -21,11 +21,28 @@
             left: 0;
             width: 100%;
             height: 100%;
-            background: url('https://iili.io/2nPAW1p.png') no-repeat center center;
-            background-size: cover;
+            transform-style: preserve-3d;
             animation: rotate 60s linear infinite; /* Animation de rotation lente */
+            transform-origin: center; /* Centre de rotation */
             z-index: -1; /* Pour que la skybox reste derrière le contenu */
         }
+
+        /* Faces de la skybox */
+        .skybox div {
+            position: absolute;
+            width: 100%;
+            height: 100%;
+            background-size: cover;
+            background-position: center;
+        }
+
+        /* Images pour chaque face */
+        .skybox .front  { background-image: url('https://iili.io/2nPAW1p.png'); transform: rotateY(0deg) translateZ(300px); }
+        .skybox .back   { background-image: url('https://iili.io/2nPAVBR.png'); transform: rotateY(180deg) translateZ(300px); }
+        .skybox .right  { background-image: url('https://iili.io/2nPAj2I.png'); transform: rotateY(90deg) translateZ(300px); }
+        .skybox .left   { background-image: url('https://iili.io/2nPAXrN.png'); transform: rotateY(-90deg) translateZ(300px); }
+        .skybox .top    { background-image: url('https://iili.io/2nPANkX.png'); transform: rotateX(90deg) translateZ(300px); }
+        .skybox .bottom { background-image: url('https://iili.io/2nPAw7t.png'); transform: rotateX(-90deg) translateZ(300px); }
 
         /* Animation de rotation */
         @keyframes rotate {
@@ -131,7 +148,14 @@
     </style>
 </head>
 <body>
-    <div class="skybox"></div> <!-- Ajout de la skybox -->
+    <div class="skybox">
+        <div class="front"></div>
+        <div class="back"></div>
+        <div class="right"></div>
+        <div class="left"></div>
+        <div class="top"></div>
+        <div class="bottom"></div>
+    </div> <!-- Ajout de la skybox -->
 
     <!-- Header avec titre et barre de recherche -->
     <div class="header">
@@ -179,11 +203,7 @@
             </div>
             <div class="pack-item">
                 <div class="pack-title">Pack 9: Cyberpunk Glow</div>
-                <div class="pack-description">Futuristic textures with neon accents.</div>
-            </div>
-            <div class="pack-item">
-                <div class="pack-title">Pack 10: Vintage Grunge</div>
-                <div class="pack-description">A gritty, worn-out look with muted colors.</div>
+                <div class="pack-description">Futuristic textures with neon colors and cyber themes.</div>
             </div>
         </div>
     </div>
