@@ -27,11 +27,16 @@
             align-items: center;
         }
 
+        .buttons {
+            display: flex;
+            gap: 10px;
+        }
+
         h1 {
             color: #ff6600;
         }
 
-        .login-btn, .profile-btn, .logout-btn {
+        .btn {
             background-color: #ff6600;
             color: white;
             border: none;
@@ -40,7 +45,7 @@
             cursor: pointer;
         }
 
-        .login-btn:hover, .profile-btn:hover, .logout-btn:hover {
+        .btn:hover {
             background-color: #e65c00;
         }
 
@@ -74,7 +79,7 @@
             cursor: pointer;
         }
 
-        input[type="text"], input[type="password"], input[type="file"] {
+        input[type="text"], input[type="password"], input[type="file"], textarea {
             width: 100%;
             padding: 10px;
             margin: 10px 0;
@@ -82,7 +87,7 @@
             border-radius: 5px;
         }
 
-        input[type="submit"] {
+        input[type="submit"], button {
             background-color: #ff6600;
             color: white;
             border: none;
@@ -92,21 +97,12 @@
             width: 100%;
         }
 
-        input[type="submit"]:hover {
+        input[type="submit"]:hover, button:hover {
             background-color: #e65c00;
         }
 
-        .profile-section {
-            display: flex;
-            align-items: center;
-            margin-top: 20px;
-        }
-
-        .profile-section img {
-            width: 50px;
-            height: 50px;
-            border-radius: 50%;
-            margin-right: 10px;
+        .pack-details {
+            display: none;
         }
     </style>
 </head>
@@ -114,26 +110,21 @@
     <div class="container">
         <div class="header">
             <h1>Bloxd.io Pack Utils</h1>
-            <button class="login-btn" onclick="openLoginModal()">Login/Sign Up</button>
-            <button class="profile-btn" style="display: none;" onclick="openProfileModal()">Profile</button>
-            <button class="logout-btn" style="display: none;" onclick="logout()">Logout</button>
+            <div class="buttons">
+                <button class="btn login-btn" onclick="openLoginModal()">Login/Sign Up</button>
+                <button class="btn profile-btn" style="display: none;" onclick="openProfileModal()">Profile</button>
+                <button class="btn logout-btn" style="display: none;" onclick="logout()">Logout</button>
+            </div>
         </div>
         
-        <div class="profile-section" id="profileSection" style="display: none;">
-            <img id="profileImage" src="https://via.placeholder.com/50" alt="Profile Image">
-            <span id="usernameDisplay">Username</span>
-        </div>
-
         <input type="text" id="searchBar" placeholder="Search packs...">
         <div id="packList">
-            <!-- Fake packs with random icons -->
             <div class="pack" onclick="showDetails('Pack 1')">
                 <img src="https://via.placeholder.com/50" alt="Pack 1 icon">
                 <div>
                     <strong>Pack 1</strong>
                     <div class="details">Downloads: 123 | Views: 456 | Rating: ★★★★☆</div>
                 </div>
-                <button onclick="downloadPack('pack1.zip'); event.stopPropagation();">Download</button>
             </div>
             <div class="pack" onclick="showDetails('Pack 2')">
                 <img src="https://via.placeholder.com/50" alt="Pack 2 icon">
@@ -141,12 +132,21 @@
                     <strong>Pack 2</strong>
                     <div class="details">Downloads: 78 | Views: 321 | Rating: ★★★☆☆</div>
                 </div>
-                <button onclick="downloadPack('pack2.zip'); event.stopPropagation();">Download</button>
             </div>
+        </div>
+
+        <div class="pack-details" id="packDetails">
+            <h2 id="packTitle"></h2>
+            <p id="packDescription">Description: This is a sample description of the pack.</p>
+            <div id="packImages">
+                <img src="https://via.placeholder.com/150" alt="Sample pack image">
+            </div>
+            <textarea id="commentBox" placeholder="Add a comment..." style="display: none;"></textarea>
+            <button id="commentBtn" onclick="submitComment()" style="display: none;">Submit Comment</button>
         </div>
     </div>
 
-    <!-- Modal for login/signup -->
+    <!-- Modals -->
     <div id="loginModal" class="modal">
         <div class="modal-content">
             <span class="close" onclick="closeLoginModal()">&times;</span>
@@ -159,7 +159,6 @@
         </div>
     </div>
 
-    <!-- Modal for profile settings -->
     <div id="profileModal" class="modal">
         <div class="modal-content">
             <span class="close" onclick="closeProfileModal()">&times;</span>
@@ -175,12 +174,44 @@
     <script>
         let isLoggedIn = false;
 
-        function downloadPack(packName) {
-            alert('Downloading ' + packName);
+        function handleLogin(event) {
+            event.preventDefault();
+            const username = document.getElementById('username').value;
+            if (username) {
+                isLoggedIn = true;
+                document.querySelector('.login-btn').style.display = 'none';
+                document.querySelector('.profile-btn').style.display = 'inline-block';
+                document.querySelector('.logout-btn').style.display = 'inline-block';
+                closeLoginModal();
+            }
+        }
+
+        function logout() {
+            isLoggedIn = false;
+            document.querySelector('.login-btn').style.display = 'inline-block';
+            document.querySelector('.profile-btn').style.display = 'none';
+            document.querySelector('.logout-btn').style.display = 'none';
+            document.getElementById('packDetails').style.display = 'none';
         }
 
         function showDetails(packName) {
-            alert('Showing details for ' + packName);
+            document.getElementById('packTitle').textContent = packName;
+            document.getElementById('packDetails').style.display = 'block';
+            if (isLoggedIn) {
+                document.getElementById('commentBox').style.display = 'block';
+                document.getElementById('commentBtn').style.display = 'block';
+            } else {
+                document.getElementById('commentBox').style.display = 'none';
+                document.getElementById('commentBtn').style.display = 'none';
+            }
+        }
+
+        function submitComment() {
+            const comment = document.getElementById('commentBox').value;
+            if (comment) {
+                alert('Comment submitted: ' + comment);
+                document.getElementById('commentBox').value = '';
+            }
         }
 
         function openLoginModal() {
@@ -197,45 +228,6 @@
 
         function closeProfileModal() {
             document.getElementById('profileModal').style.display = 'none';
-        }
-
-        function handleLogin(event) {
-            event.preventDefault();
-            const username = document.getElementById('username').value;
-            if (username) {
-                isLoggedIn = true;
-                document.querySelector('.login-btn').style.display = 'none';
-                document.querySelector('.profile-btn').style.display = 'inline-block';
-                document.querySelector('.logout-btn').style.display = 'inline-block';
-                document.getElementById('profileSection').style.display = 'flex';
-                document.getElementById('usernameDisplay').textContent = username;
-                closeLoginModal();
-            }
-        }
-
-        function logout() {
-            isLoggedIn = false;
-            document.querySelector('.login-btn').style.display = 'inline-block';
-            document.querySelector('.profile-btn').style.display = 'none';
-            document.querySelector('.logout-btn').style.display = 'none';
-            document.getElementById('profileSection').style.display = 'none';
-        }
-
-        function updateProfile(event) {
-            event.preventDefault();
-            const newUsername = document.getElementById('newUsername').value;
-            const profileImageInput = document.getElementById('profileImageInput');
-            if (newUsername) {
-                document.getElementById('usernameDisplay').textContent = newUsername;
-            }
-            if (profileImageInput.files.length > 0) {
-                const reader = new FileReader();
-                reader.onload = function(e) {
-                    document.getElementById('profileImage').src = e.target.result;
-                };
-                reader.readAsDataURL(profileImageInput.files[0]);
-            }
-            closeProfileModal();
         }
     </script>
 </body>
