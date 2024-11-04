@@ -32,10 +32,6 @@
             gap: 10px;
         }
 
-        h1 {
-            color: #ff6600;
-        }
-
         .btn {
             background-color: #ff6600;
             color: white;
@@ -69,17 +65,13 @@
             width: 90%;
         }
 
-        .modal-content h2 {
-            margin-top: 0;
-        }
-
         .close {
             float: right;
             font-size: 24px;
             cursor: pointer;
         }
 
-        input[type="text"], input[type="password"], input[type="file"], textarea {
+        input[type="text"], input[type="password"] {
             width: 100%;
             padding: 10px;
             margin: 10px 0;
@@ -87,21 +79,15 @@
             border-radius: 5px;
         }
 
-        input[type="submit"], button {
-            background-color: #ff6600;
-            color: white;
-            border: none;
-            padding: 10px 15px;
+        .pack {
+            border: 1px solid #ddd;
+            padding: 10px;
+            margin-bottom: 10px;
             border-radius: 5px;
-            cursor: pointer;
-            width: 100%;
+            background-color: #f9f9f9;
         }
 
-        input[type="submit"]:hover, button:hover {
-            background-color: #e65c00;
-        }
-
-        .pack-details {
+        .profile-section {
             display: none;
         }
 
@@ -119,17 +105,17 @@
             <h1>Bloxd.io Pack Utils</h1>
             <div class="buttons">
                 <button class="btn login-btn" onclick="openLoginModal()">Login/Sign Up</button>
-                <div class="profile-section" style="display: none;">
+                <div class="profile-section">
                     <img src="" id="profileImage" class="profile-image" alt="Profile Image">
-                    <button class="btn profile-btn" onclick="openProfileModal()">Profile</button>
+                    <span id="usernameDisplay"></span>
+                    <button class="btn" onclick="logout()">Logout</button>
                 </div>
-                <button class="btn logout-btn" style="display: none;" onclick="logout()">Logout</button>
             </div>
         </div>
-        
-        <!-- Contenu principal -->
-        
-        <!-- Modals -->
+
+        <div id="packsContainer"></div>
+
+        <!-- Login Modal -->
         <div id="loginModal" class="modal">
             <div class="modal-content">
                 <span class="close" onclick="closeLoginModal()">&times;</span>
@@ -141,31 +127,16 @@
                 </form>
             </div>
         </div>
-
-        <div id="profileModal" class="modal">
-            <div class="modal-content">
-                <span class="close" onclick="closeProfileModal()">&times;</span>
-                <h2>Profile Settings</h2>
-                <form onsubmit="updateProfile(event)">
-                    <input type="text" id="newUsername" placeholder="New Username">
-                    <input type="file" id="profileImageInput">
-                    <input type="submit" value="Update Profile">
-                </form>
-            </div>
-        </div>
-
     </div>
 
     <script>
-        let isLoggedIn = localStorage.getItem('isLoggedIn') === 'true';
-        let storedUsername = localStorage.getItem('username');
-        let storedProfileImage = localStorage.getItem('profileImage');
+        let users = JSON.parse(localStorage.getItem('users')) || {};
+        let currentUser = localStorage.getItem('currentUser');
 
-        if (isLoggedIn) {
+        if (currentUser) {
             document.querySelector('.login-btn').style.display = 'none';
             document.querySelector('.profile-section').style.display = 'flex';
-            document.querySelector('.logout-btn').style.display = 'inline-block';
-            document.getElementById('profileImage').src = storedProfileImage || 'https://via.placeholder.com/50';
+            document.getElementById('usernameDisplay').textContent = currentUser;
         }
 
         function handleLogin(event) {
@@ -173,49 +144,31 @@
             const username = document.getElementById('username').value;
             const password = document.getElementById('password').value;
 
-            if (username && password) {
-                localStorage.setItem('username', username);
-                localStorage.setItem('isLoggedIn', 'true');
-                isLoggedIn = true;
-
-                document.querySelector('.login-btn').style.display = 'none';
-                document.querySelector('.profile-section').style.display = 'flex';
-                document.querySelector('.logout-btn').style.display = 'inline-block';
-                closeLoginModal();
+            if (users[username] && users[username] === password) {
+                // Connexion réussie
+                localStorage.setItem('currentUser', username);
+                alert('Login successful!');
+            } else if (!users[username]) {
+                // Inscription si l'utilisateur n'existe pas
+                users[username] = password;
+                localStorage.setItem('users', JSON.stringify(users));
+                localStorage.setItem('currentUser', username);
+                alert('Account created and logged in!');
+            } else {
+                alert('Incorrect password!');
+                return;
             }
+
+            closeLoginModal();
+            document.querySelector('.login-btn').style.display = 'none';
+            document.querySelector('.profile-section').style.display = 'flex';
+            document.getElementById('usernameDisplay').textContent = username;
         }
 
         function logout() {
-            localStorage.removeItem('isLoggedIn');
-            localStorage.removeItem('username');
-            localStorage.removeItem('profileImage');
-            isLoggedIn = false;
-
+            localStorage.removeItem('currentUser');
             document.querySelector('.login-btn').style.display = 'inline-block';
             document.querySelector('.profile-section').style.display = 'none';
-            document.querySelector('.logout-btn').style.display = 'none';
-        }
-
-        function updateProfile(event) {
-            event.preventDefault();
-            const newUsername = document.getElementById('newUsername').value;
-            const profileImageInput = document.getElementById('profileImageInput').files[0];
-
-            if (newUsername) {
-                localStorage.setItem('username', newUsername);
-            }
-
-            if (profileImageInput) {
-                const reader = new FileReader();
-                reader.onload = function(e) {
-                    const base64Image = e.target.result;
-                    localStorage.setItem('profileImage', base64Image);
-                    document.getElementById('profileImage').src = base64Image;
-                };
-                reader.readAsDataURL(profileImageInput);
-            }
-
-            closeProfileModal();
         }
 
         function openLoginModal() {
@@ -226,13 +179,27 @@
             document.getElementById('loginModal').style.display = 'none';
         }
 
-        function openProfileModal() {
-            document.getElementById('profileModal').style.display = 'flex';
+        function displayPacks() {
+            const packsContainer = document.getElementById('packsContainer');
+            const samplePacks = [
+                { name: 'Pack 1', description: 'Sample Pack 1', downloads: 120, views: 300, rating: 4.5 },
+                { name: 'Pack 2', description: 'Sample Pack 2', downloads: 90, views: 150, rating: 4.0 },
+                { name: 'Pack 3', description: 'Sample Pack 3', downloads: 200, views: 500, rating: 5.0 }
+            ];
+
+            samplePacks.forEach(pack => {
+                const packElement = document.createElement('div');
+                packElement.className = 'pack';
+                packElement.innerHTML = `
+                    <h3>${pack.name}</h3>
+                    <p>${pack.description}</p>
+                    <p>Downloads: ${pack.downloads} | Views: ${pack.views} | Rating: ${pack.rating} ⭐</p>
+                `;
+                packsContainer.appendChild(packElement);
+            });
         }
 
-        function closeProfileModal() {
-            document.getElementById('profileModal').style.display = 'none';
-        }
+        displayPacks();
     </script>
 </body>
 </html>
