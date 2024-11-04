@@ -3,7 +3,7 @@
 <head>
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
-    <title>Bloxd.io Pack Utils - Sign Up and Upload</title>
+    <title>Bloxd.io Pack Utils</title>
     <link href="https://fonts.googleapis.com/css2?family=Pixelify+Sans&display=swap" rel="stylesheet">
     <style>
         body {
@@ -13,7 +13,7 @@
         }
 
         .container {
-            max-width: 600px;
+            max-width: 800px;
             margin: 0 auto;
             background-color: #fff;
             padding: 20px;
@@ -23,9 +23,10 @@
 
         h1 {
             text-align: center;
+            color: #ff6600;
         }
 
-        input[type="text"], input[type="password"], input[type="file"] {
+        input[type="text"] {
             width: 100%;
             padding: 10px;
             margin: 10px 0;
@@ -33,58 +34,84 @@
             border-radius: 5px;
         }
 
-        button {
-            width: 100%;
-            padding: 10px;
-            background-color: orange;
+        .pack {
+            border: 1px solid #ddd;
+            padding: 15px;
+            margin-bottom: 10px;
+            border-radius: 5px;
+            background-color: #ffcc80;
+            display: flex;
+            justify-content: space-between;
+        }
+
+        .pack button {
+            background-color: #ff6600;
             color: white;
             border: none;
+            padding: 5px 10px;
             border-radius: 5px;
             cursor: pointer;
         }
 
-        button:hover {
-            background-color: darkorange;
+        .pack button:hover {
+            background-color: #e65c00;
         }
 
-        .warning {
-            color: red;
-            margin-top: 20px;
-            text-align: center;
+        .details {
+            margin-bottom: 5px;
+            font-size: 14px;
         }
     </style>
 </head>
 <body>
     <div class="container">
-        <h1>Create an Account</h1>
-        <form id="signupForm">
-            <input type="text" placeholder="Username" id="username" required><br>
-            <input type="password" placeholder="Password" id="password" required><br>
-            <button type="submit">Sign Up</button>
-        </form>
-
-        <h1>Upload a Pack</h1>
-        <form id="uploadForm" enctype="multipart/form-data">
-            <input type="text" placeholder="Pack Name" id="packName" required><br>
-            <input type="file" id="packFile" accept=".zip" required><br>
-            <button type="submit">Upload Pack</button>
-        </form>
-
-        <div class="warning">
-            <p>Please do not upload any files containing viruses or harmful content.</p>
+        <h1>Bloxd.io Pack Utils</h1>
+        <input type="text" id="searchBar" placeholder="Search packs...">
+        <div id="packList">
+            <!-- Fake packs -->
+            <div class="pack">
+                <div>
+                    <strong>Pack 1</strong>
+                    <div class="details">Downloads: 123 | Views: 456 | Rating: ★★★★☆</div>
+                </div>
+                <button onclick="downloadPack('pack1.zip')">Download</button>
+            </div>
+            <div class="pack">
+                <div>
+                    <strong>Pack 2</strong>
+                    <div class="details">Downloads: 78 | Views: 321 | Rating: ★★★☆☆</div>
+                </div>
+                <button onclick="downloadPack('pack2.zip')">Download</button>
+            </div>
+            <div class="pack">
+                <div>
+                    <strong>Pack 3</strong>
+                    <div class="details">Downloads: 50 | Views: 120 | Rating: ★★★★☆</div>
+                </div>
+                <button onclick="downloadPack('pack3.zip')">Download</button>
+            </div>
         </div>
     </div>
 
     <script>
-        document.getElementById('signupForm').onsubmit = function(event) {
-            event.preventDefault();
-            alert('Sign up feature needs server-side implementation.');
-        };
+        function downloadPack(packName) {
+            alert('Downloading ' + packName);
+            // Logic for downloading would go here.
+        }
 
-        document.getElementById('uploadForm').onsubmit = function(event) {
-            event.preventDefault();
-            alert('Upload feature needs server-side implementation.');
-        };
+        // Search functionality
+        document.getElementById('searchBar').addEventListener('input', function() {
+            const filter = this.value.toLowerCase();
+            const packs = document.querySelectorAll('.pack');
+            packs.forEach(pack => {
+                const packName = pack.querySelector('strong').textContent.toLowerCase();
+                if (packName.includes(filter)) {
+                    pack.style.display = 'block';
+                } else {
+                    pack.style.display = 'none';
+                }
+            });
+        });
     </script>
 </body>
 </html>
