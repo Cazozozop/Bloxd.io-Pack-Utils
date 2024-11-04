@@ -21,53 +21,27 @@
             box-shadow: 0 0 10px rgba(0, 0, 0, 0.1);
         }
 
+        .header {
+            display: flex;
+            justify-content: space-between;
+            align-items: center;
+        }
+
         h1 {
-            text-align: center;
             color: #ff6600;
         }
 
-        input[type="text"] {
-            width: 100%;
-            padding: 10px;
-            margin: 10px 0;
-            border: 1px solid #ddd;
-            border-radius: 5px;
-        }
-
-        .pack {
-            display: flex;
-            align-items: center;
-            border: 1px solid #ddd;
-            padding: 15px;
-            margin-bottom: 10px;
-            border-radius: 5px;
-            background-color: #ffcc80;
-            cursor: pointer;
-        }
-
-        .pack img {
-            width: 50px;
-            height: 50px;
-            margin-right: 15px;
-            border-radius: 5px;
-        }
-
-        .pack button {
+        .login-btn {
             background-color: #ff6600;
             color: white;
             border: none;
-            padding: 5px 10px;
+            padding: 10px 15px;
             border-radius: 5px;
             cursor: pointer;
-            margin-left: auto;
         }
 
-        .pack button:hover {
+        .login-btn:hover {
             background-color: #e65c00;
-        }
-
-        .details {
-            font-size: 14px;
         }
 
         .modal {
@@ -86,13 +60,12 @@
             background-color: #fff;
             padding: 20px;
             border-radius: 8px;
-            max-width: 600px;
+            max-width: 400px;
             width: 90%;
         }
 
-        .modal-header {
-            font-size: 24px;
-            margin-bottom: 15px;
+        .modal-content h2 {
+            margin-top: 0;
         }
 
         .close {
@@ -101,16 +74,35 @@
             cursor: pointer;
         }
 
-        .comments {
-            margin-top: 10px;
-            border-top: 1px solid #ddd;
-            padding-top: 10px;
+        input[type="text"], input[type="password"] {
+            width: 100%;
+            padding: 10px;
+            margin: 10px 0;
+            border: 1px solid #ddd;
+            border-radius: 5px;
+        }
+
+        input[type="submit"] {
+            background-color: #ff6600;
+            color: white;
+            border: none;
+            padding: 10px 15px;
+            border-radius: 5px;
+            cursor: pointer;
+            width: 100%;
+        }
+
+        input[type="submit"]:hover {
+            background-color: #e65c00;
         }
     </style>
 </head>
 <body>
     <div class="container">
-        <h1>Bloxd.io Pack Utils</h1>
+        <div class="header">
+            <h1>Bloxd.io Pack Utils</h1>
+            <button class="login-btn" onclick="openLoginModal()">Login</button>
+        </div>
         <input type="text" id="searchBar" placeholder="Search packs...">
         <div id="packList">
             <!-- Fake packs with random icons -->
@@ -130,47 +122,38 @@
                 </div>
                 <button onclick="downloadPack('pack2.zip'); event.stopPropagation();">Download</button>
             </div>
-            <div class="pack" onclick="showDetails('Pack 3')">
-                <img src="https://via.placeholder.com/50" alt="Pack 3 icon">
-                <div>
-                    <strong>Pack 3</strong>
-                    <div class="details">Downloads: 50 | Views: 120 | Rating: ★★★★☆</div>
-                </div>
-                <button onclick="downloadPack('pack3.zip'); event.stopPropagation();">Download</button>
-            </div>
         </div>
     </div>
 
-    <!-- Modal for pack details -->
-    <div id="packModal" class="modal">
+    <!-- Modal for login -->
+    <div id="loginModal" class="modal">
         <div class="modal-content">
-            <span class="close" onclick="closeModal()">&times;</span>
-            <div id="modalHeader" class="modal-header"></div>
-            <div id="modalBody">
-                <p>Description: This is a fake description for testing purposes.</p>
-                <div><img src="https://via.placeholder.com/400" alt="Pack preview"></div>
-                <div class="comments">
-                    <strong>Comments:</strong>
-                    <p>User1: Great pack!</p>
-                    <p>User2: Needs some improvements.</p>
-                </div>
-            </div>
+            <span class="close" onclick="closeLoginModal()">&times;</span>
+            <h2>Login</h2>
+            <form>
+                <input type="text" placeholder="Username" required>
+                <input type="password" placeholder="Password" required>
+                <input type="submit" value="Login">
+            </form>
+            <p>Please do not upload packs containing harmful content.</p>
         </div>
     </div>
 
     <script>
         function downloadPack(packName) {
             alert('Downloading ' + packName);
-            // Logic for downloading would go here.
         }
 
         function showDetails(packName) {
-            document.getElementById('modalHeader').textContent = packName;
-            document.getElementById('packModal').style.display = 'flex';
+            alert('Showing details for ' + packName);
         }
 
-        function closeModal() {
-            document.getElementById('packModal').style.display = 'none';
+        function openLoginModal() {
+            document.getElementById('loginModal').style.display = 'flex';
+        }
+
+        function closeLoginModal() {
+            document.getElementById('loginModal').style.display = 'none';
         }
 
         // Search functionality
