@@ -104,6 +104,13 @@
         .pack-details {
             display: none;
         }
+
+        .profile-image {
+            width: 50px;
+            height: 50px;
+            border-radius: 50%;
+            margin-right: 10px;
+        }
     </style>
 </head>
 <body>
@@ -112,106 +119,103 @@
             <h1>Bloxd.io Pack Utils</h1>
             <div class="buttons">
                 <button class="btn login-btn" onclick="openLoginModal()">Login/Sign Up</button>
-                <button class="btn profile-btn" style="display: none;" onclick="openProfileModal()">Profile</button>
+                <div class="profile-section" style="display: none;">
+                    <img src="" id="profileImage" class="profile-image" alt="Profile Image">
+                    <button class="btn profile-btn" onclick="openProfileModal()">Profile</button>
+                </div>
                 <button class="btn logout-btn" style="display: none;" onclick="logout()">Logout</button>
             </div>
         </div>
         
-        <input type="text" id="searchBar" placeholder="Search packs...">
-        <div id="packList">
-            <div class="pack" onclick="showDetails('Pack 1')">
-                <img src="https://via.placeholder.com/50" alt="Pack 1 icon">
-                <div>
-                    <strong>Pack 1</strong>
-                    <div class="details">Downloads: 123 | Views: 456 | Rating: ★★★★☆</div>
-                </div>
-            </div>
-            <div class="pack" onclick="showDetails('Pack 2')">
-                <img src="https://via.placeholder.com/50" alt="Pack 2 icon">
-                <div>
-                    <strong>Pack 2</strong>
-                    <div class="details">Downloads: 78 | Views: 321 | Rating: ★★★☆☆</div>
-                </div>
+        <!-- Contenu principal -->
+        
+        <!-- Modals -->
+        <div id="loginModal" class="modal">
+            <div class="modal-content">
+                <span class="close" onclick="closeLoginModal()">&times;</span>
+                <h2>Login / Sign Up</h2>
+                <form onsubmit="handleLogin(event)">
+                    <input type="text" id="username" placeholder="Username" required>
+                    <input type="password" id="password" placeholder="Password" required>
+                    <input type="submit" value="Login / Sign Up">
+                </form>
             </div>
         </div>
 
-        <div class="pack-details" id="packDetails">
-            <h2 id="packTitle"></h2>
-            <p id="packDescription">Description: This is a sample description of the pack.</p>
-            <div id="packImages">
-                <img src="https://via.placeholder.com/150" alt="Sample pack image">
+        <div id="profileModal" class="modal">
+            <div class="modal-content">
+                <span class="close" onclick="closeProfileModal()">&times;</span>
+                <h2>Profile Settings</h2>
+                <form onsubmit="updateProfile(event)">
+                    <input type="text" id="newUsername" placeholder="New Username">
+                    <input type="file" id="profileImageInput">
+                    <input type="submit" value="Update Profile">
+                </form>
             </div>
-            <textarea id="commentBox" placeholder="Add a comment..." style="display: none;"></textarea>
-            <button id="commentBtn" onclick="submitComment()" style="display: none;">Submit Comment</button>
         </div>
-    </div>
 
-    <!-- Modals -->
-    <div id="loginModal" class="modal">
-        <div class="modal-content">
-            <span class="close" onclick="closeLoginModal()">&times;</span>
-            <h2>Login / Sign Up</h2>
-            <form onsubmit="handleLogin(event)">
-                <input type="text" id="username" placeholder="Username" required>
-                <input type="password" id="password" placeholder="Password" required>
-                <input type="submit" value="Login / Sign Up">
-            </form>
-        </div>
-    </div>
-
-    <div id="profileModal" class="modal">
-        <div class="modal-content">
-            <span class="close" onclick="closeProfileModal()">&times;</span>
-            <h2>Profile Settings</h2>
-            <form onsubmit="updateProfile(event)">
-                <input type="text" id="newUsername" placeholder="New Username">
-                <input type="file" id="profileImageInput">
-                <input type="submit" value="Update Profile">
-            </form>
-        </div>
     </div>
 
     <script>
-        let isLoggedIn = false;
+        let isLoggedIn = localStorage.getItem('isLoggedIn') === 'true';
+        let storedUsername = localStorage.getItem('username');
+        let storedProfileImage = localStorage.getItem('profileImage');
+
+        if (isLoggedIn) {
+            document.querySelector('.login-btn').style.display = 'none';
+            document.querySelector('.profile-section').style.display = 'flex';
+            document.querySelector('.logout-btn').style.display = 'inline-block';
+            document.getElementById('profileImage').src = storedProfileImage || 'https://via.placeholder.com/50';
+        }
 
         function handleLogin(event) {
             event.preventDefault();
             const username = document.getElementById('username').value;
-            if (username) {
+            const password = document.getElementById('password').value;
+
+            if (username && password) {
+                localStorage.setItem('username', username);
+                localStorage.setItem('isLoggedIn', 'true');
                 isLoggedIn = true;
+
                 document.querySelector('.login-btn').style.display = 'none';
-                document.querySelector('.profile-btn').style.display = 'inline-block';
+                document.querySelector('.profile-section').style.display = 'flex';
                 document.querySelector('.logout-btn').style.display = 'inline-block';
                 closeLoginModal();
             }
         }
 
         function logout() {
+            localStorage.removeItem('isLoggedIn');
+            localStorage.removeItem('username');
+            localStorage.removeItem('profileImage');
             isLoggedIn = false;
+
             document.querySelector('.login-btn').style.display = 'inline-block';
-            document.querySelector('.profile-btn').style.display = 'none';
+            document.querySelector('.profile-section').style.display = 'none';
             document.querySelector('.logout-btn').style.display = 'none';
-            document.getElementById('packDetails').style.display = 'none';
         }
 
-        function showDetails(packName) {
-            document.getElementById('packTitle').textContent = packName;
-            document.getElementById('packDetails').style.display = 'block';
-            if (isLoggedIn) {
-                document.getElementById('commentBox').style.display = 'block';
-                document.getElementById('commentBtn').style.display = 'block';
-            } else {
-                document.getElementById('commentBox').style.display = 'none';
-                document.getElementById('commentBtn').style.display = 'none';
-            }
-        }
+        function updateProfile(event) {
+            event.preventDefault();
+            const newUsername = document.getElementById('newUsername').value;
+            const profileImageInput = document.getElementById('profileImageInput').files[0];
 
-        function submitComment() {
-            const comment = document.getElementById('commentBox').value;
-            if (comment) {
-                alert('Comment submitted: ' + comment);
-                document.getElementById('commentBox').value = '';
+            if (newUsername) {
+                localStorage.setItem('username', newUsername);
             }
+
+            if (profileImageInput) {
+                const reader = new FileReader();
+                reader.onload = function(e) {
+                    const base64Image = e.target.result;
+                    localStorage.setItem('profileImage', base64Image);
+                    document.getElementById('profileImage').src = base64Image;
+                };
+                reader.readAsDataURL(profileImageInput);
+            }
+
+            closeProfileModal();
         }
 
         function openLoginModal() {
