@@ -4,202 +4,347 @@
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
     <title>Bloxd.io Pack Utils</title>
-    <link href="https://fonts.googleapis.com/css2?family=Pixelify+Sans&display=swap" rel="stylesheet">
     <style>
         body {
-            font-family: 'Pixelify Sans', sans-serif;
-            background-color: #f0f0f0;
-            padding: 20px;
-        }
-
-        .container {
-            max-width: 800px;
-            margin: 0 auto;
+            margin: 0;
+            font-family: 'Arial', sans-serif;
             background-color: #fff;
-            padding: 20px;
-            border-radius: 8px;
-            box-shadow: 0 0 10px rgba(0, 0, 0, 0.1);
+            color: #333;
         }
-
-        .header {
-            display: flex;
-            justify-content: space-between;
-            align-items: center;
-        }
-
-        .buttons {
-            display: flex;
-            gap: 10px;
-        }
-
-        .btn {
-            background-color: #ff6600;
-            color: white;
-            border: none;
-            padding: 10px 15px;
-            border-radius: 5px;
-            cursor: pointer;
-        }
-
-        .btn:hover {
-            background-color: #e65c00;
-        }
-
-        .modal {
-            display: none;
-            position: fixed;
+        #panorama {
+            position: absolute;
             top: 0;
             left: 0;
             width: 100%;
-            height: 100%;
-            background-color: rgba(0, 0, 0, 0.5);
+            height: 100vh;
+            background-image: url('https://iili.io/2niQVUX.png');
+            background-repeat: repeat-x;
+            background-position: center;
+            animation: moveBackground 60s linear infinite;
+            z-index: -1;
+        }
+        @keyframes moveBackground {
+            from { background-position: 0; }
+            to { background-position: -4036px; }
+        }
+        header {
+            display: flex;
+            justify-content: space-between;
+            align-items: center;
+            padding: 20px;
+            background-color: rgba(255, 165, 0, 0.8);
+            box-shadow: 0 4px 8px rgba(0, 0, 0, 0.2);
+        }
+        h1 {
+            font-size: 24px;
+            color: white;
+            text-shadow: 2px 2px 4px rgba(0, 0, 0, 0.8);
+        }
+        .search-bar {
+            display: flex;
+        }
+        .search-bar input {
+            padding: 10px;
+            border: none;
+            border-radius: 5px 0 0 5px;
+            width: 300px;
+        }
+        .search-bar button {
+            padding: 10px;
+            border: none;
+            background-color: #ffcc00;
+            color: #333;
+            border-radius: 0 5px 5px 0;
+            cursor: pointer;
+            box-shadow: 0 2px 4px rgba(0, 0, 0, 0.2);
+        }
+        .packs {
+            display: flex;
+            flex-wrap: wrap;
             justify-content: center;
+            padding: 20px;
+        }
+        .pack {
+            border: 1px solid #ccc;
+            border-radius: 10px;
+            margin: 10px;
+            padding: 10px;
+            width: 250px;
+            text-align: center;
+            background-color: #fff;
+            box-shadow: 0 2px 4px rgba(0, 0, 0, 0.2);
+            transition: transform 0.3s;
+        }
+        .pack:hover {
+            transform: scale(1.05);
+        }
+        .profile {
+            display: flex;
             align-items: center;
         }
-
+        .profile img {
+            border-radius: 50%;
+            width: 40px;
+            height: 40px;
+            margin-right: 10px;
+        }
+        .pack img {
+            width: 100%;
+            border-radius: 10px;
+        }
+        .modal {
+            display: none;
+            position: fixed;
+            z-index: 1000;
+            left: 0;
+            top: 0;
+            width: 100%;
+            height: 100%;
+            overflow: auto;
+            background-color: rgba(0, 0, 0, 0.8);
+            padding: 20px;
+            box-sizing: border-box;
+        }
         .modal-content {
             background-color: #fff;
+            margin: auto;
             padding: 20px;
-            border-radius: 8px;
-            max-width: 400px;
-            width: 90%;
+            border: 1px solid #888;
+            width: 80%;
+            max-width: 600px;
         }
-
         .close {
+            color: #aaa;
             float: right;
-            font-size: 24px;
+            font-size: 28px;
+            font-weight: bold;
+        }
+        .close:hover,
+        .close:focus {
+            color: black;
+            text-decoration: none;
             cursor: pointer;
         }
-
-        input[type="text"], input[type="password"] {
-            width: 100%;
+        .comments {
+            margin-top: 20px;
+        }
+        .comment {
+            border-top: 1px solid #ccc;
+            padding: 5px 0;
+        }
+        .comment-form {
+            display: flex;
+            flex-direction: column;
+            margin-top: 10px;
+        }
+        .comment-form input, .comment-form textarea {
             padding: 10px;
-            margin: 10px 0;
-            border: 1px solid #ddd;
+            margin: 5px 0;
+            border: 1px solid #ccc;
             border-radius: 5px;
-        }
-
-        .pack {
-            border: 1px solid #ddd;
-            padding: 10px;
-            margin-bottom: 10px;
-            border-radius: 5px;
-            background-color: #f9f9f9;
-        }
-
-        .profile-section {
-            display: none;
-        }
-
-        .profile-image {
-            width: 50px;
-            height: 50px;
-            border-radius: 50%;
-            margin-right: 10px;
         }
     </style>
 </head>
 <body>
-    <div class="container">
-        <div class="header">
-            <h1>Bloxd.io Pack Utils</h1>
-            <div class="buttons">
-                <button class="btn login-btn" onclick="openLoginModal()">Login/Sign Up</button>
-                <div class="profile-section">
-                    <img src="" id="profileImage" class="profile-image" alt="Profile Image">
-                    <span id="usernameDisplay"></span>
-                    <button class="btn" onclick="logout()">Logout</button>
-                </div>
-            </div>
+    <div id="panorama"></div>
+    <header>
+        <h1>Welcome to Bloxd.io Pack Utils</h1>
+        <div class="search-bar">
+            <input type="text" id="searchInput" placeholder="Search packs...">
+            <button onclick="searchPacks()">Search</button>
         </div>
+        <div class="profile">
+            <img id="profilePic" src="default_profile.png" alt="Profile Picture">
+            <button onclick="toggleLogin()">Login</button>
+            <button onclick="showProfile()">Profile</button>
+        </div>
+    </header>
+    <div class="packs" id="packs">
+        <!-- Packs will be injected here -->
+    </div>
 
-        <div id="packsContainer"></div>
-
-        <!-- Login Modal -->
-        <div id="loginModal" class="modal">
-            <div class="modal-content">
-                <span class="close" onclick="closeLoginModal()">&times;</span>
-                <h2>Login / Sign Up</h2>
-                <form onsubmit="handleLogin(event)">
-                    <input type="text" id="username" placeholder="Username" required>
-                    <input type="password" id="password" placeholder="Password" required>
-                    <input type="submit" value="Login / Sign Up">
-                </form>
+    <div id="modal" class="modal">
+        <div class="modal-content">
+            <span class="close" onclick="closeModal()">&times;</span>
+            <h2 id="packTitle"></h2>
+            <img id="packImage" src="" alt="Pack Image">
+            <p id="packDescription"></p>
+            <p><strong>Downloads:</strong> <span id="packDownloads"></span></p>
+            <p><strong>Views:</strong> <span id="packViews"></span></p>
+            <p><strong>Rating:</strong> <span id="packRating"></span></p>
+            <div class="comments" id="commentsSection"></div>
+            <div class="comment-form">
+                <input type="text" id="commentAuthor" placeholder="Your Name">
+                <textarea id="commentText" placeholder="Your Comment"></textarea>
+                <button onclick="addComment()">Submit Comment</button>
             </div>
         </div>
     </div>
 
     <script>
-        let users = JSON.parse(localStorage.getItem('users')) || {};
-        let currentUser = localStorage.getItem('currentUser');
-
-        if (currentUser) {
-            document.querySelector('.login-btn').style.display = 'none';
-            document.querySelector('.profile-section').style.display = 'flex';
-            document.getElementById('usernameDisplay').textContent = currentUser;
-        }
-
-        function handleLogin(event) {
-            event.preventDefault();
-            const username = document.getElementById('username').value;
-            const password = document.getElementById('password').value;
-
-            if (users[username] && users[username] === password) {
-                // Connexion réussie
-                localStorage.setItem('currentUser', username);
-                alert('Login successful!');
-            } else if (!users[username]) {
-                // Inscription si l'utilisateur n'existe pas
-                users[username] = password;
-                localStorage.setItem('users', JSON.stringify(users));
-                localStorage.setItem('currentUser', username);
-                alert('Account created and logged in!');
-            } else {
-                alert('Incorrect password!');
-                return;
+        const packs = [
+            {
+                title: 'Cool Texture Pack 1',
+                image: 'https://iili.io/2nPAW1p.png',
+                description: 'A cool texture pack that enhances your game!',
+                downloads: Math.floor(Math.random() * 1000),
+                views: Math.floor(Math.random() * 5000),
+                rating: (Math.random() * 5).toFixed(1),
+                comments: []
+            },
+            {
+                title: 'Cool Texture Pack 2',
+                image: 'https://iili.io/2nPAVBR.png',
+                description: 'An awesome pack with vibrant colors!',
+                downloads: Math.floor(Math.random() * 1000),
+                views: Math.floor(Math.random() * 5000),
+                rating: (Math.random() * 5).toFixed(1),
+                comments: []
+            },
+            {
+                title: 'Cool Texture Pack 3',
+                image: 'https://iili.io/2nPAj2I.png',
+                description: 'A minimalist pack for a clean look!',
+                downloads: Math.floor(Math.random() * 1000),
+                views: Math.floor(Math.random() * 5000),
+                rating: (Math.random() * 5).toFixed(1),
+                comments: []
+            },
+            {
+                title: 'Cool Texture Pack 4',
+                image: 'https://iili.io/2nPAXrN.png',
+                description: 'A retro style texture pack!',
+                downloads: Math.floor(Math.random() * 1000),
+                views: Math.floor(Math.random() * 5000),
+                rating: (Math.random() * 5).toFixed(1),
+                comments: []
+            },
+            {
+                title: 'Cool Texture Pack 5',
+                image: 'https://iili.io/2nPANkX.png',
+                description: 'A vibrant texture pack with a modern twist!',
+                downloads: Math.floor(Math.random() * 1000),
+                views: Math.floor(Math.random() * 5000),
+                rating: (Math.random() * 5).toFixed(1),
+                comments: []
+            },
+            {
+                title: 'Cool Texture Pack 6',
+                image: 'https://iili.io/2nPAw7t.png',
+                description: 'A nature-themed texture pack!',
+                downloads: Math.floor(Math.random() * 1000),
+                views: Math.floor(Math.random() * 5000),
+                rating: (Math.random() * 5).toFixed(1),
+                comments: []
             }
-
-            closeLoginModal();
-            document.querySelector('.login-btn').style.display = 'none';
-            document.querySelector('.profile-section').style.display = 'flex';
-            document.getElementById('usernameDisplay').textContent = username;
-        }
-
-        function logout() {
-            localStorage.removeItem('currentUser');
-            document.querySelector('.login-btn').style.display = 'inline-block';
-            document.querySelector('.profile-section').style.display = 'none';
-        }
-
-        function openLoginModal() {
-            document.getElementById('loginModal').style.display = 'flex';
-        }
-
-        function closeLoginModal() {
-            document.getElementById('loginModal').style.display = 'none';
-        }
+        ];
 
         function displayPacks() {
-            const packsContainer = document.getElementById('packsContainer');
-            const samplePacks = [
-                { name: 'Pack 1', description: 'Sample Pack 1', downloads: 120, views: 300, rating: 4.5 },
-                { name: 'Pack 2', description: 'Sample Pack 2', downloads: 90, views: 150, rating: 4.0 },
-                { name: 'Pack 3', description: 'Sample Pack 3', downloads: 200, views: 500, rating: 5.0 }
-            ];
-
-            samplePacks.forEach(pack => {
-                const packElement = document.createElement('div');
-                packElement.className = 'pack';
-                packElement.innerHTML = `
-                    <h3>${pack.name}</h3>
-                    <p>${pack.description}</p>
-                    <p>Downloads: ${pack.downloads} | Views: ${pack.views} | Rating: ${pack.rating} ⭐</p>
+            const packsContainer = document.getElementById('packs');
+            packs.forEach((pack, index) => {
+                const packDiv = document.createElement('div');
+                packDiv.classList.add('pack');
+                packDiv.innerHTML = `
+                    <h3>${pack.title}</h3>
+                    <img src="${pack.image}" alt="${pack.title}">
+                    <p><strong>Downloads:</strong> ${pack.downloads}</p>
+                    <p><strong>Views:</strong> ${pack.views}</p>
+                    <p><strong>Rating:</strong> ${pack.rating}</p>
+                    <button onclick="openModal(${index})">View Details</button>
                 `;
-                packsContainer.appendChild(packElement);
+                packsContainer.appendChild(packDiv);
             });
         }
 
-        displayPacks();
+        function openModal(index) {
+            const pack = packs[index];
+            document.getElementById('packTitle').innerText = pack.title;
+            document.getElementById('packImage').src = pack.image;
+            document.getElementById('packDescription').innerText = pack.description;
+            document.getElementById('packDownloads').innerText = pack.downloads;
+            document.getElementById('packViews').innerText = pack.views;
+            document.getElementById('packRating').innerText = pack.rating;
+            displayComments(pack.comments);
+            document.getElementById('modal').style.display = 'block';
+        }
+
+        function closeModal() {
+            document.getElementById('modal').style.display = 'none';
+        }
+
+        function displayComments(comments) {
+            const commentsSection = document.getElementById('commentsSection');
+            commentsSection.innerHTML = '';
+            comments.forEach(comment => {
+                const commentDiv = document.createElement('div');
+                commentDiv.classList.add('comment');
+                commentDiv.innerHTML = `<strong>${comment.author}:</strong> ${comment.text}`;
+                commentsSection.appendChild(commentDiv);
+            });
+        }
+
+        function addComment() {
+            const author = document.getElementById('commentAuthor').value;
+            const text = document.getElementById('commentText').value;
+            const currentIndex = packs.findIndex(pack => pack.title === document.getElementById('packTitle').innerText);
+            if (author && text && currentIndex !== -1) {
+                packs[currentIndex].comments.push({ author, text });
+                document.getElementById('commentAuthor').value = '';
+                document.getElementById('commentText').value = '';
+                displayComments(packs[currentIndex].comments);
+            } else {
+                alert("Please fill in both fields.");
+            }
+        }
+
+        function searchPacks() {
+            const query = document.getElementById('searchInput').value.toLowerCase();
+            const filteredPacks = packs.filter(pack => pack.title.toLowerCase().includes(query));
+            const packsContainer = document.getElementById('packs');
+            packsContainer.innerHTML = '';
+            filteredPacks.forEach((pack, index) => {
+                const packDiv = document.createElement('div');
+                packDiv.classList.add('pack');
+                packDiv.innerHTML = `
+                    <h3>${pack.title}</h3>
+                    <img src="${pack.image}" alt="${pack.title}">
+                    <p><strong>Downloads:</strong> ${pack.downloads}</p>
+                    <p><strong>Views:</strong> ${pack.views}</p>
+                    <p><strong>Rating:</strong> ${pack.rating}</p>
+                    <button onclick="openModal(${index})">View Details</button>
+                `;
+                packsContainer.appendChild(packDiv);
+            });
+        }
+
+        function toggleLogin() {
+            const isLoggedIn = localStorage.getItem('username');
+            if (isLoggedIn) {
+                alert(`Welcome back, ${isLoggedIn}!`);
+                showProfile();
+            } else {
+                const username = prompt("Enter your username:");
+                const password = prompt("Enter your password:");
+                if (username && password) {
+                    localStorage.setItem('username', username);
+                    alert("You are now logged in.");
+                    document.getElementById('profilePic').src = 'https://via.placeholder.com/40';
+                    document.getElementById('profilePic').alt = username;
+                    document.getElementById('profilePic').title = username;
+                }
+            }
+        }
+
+        function showProfile() {
+            const username = localStorage.getItem('username');
+            if (username) {
+                alert(`Profile of ${username}`);
+            } else {
+                alert("You need to log in first.");
+            }
+        }
+
+        document.addEventListener('DOMContentLoaded', displayPacks);
     </script>
 </body>
 </html>
