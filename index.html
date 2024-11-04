@@ -1,242 +1,126 @@
 <!DOCTYPE html>
-<html lang="en">
+<html lang="fr">
 <head>
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
     <title>Bloxd.io Pack Utils</title>
     <style>
         body {
+            font-family: Arial, sans-serif;
             margin: 0;
-            font-family: 'Arial', sans-serif;
-            background-color: #fff;
-            color: #333;
+            padding: 0;
+            background: url('https://iili.io/2nu1xv1.jpg') no-repeat center center fixed;
+            background-size: cover;
         }
-        #panorama {
-            position: absolute;
-            top: 0;
-            left: 0;
-            width: 100%;
-            height: 100vh;
-            background-image: url('https://iili.io/2niQVUX.png');
-            background-repeat: repeat-x;
-            background-position: center;
-            animation: moveBackground 60s linear infinite;
-            z-index: -1;
-        }
-        @keyframes moveBackground {
-            from { background-position: 0; }
-            to { background-position: -4036px; }
-        }
-        header {
-            display: flex;
-            justify-content: space-between;
-            align-items: center;
-            padding: 20px;
+        #header {
             background-color: rgba(255, 165, 0, 0.8);
-            box-shadow: 0 4px 8px rgba(0, 0, 0, 0.2);
-        }
-        h1 {
-            font-size: 24px;
             color: white;
-            text-shadow: 2px 2px 4px rgba(0, 0, 0, 0.8);
+            text-align: center;
+            padding: 20px;
+            position: relative;
         }
-        .search-bar {
-            display: flex;
+        #header h1 {
+            animation: textAnim 3s ease-in-out infinite alternate;
         }
-        .search-bar input {
-            padding: 10px;
-            border: none;
-            border-radius: 5px 0 0 5px;
-            width: 300px;
+        @keyframes textAnim {
+            0% { transform: scale(1); }
+            100% { transform: scale(1.1); }
         }
-        .search-bar button {
-            padding: 10px;
-            border: none;
-            background-color: #ffcc00;
-            color: #333;
-            border-radius: 0 5px 5px 0;
-            cursor: pointer;
-            box-shadow: 0 2px 4px rgba(0, 0, 0, 0.2);
-        }
-        .packs {
+        #packs {
             display: flex;
             flex-wrap: wrap;
             justify-content: center;
-            padding: 20px;
+            margin: 20px;
         }
         .pack {
             border: 1px solid #ccc;
-            border-radius: 10px;
+            border-radius: 5px;
             margin: 10px;
             padding: 10px;
-            width: 250px;
+            background: rgba(255, 255, 255, 0.8);
+            width: 200px;
             text-align: center;
-            background-color: #fff;
-            box-shadow: 0 2px 4px rgba(0, 0, 0, 0.2);
-            transition: transform 0.3s;
-        }
-        .pack:hover {
-            transform: scale(1.05);
-        }
-        .profile {
-            display: flex;
-            align-items: center;
-        }
-        .profile img {
-            border-radius: 50%;
-            width: 40px;
-            height: 40px;
-            margin-right: 10px;
-        }
-        .pack img {
-            width: 100%;
-            border-radius: 10px;
         }
         .modal {
             display: none;
             position: fixed;
-            z-index: 1000;
+            z-index: 1;
             left: 0;
             top: 0;
             width: 100%;
             height: 100%;
             overflow: auto;
-            background-color: rgba(0, 0, 0, 0.8);
-            padding: 20px;
-            box-sizing: border-box;
+            background-color: rgb(0,0,0);
+            background-color: rgba(0,0,0,0.4);
+            padding-top: 60px;
         }
         .modal-content {
-            background-color: #fff;
-            margin: auto;
+            background-color: #fefefe;
+            margin: 5% auto;
             padding: 20px;
             border: 1px solid #888;
             width: 80%;
-            max-width: 600px;
-        }
-        .close {
-            color: #aaa;
-            float: right;
-            font-size: 28px;
-            font-weight: bold;
-        }
-        .close:hover,
-        .close:focus {
-            color: black;
-            text-decoration: none;
-            cursor: pointer;
-        }
-        .comments {
-            margin-top: 20px;
         }
         .comment {
-            border-top: 1px solid #ccc;
+            border-bottom: 1px solid #ccc;
             padding: 5px 0;
         }
-        .comment-form {
-            display: flex;
-            flex-direction: column;
-            margin-top: 10px;
-        }
-        .comment-form input, .comment-form textarea {
+        #searchInput {
+            margin: 20px;
             padding: 10px;
-            margin: 5px 0;
-            border: 1px solid #ccc;
             border-radius: 5px;
+            border: 1px solid #ccc;
+        }
+        #loginButton {
+            position: absolute;
+            top: 20px;
+            right: 20px;
+            background-color: orange;
+            color: white;
+            border: none;
+            padding: 10px;
+            cursor: pointer;
+        }
+        #profilePic {
+            border-radius: 50%;
+            margin-left: 10px;
         }
     </style>
 </head>
 <body>
-    <div id="panorama"></div>
-    <header>
+    <div id="header">
         <h1>Welcome to Bloxd.io Pack Utils</h1>
-        <div class="search-bar">
-            <input type="text" id="searchInput" placeholder="Search packs...">
-            <button onclick="searchPacks()">Search</button>
-        </div>
-        <div class="profile">
-            <img id="profilePic" src="default_profile.png" alt="Profile Picture">
-            <button onclick="toggleLogin()">Login</button>
-            <button onclick="showProfile()">Profile</button>
-        </div>
-    </header>
-    <div class="packs" id="packs">
-        <!-- Packs will be injected here -->
+        <button id="loginButton" onclick="toggleLogin()">Login</button>
+        <img id="profilePic" src="https://via.placeholder.com/40" alt="Profile Picture" title="Profile" style="display: none;">
+        <input type="text" id="searchInput" placeholder="Search packs..." oninput="searchPacks()">
     </div>
+
+    <div id="packs"></div>
 
     <div id="modal" class="modal">
         <div class="modal-content">
-            <span class="close" onclick="closeModal()">&times;</span>
+            <span onclick="closeModal()" style="cursor:pointer; float:right;">&times;</span>
             <h2 id="packTitle"></h2>
             <img id="packImage" src="" alt="Pack Image">
-            <p id="packDescription"></p>
+            <p><strong>Description:</strong> <span id="packDescription"></span></p>
             <p><strong>Downloads:</strong> <span id="packDownloads"></span></p>
             <p><strong>Views:</strong> <span id="packViews"></span></p>
             <p><strong>Rating:</strong> <span id="packRating"></span></p>
-            <div class="comments" id="commentsSection"></div>
-            <div class="comment-form">
-                <input type="text" id="commentAuthor" placeholder="Your Name">
-                <textarea id="commentText" placeholder="Your Comment"></textarea>
-                <button onclick="addComment()">Submit Comment</button>
+            <div>
+                <h3>Comments:</h3>
+                <div id="commentsSection"></div>
+                <input type="text" id="commentAuthor" placeholder="Your name">
+                <textarea id="commentText" placeholder="Your comment"></textarea>
+                <button onclick="addComment()">Add Comment</button>
             </div>
         </div>
     </div>
 
     <script>
         const packs = [
-            {
-                title: 'Cool Texture Pack 1',
-                image: 'https://iili.io/2nPAW1p.png',
-                description: 'A cool texture pack that enhances your game!',
-                downloads: Math.floor(Math.random() * 1000),
-                views: Math.floor(Math.random() * 5000),
-                rating: (Math.random() * 5).toFixed(1),
-                comments: []
-            },
-            {
-                title: 'Cool Texture Pack 2',
-                image: 'https://iili.io/2nPAVBR.png',
-                description: 'An awesome pack with vibrant colors!',
-                downloads: Math.floor(Math.random() * 1000),
-                views: Math.floor(Math.random() * 5000),
-                rating: (Math.random() * 5).toFixed(1),
-                comments: []
-            },
-            {
-                title: 'Cool Texture Pack 3',
-                image: 'https://iili.io/2nPAj2I.png',
-                description: 'A minimalist pack for a clean look!',
-                downloads: Math.floor(Math.random() * 1000),
-                views: Math.floor(Math.random() * 5000),
-                rating: (Math.random() * 5).toFixed(1),
-                comments: []
-            },
-            {
-                title: 'Cool Texture Pack 4',
-                image: 'https://iili.io/2nPAXrN.png',
-                description: 'A retro style texture pack!',
-                downloads: Math.floor(Math.random() * 1000),
-                views: Math.floor(Math.random() * 5000),
-                rating: (Math.random() * 5).toFixed(1),
-                comments: []
-            },
-            {
-                title: 'Cool Texture Pack 5',
-                image: 'https://iili.io/2nPANkX.png',
-                description: 'A vibrant texture pack with a modern twist!',
-                downloads: Math.floor(Math.random() * 1000),
-                views: Math.floor(Math.random() * 5000),
-                rating: (Math.random() * 5).toFixed(1),
-                comments: []
-            },
-            {
-                title: 'Cool Texture Pack 6',
-                image: 'https://iili.io/2nPAw7t.png',
-                description: 'A nature-themed texture pack!',
-                downloads: Math.floor(Math.random() * 1000),
-                views: Math.floor(Math.random() * 5000),
-                rating: (Math.random() * 5).toFixed(1),
-                comments: []
-            }
+            { title: "Pack 1", image: "https://via.placeholder.com/150", description: "Description 1", downloads: 100, views: 200, rating: 4.5, comments: [] },
+            { title: "Pack 2", image: "https://via.placeholder.com/150", description: "Description 2", downloads: 200, views: 300, rating: 4.0, comments: [] },
+            { title: "Pack 3", image: "https://via.placeholder.com/150", description: "Description 3", downloads: 300, views: 400, rating: 3.5, comments: [] },
         ];
 
         function displayPacks() {
@@ -331,6 +215,9 @@
                     document.getElementById('profilePic').src = 'https://via.placeholder.com/40';
                     document.getElementById('profilePic').alt = username;
                     document.getElementById('profilePic').title = username;
+                    document.getElementById('profilePic').style.display = 'inline';
+                } else {
+                    alert("Please enter valid credentials.");
                 }
             }
         }
@@ -338,13 +225,11 @@
         function showProfile() {
             const username = localStorage.getItem('username');
             if (username) {
-                alert(`Profile of ${username}`);
-            } else {
-                alert("You need to log in first.");
+                document.getElementById('profilePic').style.display = 'inline';
             }
         }
 
-        document.addEventListener('DOMContentLoaded', displayPacks);
+        displayPacks();
     </script>
 </body>
 </html>
