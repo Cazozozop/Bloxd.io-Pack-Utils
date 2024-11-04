@@ -35,12 +35,21 @@
         }
 
         .pack {
+            display: flex;
+            align-items: center;
             border: 1px solid #ddd;
             padding: 15px;
             margin-bottom: 10px;
             border-radius: 5px;
             background-color: #ffcc80;
             cursor: pointer;
+        }
+
+        .pack img {
+            width: 50px;
+            height: 50px;
+            margin-right: 15px;
+            border-radius: 5px;
         }
 
         .pack button {
@@ -50,6 +59,7 @@
             padding: 5px 10px;
             border-radius: 5px;
             cursor: pointer;
+            margin-left: auto;
         }
 
         .pack button:hover {
@@ -57,7 +67,6 @@
         }
 
         .details {
-            margin-bottom: 5px;
             font-size: 14px;
         }
 
@@ -104,8 +113,9 @@
         <h1>Bloxd.io Pack Utils</h1>
         <input type="text" id="searchBar" placeholder="Search packs...">
         <div id="packList">
-            <!-- Fake packs -->
+            <!-- Fake packs with random icons -->
             <div class="pack" onclick="showDetails('Pack 1')">
+                <img src="https://via.placeholder.com/50" alt="Pack 1 icon">
                 <div>
                     <strong>Pack 1</strong>
                     <div class="details">Downloads: 123 | Views: 456 | Rating: ★★★★☆</div>
@@ -113,6 +123,7 @@
                 <button onclick="downloadPack('pack1.zip'); event.stopPropagation();">Download</button>
             </div>
             <div class="pack" onclick="showDetails('Pack 2')">
+                <img src="https://via.placeholder.com/50" alt="Pack 2 icon">
                 <div>
                     <strong>Pack 2</strong>
                     <div class="details">Downloads: 78 | Views: 321 | Rating: ★★★☆☆</div>
@@ -120,6 +131,7 @@
                 <button onclick="downloadPack('pack2.zip'); event.stopPropagation();">Download</button>
             </div>
             <div class="pack" onclick="showDetails('Pack 3')">
+                <img src="https://via.placeholder.com/50" alt="Pack 3 icon">
                 <div>
                     <strong>Pack 3</strong>
                     <div class="details">Downloads: 50 | Views: 120 | Rating: ★★★★☆</div>
@@ -168,7 +180,7 @@
             packs.forEach(pack => {
                 const packName = pack.querySelector('strong').textContent.toLowerCase();
                 if (packName.includes(filter)) {
-                    pack.style.display = 'block';
+                    pack.style.display = 'flex';
                 } else {
                     pack.style.display = 'none';
                 }
