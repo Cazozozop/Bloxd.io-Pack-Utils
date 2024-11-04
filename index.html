@@ -40,8 +40,7 @@
             margin-bottom: 10px;
             border-radius: 5px;
             background-color: #ffcc80;
-            display: flex;
-            justify-content: space-between;
+            cursor: pointer;
         }
 
         .pack button {
@@ -61,6 +60,43 @@
             margin-bottom: 5px;
             font-size: 14px;
         }
+
+        .modal {
+            display: none;
+            position: fixed;
+            top: 0;
+            left: 0;
+            width: 100%;
+            height: 100%;
+            background-color: rgba(0, 0, 0, 0.5);
+            justify-content: center;
+            align-items: center;
+        }
+
+        .modal-content {
+            background-color: #fff;
+            padding: 20px;
+            border-radius: 8px;
+            max-width: 600px;
+            width: 90%;
+        }
+
+        .modal-header {
+            font-size: 24px;
+            margin-bottom: 15px;
+        }
+
+        .close {
+            float: right;
+            font-size: 24px;
+            cursor: pointer;
+        }
+
+        .comments {
+            margin-top: 10px;
+            border-top: 1px solid #ddd;
+            padding-top: 10px;
+        }
     </style>
 </head>
 <body>
@@ -69,26 +105,43 @@
         <input type="text" id="searchBar" placeholder="Search packs...">
         <div id="packList">
             <!-- Fake packs -->
-            <div class="pack">
+            <div class="pack" onclick="showDetails('Pack 1')">
                 <div>
                     <strong>Pack 1</strong>
                     <div class="details">Downloads: 123 | Views: 456 | Rating: ★★★★☆</div>
                 </div>
-                <button onclick="downloadPack('pack1.zip')">Download</button>
+                <button onclick="downloadPack('pack1.zip'); event.stopPropagation();">Download</button>
             </div>
-            <div class="pack">
+            <div class="pack" onclick="showDetails('Pack 2')">
                 <div>
                     <strong>Pack 2</strong>
                     <div class="details">Downloads: 78 | Views: 321 | Rating: ★★★☆☆</div>
                 </div>
-                <button onclick="downloadPack('pack2.zip')">Download</button>
+                <button onclick="downloadPack('pack2.zip'); event.stopPropagation();">Download</button>
             </div>
-            <div class="pack">
+            <div class="pack" onclick="showDetails('Pack 3')">
                 <div>
                     <strong>Pack 3</strong>
                     <div class="details">Downloads: 50 | Views: 120 | Rating: ★★★★☆</div>
                 </div>
-                <button onclick="downloadPack('pack3.zip')">Download</button>
+                <button onclick="downloadPack('pack3.zip'); event.stopPropagation();">Download</button>
+            </div>
+        </div>
+    </div>
+
+    <!-- Modal for pack details -->
+    <div id="packModal" class="modal">
+        <div class="modal-content">
+            <span class="close" onclick="closeModal()">&times;</span>
+            <div id="modalHeader" class="modal-header"></div>
+            <div id="modalBody">
+                <p>Description: This is a fake description for testing purposes.</p>
+                <div><img src="https://via.placeholder.com/400" alt="Pack preview"></div>
+                <div class="comments">
+                    <strong>Comments:</strong>
+                    <p>User1: Great pack!</p>
+                    <p>User2: Needs some improvements.</p>
+                </div>
             </div>
         </div>
     </div>
@@ -97,6 +150,15 @@
         function downloadPack(packName) {
             alert('Downloading ' + packName);
             // Logic for downloading would go here.
+        }
+
+        function showDetails(packName) {
+            document.getElementById('modalHeader').textContent = packName;
+            document.getElementById('packModal').style.display = 'flex';
+        }
+
+        function closeModal() {
+            document.getElementById('packModal').style.display = 'none';
         }
 
         // Search functionality
