@@ -11,7 +11,6 @@
             padding: 0;
             background: url('panorama_1.png') no-repeat center center fixed;
             background-size: cover;
-            min-height: 100vh;
             overflow-y: hidden;
         }
         #header {
@@ -20,11 +19,9 @@
             text-align: center;
             padding: 20px;
             position: relative;
-            box-shadow: 0 4px 8px rgba(0, 0, 0, 0.2);
         }
         #header h1 {
             animation: textAnim 3s ease-in-out infinite alternate;
-            text-shadow: 2px 2px 5px rgba(0, 0, 0, 0.5);
         }
         @keyframes textAnim {
             0% { transform: scale(1); }
@@ -54,6 +51,7 @@
             width: 100%;
             height: 100%;
             overflow: auto;
+            background-color: rgb(0,0,0);
             background-color: rgba(0,0,0,0.4);
             padding-top: 60px;
         }
@@ -64,24 +62,15 @@
             border: 1px solid #888;
             width: 80%;
         }
-        #loginModal {
-            display: none;
-            position: fixed;
-            top: 0;
-            left: 0;
-            width: 100%;
-            height: 100%;
-            background-color: rgba(0, 0, 0, 0.5);
-            align-items: center;
-            justify-content: center;
+        .comment {
+            border-bottom: 1px solid #ccc;
+            padding: 5px 0;
         }
-        #loginForm {
-            background: white;
-            padding: 20px;
-            border-radius: 8px;
-            width: 300px;
-            box-shadow: 0 4px 8px rgba(0, 0, 0, 0.2);
-            text-align: center;
+        #searchInput {
+            margin: 20px;
+            padding: 10px;
+            border-radius: 5px;
+            border: 1px solid #ccc;
         }
         #loginButton {
             position: absolute;
@@ -101,19 +90,33 @@
             right: 20px;
             cursor: pointer;
         }
+        #profilePage {
+            display: none;
+            padding: 20px;
+            background-color: rgba(255, 255, 255, 0.8);
+            margin: 20px;
+        }
+        #profilePage img {
+            border-radius: 50%;
+            width: 100px;
+        }
+        .followers {
+            font-weight: bold;
+        }
     </style>
 </head>
 <body>
     <div id="header">
         <h1>Welcome to Bloxd.io Pack Utils</h1>
-        <button id="loginButton" onclick="showLoginModal()">Login / Sign Up</button>
-        <img id="profilePic" src="https://via.placeholder.com/40" alt="Profile Picture" title="Profile" style="display: none;">
+        <button id="loginButton" onclick="toggleLogin()">Login / Sign Up</button>
+        <img id="profilePic" src="https://via.placeholder.com/40" alt="Profile Picture" title="Profile" style="display: none;" onclick="goToProfile()">
         <input type="text" id="searchInput" placeholder="Search packs..." oninput="searchPacks()">
+        <button id="logoutButton" style="display: none;" onclick="logout()">Logout</button>
+        <button id="publishPackButton" style="display: none;" onclick="showPublishPackForm()">Publish New Pack</button>
     </div>
 
     <div id="packs"></div>
 
-    <!-- Pack details modal -->
     <div id="modal" class="modal">
         <div class="modal-content">
             <span onclick="closeModal()" style="cursor:pointer; float:right;">&times;</span>
@@ -134,51 +137,196 @@
         </div>
     </div>
 
-    <!-- Login modal -->
-    <div id="loginModal">
-        <div id="loginForm">
-            <h2>Login / Sign Up</h2>
-            <input type="text" id="username" placeholder="Username"><br><br>
-            <input type="password" id="password" placeholder="Password"><br><br>
-            <button onclick="toggleLogin()">Submit</button>
-            <p>Don’t have an account? <a href="#">Create one here</a></p>
-        </div>
+    <div id="profilePage">
+        <h2>Your Profile</h2>
+        <img id="profilePagePic" src="https://via.placeholder.com/100" alt="Profile Picture">
+        <h3 id="username"></h3>
+        <p class="followers">Followers: <span id="followersCount">0</span></p>
+        <h3>Your Published Packs:</h3>
+        <div id="yourPacks"></div>
+        <button onclick="changeProfilePic()">Change Profile Picture</button>
+    </div>
+
+    <div id="publishPackForm" style="display: none;">
+        <h2>Publish New Pack</h2>
+        <input type="text" id="newPackName" placeholder="Pack Name">
+        <textarea id="newPackDescription" placeholder="Pack Description"></textarea>
+        <input type="file" id="newPackImage" accept="image/*">
+        <input type="file" id="newPackFiles" multiple>
+        <button onclick="publishPack()">Publish</button>
+        <button onclick="cancelPublish()">Cancel</button>
     </div>
 
     <script>
-        const packs = [
-            { title: "Pack 1", image: "https://via.placeholder.com/150", description: "Description 1", downloads: 100, views: 200, rating: 4.5, comments: [] },
-            { title: "Pack 2", image: "https://via.placeholder.com/150", description: "Description 2", downloads: 200, views: 300, rating: 4.0, comments: [] },
-            { title: "Pack 3", image: "https://via.placeholder.com/150", description: "Description 3", downloads: 300, views: 400, rating: 3.5, comments: [] },
-        ];
-
-        function showLoginModal() {
-            document.getElementById('loginModal').style.display = 'flex';
-        }
+        let loggedIn = false;
+        let username = '';
+        let profilePic = 'https://via.placeholder.com/100';
+        let packs = [];
+        let followers = 0;
 
         function toggleLogin() {
-            const username = document.getElementById('username').value;
-            const password = document.getElementById('password').value;
-            if (username && password) {
-                localStorage.setItem('username', username);
-                alert("Login successful!");
+            if (loggedIn) {
+                alert(`Welcome back, ${username}!`);
                 showProfile();
-                closeLoginModal();
             } else {
-                alert("Please enter a username and password.");
+                const enteredUsername = prompt("Enter your username:");
+                if (enteredUsername) {
+                    username = enteredUsername;
+                    loggedIn = true;
+                    localStorage.setItem('username', username);
+                    alert("Logged in successfully!");
+                    showProfile();
+                } else {
+                    alert("Username cannot be empty.");
+                }
             }
         }
 
-        function closeLoginModal() {
-            document.getElementById('loginModal').style.display = 'none';
-        }
-
         function showProfile() {
-            document.getElementById('profilePic').style.display = 'inline-block';
             document.getElementById('loginButton').style.display = 'none';
+            document.getElementById('logoutButton').style.display = 'inline-block';
+            document.getElementById('publishPackButton').style.display = 'inline-block';
+            document.getElementById('profilePic').style.display = 'inline-block';
+            document.getElementById('profilePage').style.display = 'block';
+            document.getElementById('profilePagePic').src = profilePic;
+            document.getElementById('username').innerText = username;
+            document.getElementById('followersCount').innerText = followers;
+            displayYourPacks();
         }
 
-        displayPacks();
+        function logout() {
+            loggedIn = false;
+            localStorage.removeItem('username');
+            document.getElementById('loginButton').style.display = 'inline-block';
+            document.getElementById('logoutButton').style.display = 'none';
+            document.getElementById('publishPackButton').style.display = 'none';
+            document.getElementById('profilePic').style.display = 'none';
+            document.getElementById('profilePage').style.display = 'none';
+        }
+
+        function showPublishPackForm() {
+            document.getElementById('publishPackForm').style.display = 'block';
+        }
+
+        function cancelPublish() {
+            document.getElementById('publishPackForm').style.display = 'none';
+        }
+
+        function publishPack() {
+            const packName = document.getElementById('newPackName').value;
+            const packDescription = document.getElementById('newPackDescription').value;
+            const packImage = document.getElementById('newPackImage').files[0];
+            const packFiles = document.getElementById('newPackFiles').files;
+
+            if (packName && packDescription && packImage && packFiles.length) {
+                const newPack = {
+                    name: packName,
+                    description: packDescription,
+                    image: URL.createObjectURL(packImage),
+                    files: packFiles,
+                    downloads: 0,
+                    views: 0,
+                    rating: 0,
+                    comments: []
+                };
+                packs.push(newPack);
+                document.getElementById('publishPackForm').style.display = 'none';
+                displayPacks();
+            } else {
+                alert("Please fill in all fields.");
+            }
+        }
+
+        function displayPacks() {
+            const packsContainer = document.getElementById('packs');
+            packsContainer.innerHTML = '';
+            packs.forEach((pack, index) => {
+                const packDiv = document.createElement('div');
+                packDiv.className = 'pack';
+                packDiv.innerHTML = `
+                    <h3>${pack.name}</h3>
+                    <img src="${pack.image}" alt="Pack Image" style="width: 100px; height: 100px;">
+                    <p>${pack.description}</p>
+                    <button onclick="viewPack(${index})">View</button>
+                `;
+                packsContainer.appendChild(packDiv);
+            });
+        }
+
+        function viewPack(index) {
+            const pack = packs[index];
+            document.getElementById('packTitle').innerText = pack.name;
+            document.getElementById('packImage').src = pack.image;
+            document.getElementById('packDescription').innerText = pack.description;
+            document.getElementById('packDownloads').innerText = pack.downloads;
+            document.getElementById('packViews').innerText = pack.views;
+            document.getElementById('packRating').innerText = pack.rating;
+            document.getElementById('commentsSection').innerHTML = pack.comments.map(comment => `
+                <div class="comment">
+                    <strong>${comment.author}</strong>: ${comment.text}
+                </div>
+            `).join('');
+            document.getElementById('modal').style.display = 'block';
+        }
+
+        function closeModal() {
+            document.getElementById('modal').style.display = 'none';
+        }
+
+        function addComment() {
+            if (!loggedIn) {
+                alert("You must be logged in to comment.");
+                return;
+            }
+            const commentAuthor = document.getElementById('commentAuthor').value;
+            const commentText = document.getElementById('commentText').value;
+            if (commentAuthor && commentText) {
+                const newComment = { author: commentAuthor, text: commentText };
+                const packIndex = packs.findIndex(pack => pack.name === document.getElementById('packTitle').innerText);
+                if (packIndex !== -1) {
+                    packs[packIndex].comments.push(newComment);
+                    displayPacks();
+                    viewPack(packIndex);
+                }
+            } else {
+                alert("Please enter a comment and your name.");
+            }
+        }
+
+        function downloadPack() {
+            const packIndex = packs.findIndex(pack => pack.name === document.getElementById('packTitle').innerText);
+            if (packIndex !== -1) {
+                packs[packIndex].downloads++;
+                alert("Pack downloaded!");
+            }
+        }
+
+        function changeProfilePic() {
+            const newPic = prompt("Enter the URL for your new profile picture:");
+            if (newPic) {
+                profilePic = newPic;
+                document.getElementById('profilePagePic').src = newPic;
+                document.getElementById('profilePic').src = newPic;
+            }
+        }
+
+        function displayYourPacks() {
+            const yourPacksDiv = document.getElementById('yourPacks');
+            yourPacksDiv.innerHTML = '';
+            packs.forEach(pack => {
+                if (pack.author === username) {
+                    const packDiv = document.createElement('div');
+                    packDiv.innerHTML = `<p>${pack.name}</p>`;
+                    yourPacksDiv.appendChild(packDiv);
+                }
+            });
+        }
+
+        function searchPacks() {
+            const query = document.getElementById('searchInput').value.toLowerCase();
+            const filteredPacks = packs.filter(pack => pack.name.toLowerCase().includes(query));
+            displayPacks(filteredPacks);
+        }
     </script>
 </body>
 </html>
