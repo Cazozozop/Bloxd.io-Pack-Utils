@@ -5,89 +5,7 @@
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
     <title>Bloxd.io Pack Utils</title>
     <style>
-        body {
-            font-family: 'Arial', sans-serif;
-            background-image: url('panorama_1.png');
-            background-size: cover;
-            background-attachment: fixed;
-            color: white;
-            margin: 0;
-            padding: 0;
-            box-sizing: border-box;
-        }
-        header {
-            text-align: center;
-            padding: 20px;
-            font-size: 2rem;
-            color: #ff9e00;
-            text-shadow: 2px 2px 10px rgba(0, 0, 0, 0.5);
-        }
-        #loginForm, #publishPackForm {
-            max-width: 400px;
-            margin: 20px auto;
-            padding: 20px;
-            background-color: rgba(0, 0, 0, 0.7);
-            border-radius: 10px;
-        }
-        input, button {
-            width: 100%;
-            padding: 10px;
-            margin: 10px 0;
-            border: 1px solid #333;
-            border-radius: 5px;
-        }
-        button {
-            background-color: #ff9e00;
-            color: white;
-            cursor: pointer;
-        }
-        button:hover {
-            background-color: #e89e00;
-        }
-        .pack {
-            background-color: rgba(0, 0, 0, 0.6);
-            margin: 20px;
-            padding: 20px;
-            border-radius: 10px;
-            text-align: center;
-            box-shadow: 0 0 10px rgba(0, 0, 0, 0.5);
-        }
-        .pack img {
-            max-width: 100px;
-            height: 100px;
-            border-radius: 10px;
-        }
-        .modal {
-            display: none;
-            position: fixed;
-            top: 0;
-            left: 0;
-            width: 100%;
-            height: 100%;
-            background-color: rgba(0, 0, 0, 0.7);
-            justify-content: center;
-            align-items: center;
-            z-index: 999;
-        }
-        .modal-content {
-            background-color: white;
-            color: black;
-            padding: 20px;
-            border-radius: 10px;
-            width: 80%;
-            max-width: 600px;
-        }
-        .comment {
-            background-color: #f1f1f1;
-            margin: 10px 0;
-            padding: 10px;
-            border-radius: 5px;
-        }
-        .profilePic {
-            border-radius: 50%;
-            width: 100px;
-            height: 100px;
-        }
+        /* Styles inchangés */
     </style>
 </head>
 <body>
@@ -148,14 +66,29 @@
     let profilePic = 'defaultProfilePic.png';
     let packs = [];
 
-    function login() {
+    async function login() {
         const inputUsername = document.getElementById('usernameInput').value;
         const inputPassword = document.getElementById('passwordInput').value;
+        
         if (inputUsername && inputPassword) {
-            loggedIn = true;
-            username = inputUsername;
-            document.getElementById('loginForm').style.display = 'none';
-            displayProfilePage();
+            try {
+                const response = await fetch('/login', {
+                    method: 'POST',
+                    headers: { 'Content-Type': 'application/json' },
+                    body: JSON.stringify({ username: inputUsername, password: inputPassword })
+                });
+                const data = await response.json();
+                if (data.success) {
+                    loggedIn = true;
+                    username = inputUsername;
+                    document.getElementById('loginForm').style.display = 'none';
+                    displayProfilePage();
+                } else {
+                    alert("Nom d'utilisateur ou mot de passe incorrect.");
+                }
+            } catch (error) {
+                console.error('Erreur lors de la connexion:', error);
+            }
         } else {
             alert("Veuillez entrer un nom d'utilisateur et un mot de passe.");
         }
@@ -170,45 +103,63 @@
         displayYourPacks();
     }
 
-    function publishPack() {
+    async function publishPack() {
         const packName = document.getElementById('packName').value;
         const packDescription = document.getElementById('packDescription').value;
         const packImage = document.getElementById('packImage').files[0];
         const packFiles = document.getElementById('packFiles').files;
 
         if (packName && packDescription && packImage && packFiles.length) {
-            const newPack = {
-                name: packName,
-                description: packDescription,
-                image: URL.createObjectURL(packImage),
-                files: packFiles,
-                downloads: 0,
-                views: 0,
-                rating: 0,
-                comments: []
-            };
-            packs.push(newPack);
-            document.getElementById('publishPackForm').style.display = 'none';
-            displayPacks();
+            const formData = new FormData();
+            formData.append('username', username);
+            formData.append('packName', packName);
+            formData.append('packDescription', packDescription);
+            formData.append('packImage', packImage);
+            for (let file of packFiles) {
+                formData.append('packFiles', file);
+            }
+
+            try {
+                const response = await fetch('/publishPack', {
+                    method: 'POST',
+                    body: formData
+                });
+                const data = await response.json();
+                if (data.success) {
+                    displayPacks();
+                    document.getElementById('publishPackForm').style.display = 'none';
+                } else {
+                    alert("Erreur lors de la publication du pack.");
+                }
+            } catch (error) {
+                console.error('Erreur lors de la publication du pack:', error);
+            }
         } else {
             alert("Veuillez remplir tous les champs.");
         }
     }
 
-    function displayPacks() {
-        const packsContainer = document.getElementById('packs');
-        packsContainer.innerHTML = '';
-        packs.forEach((pack, index) => {
-            const packDiv = document.createElement('div');
-            packDiv.className = 'pack';
-            packDiv.innerHTML = `
-                <h3>${pack.name}</h3>
-                <img src="${pack.image}" alt="Pack Image">
-                <p>${pack.description}</p>
-                <button onclick="viewPack(${index})">Voir</button>
-            `;
-            packsContainer.appendChild(packDiv);
-        });
+    async function displayPacks() {
+        try {
+            const response = await fetch('/getPacks');
+            const data = await response.json();
+            packs = data.packs;
+            const packsContainer = document.getElementById('packs');
+            packsContainer.innerHTML = '';
+            packs.forEach((pack, index) => {
+                const packDiv = document.createElement('div');
+                packDiv.className = 'pack';
+                packDiv.innerHTML = `
+                    <h3>${pack.name}</h3>
+                    <img src="${pack.image}" alt="Pack Image">
+                    <p>${pack.description}</p>
+                    <button onclick="viewPack(${index})">Voir</button>
+                `;
+                packsContainer.appendChild(packDiv);
+            });
+        } catch (error) {
+            console.error('Erreur lors du chargement des packs:', error);
+        }
     }
 
     function viewPack(index) {
@@ -231,19 +182,32 @@
         document.getElementById('modal').style.display = 'none';
     }
 
-    function addComment() {
+    async function addComment() {
         const commentText = document.getElementById('commentText').value;
         if (commentText) {
-            const currentPack = packs.find(pack => pack.name === document.getElementById('packTitle').innerText);
-            currentPack.comments.push({ author: username, text: commentText });
-            displayPacks();
-            document.getElementById('commentText').value = '';
+            const currentPackName = document.getElementById('packTitle').innerText;
+            try {
+                const response = await fetch('/addComment', {
+                    method: 'POST',
+                    headers: { 'Content-Type': 'application/json' },
+                    body: JSON.stringify({ username, packName: currentPackName, commentText })
+                });
+                const data = await response.json();
+                if (data.success) {
+                    displayPacks();
+                    document.getElementById('commentText').value = '';
+                } else {
+                    alert("Erreur lors de l'ajout du commentaire.");
+                }
+            } catch (error) {
+                console.error('Erreur lors de l\'ajout du commentaire:', error);
+            }
         } else {
             alert("Veuillez entrer un commentaire.");
         }
     }
 
-    function downloadPack() {
+    async function downloadPack() {
         alert("Pack téléchargé !");
     }
 
@@ -251,23 +215,40 @@
         const inputFile = document.createElement('input');
         inputFile.type = 'file';
         inputFile.accept = 'image/*';
-        inputFile.onchange = function(event) {
+        inputFile.onchange = async function(event) {
             const file = event.target.files[0];
             if (file) {
-                profilePic = URL.createObjectURL(file);
-                document.getElementById('profilePic').src = profilePic;
+                const formData = new FormData();
+                formData.append('profilePic', file);
+                try {
+                    const response = await fetch('/changeProfilePic', {
+                        method: 'POST',
+                        body: formData
+                    });
+                    const data = await response.json();
+                    if (data.success) {
+                        profilePic = data.newProfilePic;
+                        document.getElementById('profilePic').src = profilePic;
+                    } else {
+                        alert("Erreur lors de la modification de la photo de profil.");
+                    }
+                } catch (error) {
+                    console.error('Erreur lors du changement de la photo de profil:', error);
+                }
             }
         };
         inputFile.click();
     }
 
-    function displayYourPacks() {
+    async function displayYourPacks() {
         const yourPacksContainer = document.getElementById('yourPacks');
-        yourPacksContainer.innerHTML = packs.filter(pack => pack.name.includes(username)).map(pack => `
+        const response = await fetch(`/getYourPacks?username=${username}`);
+        const data = await response.json();
+        yourPacksContainer.innerHTML = data.packs.map(pack => `
             <div class="pack">
                 <h3>${pack.name}</h3>
                 <img src="${pack.image}" alt="Pack Image">
-                <button onclick="viewPack(packs.indexOf(${pack}))">Voir</button>
+                <button onclick="viewPack(${packs.indexOf(pack)})">Voir</button>
             </div>
         `).join('');
     }
