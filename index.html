@@ -11,6 +11,7 @@
             padding: 0;
             background: url('https://iili.io/2nu1xv1.jpg') no-repeat center center fixed;
             background-size: cover;
+            overflow-y: hidden;
         }
         #header {
             background-color: rgba(255, 165, 0, 0.8);
@@ -74,7 +75,7 @@
         #loginButton {
             position: absolute;
             top: 20px;
-            right: 20px;
+            right: 100px;
             background-color: orange;
             color: white;
             border: none;
@@ -84,13 +85,17 @@
         #profilePic {
             border-radius: 50%;
             margin-left: 10px;
+            position: absolute;
+            top: 20px;
+            right: 20px;
+            cursor: pointer;
         }
     </style>
 </head>
 <body>
     <div id="header">
         <h1>Welcome to Bloxd.io Pack Utils</h1>
-        <button id="loginButton" onclick="toggleLogin()">Login</button>
+        <button id="loginButton" onclick="toggleLogin()">Login / Sign Up</button>
         <img id="profilePic" src="https://via.placeholder.com/40" alt="Profile Picture" title="Profile" style="display: none;">
         <input type="text" id="searchInput" placeholder="Search packs..." oninput="searchPacks()">
     </div>
@@ -113,6 +118,7 @@
                 <textarea id="commentText" placeholder="Your comment"></textarea>
                 <button onclick="addComment()">Add Comment</button>
             </div>
+            <button onclick="downloadPack()">Download Pack</button>
         </div>
     </div>
 
@@ -125,6 +131,7 @@
 
         function displayPacks() {
             const packsContainer = document.getElementById('packs');
+            packsContainer.innerHTML = '';
             packs.forEach((pack, index) => {
                 const packDiv = document.createElement('div');
                 packDiv.classList.add('pack');
@@ -211,22 +218,22 @@
                 const password = prompt("Enter your password:");
                 if (username && password) {
                     localStorage.setItem('username', username);
-                    alert("You are now logged in.");
-                    document.getElementById('profilePic').src = 'https://via.placeholder.com/40';
-                    document.getElementById('profilePic').alt = username;
-                    document.getElementById('profilePic').title = username;
-                    document.getElementById('profilePic').style.display = 'inline';
+                    alert("Account created successfully!");
+                    showProfile();
                 } else {
-                    alert("Please enter valid credentials.");
+                    alert("Username and password cannot be empty.");
                 }
             }
         }
 
         function showProfile() {
-            const username = localStorage.getItem('username');
-            if (username) {
-                document.getElementById('profilePic').style.display = 'inline';
-            }
+            const profilePic = document.getElementById('profilePic');
+            profilePic.style.display = 'inline-block';
+            document.getElementById('loginButton').style.display = 'none';
+        }
+
+        function downloadPack() {
+            alert("Pack downloaded!");
         }
 
         displayPacks();
