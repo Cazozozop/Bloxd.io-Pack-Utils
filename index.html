@@ -5,41 +5,129 @@
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
     <title>Bloxd.io Pack Utils</title>
     <style>
-        /* Styles comme précédemment */
+        body {
+            font-family: Arial, sans-serif;
+            margin: 0;
+            padding: 0;
+            background: url('https://iili.io/2nu1xv1.jpg') no-repeat center center fixed;
+            background-size: cover;
+            overflow-y: hidden;
+        }
+        #header {
+            background-color: rgba(255, 165, 0, 0.8);
+            color: white;
+            text-align: center;
+            padding: 20px;
+            position: relative;
+        }
+        #header h1 {
+            animation: textAnim 3s ease-in-out infinite alternate;
+        }
+        @keyframes textAnim {
+            0% { transform: scale(1); }
+            100% { transform: scale(1.1); }
+        }
+        #packs {
+            display: flex;
+            flex-wrap: wrap;
+            justify-content: center;
+            margin: 20px;
+        }
+        .pack {
+            border: 1px solid #ccc;
+            border-radius: 5px;
+            margin: 10px;
+            padding: 10px;
+            background: rgba(255, 255, 255, 0.8);
+            width: 200px;
+            text-align: center;
+        }
+        .modal {
+            display: none;
+            position: fixed;
+            z-index: 1;
+            left: 0;
+            top: 0;
+            width: 100%;
+            height: 100%;
+            overflow: auto;
+            background-color: rgb(0,0,0);
+            background-color: rgba(0,0,0,0.4);
+            padding-top: 60px;
+        }
+        .modal-content {
+            background-color: #fefefe;
+            margin: 5% auto;
+            padding: 20px;
+            border: 1px solid #888;
+            width: 80%;
+        }
+        .comment {
+            border-bottom: 1px solid #ccc;
+            padding: 5px 0;
+        }
+        #searchInput {
+            margin: 20px;
+            padding: 10px;
+            border-radius: 5px;
+            border: 1px solid #ccc;
+        }
+        #loginButton {
+            position: absolute;
+            top: 20px;
+            right: 100px;
+            background-color: orange;
+            color: white;
+            border: none;
+            padding: 10px;
+            cursor: pointer;
+        }
+        #profilePic {
+            border-radius: 50%;
+            margin-left: 10px;
+            position: absolute;
+            top: 20px;
+            right: 20px;
+            cursor: pointer;
+        }
     </style>
 </head>
 <body>
     <div id="header">
         <h1>Welcome to Bloxd.io Pack Utils</h1>
         <button id="loginButton" onclick="toggleLogin()">Login / Sign Up</button>
-        <img id="profilePic" src="https://via.placeholder.com/40" alt="Profile Picture" title="Change Profile Picture" style="display: none; cursor: pointer;">
-        <input type="file" id="profilePicInput" style="display: none;" accept="image/*" onchange="changeProfilePic(event)">
+        <img id="profilePic" src="https://via.placeholder.com/40" alt="Profile Picture" title="Profile" style="display: none;">
         <input type="text" id="searchInput" placeholder="Search packs..." oninput="searchPacks()">
     </div>
 
     <div id="packs"></div>
 
-    <div id="addPackForm" style="display: none; margin: 20px;">
-        <h3>Publier un nouveau pack</h3>
-        <input type="text" id="newPackTitle" placeholder="Titre du pack" required>
-        <textarea id="newPackDescription" placeholder="Description du pack" required></textarea>
-        <input type="file" id="newPackImage" accept="image/*">
-        <button onclick="publishPack()">Publier</button>
-    </div>
-
     <div id="modal" class="modal">
-        <!-- Modale des packs -->
+        <div class="modal-content">
+            <span onclick="closeModal()" style="cursor:pointer; float:right;">&times;</span>
+            <h2 id="packTitle"></h2>
+            <img id="packImage" src="" alt="Pack Image">
+            <p><strong>Description:</strong> <span id="packDescription"></span></p>
+            <p><strong>Downloads:</strong> <span id="packDownloads"></span></p>
+            <p><strong>Views:</strong> <span id="packViews"></span></p>
+            <p><strong>Rating:</strong> <span id="packRating"></span></p>
+            <div>
+                <h3>Comments:</h3>
+                <div id="commentsSection"></div>
+                <input type="text" id="commentAuthor" placeholder="Your name">
+                <textarea id="commentText" placeholder="Your comment"></textarea>
+                <button onclick="addComment()">Add Comment</button>
+            </div>
+            <button onclick="downloadPack()">Download Pack</button>
+        </div>
     </div>
 
     <script>
-        let packs = JSON.parse(localStorage.getItem('packs')) || [
+        const packs = [
             { title: "Pack 1", image: "https://via.placeholder.com/150", description: "Description 1", downloads: 100, views: 200, rating: 4.5, comments: [] },
             { title: "Pack 2", image: "https://via.placeholder.com/150", description: "Description 2", downloads: 200, views: 300, rating: 4.0, comments: [] },
             { title: "Pack 3", image: "https://via.placeholder.com/150", description: "Description 3", downloads: 300, views: 400, rating: 3.5, comments: [] },
         ];
-
-        // Afficher les packs au chargement de la page
-        displayPacks();
 
         function displayPacks() {
             const packsContainer = document.getElementById('packs');
@@ -59,87 +147,96 @@
             });
         }
 
-        function publishPack() {
-            const title = document.getElementById('newPackTitle').value;
-            const description = document.getElementById('newPackDescription').value;
-            const imageFile = document.getElementById('newPackImage').files[0];
+        function openModal(index) {
+            const pack = packs[index];
+            document.getElementById('packTitle').innerText = pack.title;
+            document.getElementById('packImage').src = pack.image;
+            document.getElementById('packDescription').innerText = pack.description;
+            document.getElementById('packDownloads').innerText = pack.downloads;
+            document.getElementById('packViews').innerText = pack.views;
+            document.getElementById('packRating').innerText = pack.rating;
+            displayComments(pack.comments);
+            document.getElementById('modal').style.display = 'block';
+        }
 
-            if (title && description && imageFile) {
-                const reader = new FileReader();
-                reader.onload = function(event) {
-                    const newPack = {
-                        title: title,
-                        description: description,
-                        image: event.target.result,
-                        downloads: 0,
-                        views: 0,
-                        rating: 0,
-                        comments: []
-                    };
-                    packs.push(newPack);
-                    localStorage.setItem('packs', JSON.stringify(packs));
-                    displayPacks();
-                    document.getElementById('newPackTitle').value = '';
-                    document.getElementById('newPackDescription').value = '';
-                    document.getElementById('newPackImage').value = '';
-                    alert("Pack publié avec succès !");
-                };
-                reader.readAsDataURL(imageFile);
+        function closeModal() {
+            document.getElementById('modal').style.display = 'none';
+        }
+
+        function displayComments(comments) {
+            const commentsSection = document.getElementById('commentsSection');
+            commentsSection.innerHTML = '';
+            comments.forEach(comment => {
+                const commentDiv = document.createElement('div');
+                commentDiv.classList.add('comment');
+                commentDiv.innerHTML = `<strong>${comment.author}:</strong> ${comment.text}`;
+                commentsSection.appendChild(commentDiv);
+            });
+        }
+
+        function addComment() {
+            const author = document.getElementById('commentAuthor').value;
+            const text = document.getElementById('commentText').value;
+            const currentIndex = packs.findIndex(pack => pack.title === document.getElementById('packTitle').innerText);
+            if (author && text && currentIndex !== -1) {
+                packs[currentIndex].comments.push({ author, text });
+                document.getElementById('commentAuthor').value = '';
+                document.getElementById('commentText').value = '';
+                displayComments(packs[currentIndex].comments);
             } else {
-                alert("Veuillez remplir tous les champs.");
+                alert("Please fill in both fields.");
             }
+        }
+
+        function searchPacks() {
+            const query = document.getElementById('searchInput').value.toLowerCase();
+            const filteredPacks = packs.filter(pack => pack.title.toLowerCase().includes(query));
+            const packsContainer = document.getElementById('packs');
+            packsContainer.innerHTML = '';
+            filteredPacks.forEach((pack, index) => {
+                const packDiv = document.createElement('div');
+                packDiv.classList.add('pack');
+                packDiv.innerHTML = `
+                    <h3>${pack.title}</h3>
+                    <img src="${pack.image}" alt="${pack.title}">
+                    <p><strong>Downloads:</strong> ${pack.downloads}</p>
+                    <p><strong>Views:</strong> ${pack.views}</p>
+                    <p><strong>Rating:</strong> ${pack.rating}</p>
+                    <button onclick="openModal(${index})">View Details</button>
+                `;
+                packsContainer.appendChild(packDiv);
+            });
         }
 
         function toggleLogin() {
             const isLoggedIn = localStorage.getItem('username');
             if (isLoggedIn) {
-                alert(`Bienvenue, ${isLoggedIn}!`);
+                alert(`Welcome back, ${isLoggedIn}!`);
                 showProfile();
-                document.getElementById('addPackForm').style.display = 'block';
             } else {
-                const username = prompt("Nom d'utilisateur :");
-                const password = prompt("Mot de passe :");
+                const username = prompt("Enter your username:");
+                const password = prompt("Enter your password:");
                 if (username && password) {
                     localStorage.setItem('username', username);
-                    alert("Compte créé !");
+                    alert("Account created successfully!");
                     showProfile();
-                    document.getElementById('addPackForm').style.display = 'block';
                 } else {
-                    alert("Nom d'utilisateur et mot de passe requis.");
+                    alert("Username and password cannot be empty.");
                 }
             }
         }
 
         function showProfile() {
             const profilePic = document.getElementById('profilePic');
-            const savedProfilePic = localStorage.getItem('profilePic');
-            if (savedProfilePic) {
-                profilePic.src = savedProfilePic;
-            }
             profilePic.style.display = 'inline-block';
-            profilePic.onclick = () => document.getElementById('profilePicInput').click();
             document.getElementById('loginButton').style.display = 'none';
         }
 
-        function changeProfilePic(event) {
-            const file = event.target.files[0];
-            if (file) {
-                const reader = new FileReader();
-                reader.onload = function(e) {
-                    const profilePicUrl = e.target.result;
-                    document.getElementById('profilePic').src = profilePicUrl;
-                    localStorage.setItem('profilePic', profilePicUrl);
-                    alert("Photo de profil mise à jour !");
-                };
-                reader.readAsDataURL(file);
-            }
+        function downloadPack() {
+            alert("Pack downloaded!");
         }
 
-        // Récupérer la photo de profil et afficher le formulaire de publication si l'utilisateur est connecté
-        if (localStorage.getItem('username')) {
-            showProfile();
-            document.getElementById('addPackForm').style.display = 'block';
-        }
+        displayPacks();
     </script>
 </body>
 </html>
