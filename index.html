@@ -6,327 +6,272 @@
     <title>Bloxd.io Pack Utils</title>
     <style>
         body {
-            font-family: Arial, sans-serif;
+            font-family: 'Arial', sans-serif;
+            background-image: url('panorama_1.png');
+            background-size: cover;
+            background-attachment: fixed;
+            color: white;
             margin: 0;
             padding: 0;
-            background: url('panorama_1.png') no-repeat center center fixed;
-            background-size: cover;
-            overflow-y: hidden;
+            box-sizing: border-box;
         }
-        #header {
-            background-color: rgba(255, 165, 0, 0.8);
-            color: white;
+        header {
             text-align: center;
             padding: 20px;
-            position: relative;
+            font-size: 2rem;
+            color: #ff9e00;
+            text-shadow: 2px 2px 10px rgba(0, 0, 0, 0.5);
         }
-        #header h1 {
-            animation: textAnim 3s ease-in-out infinite alternate;
+        #loginForm, #publishPackForm {
+            max-width: 400px;
+            margin: 20px auto;
+            padding: 20px;
+            background-color: rgba(0, 0, 0, 0.7);
+            border-radius: 10px;
         }
-        @keyframes textAnim {
-            0% { transform: scale(1); }
-            100% { transform: scale(1.1); }
+        input, button {
+            width: 100%;
+            padding: 10px;
+            margin: 10px 0;
+            border: 1px solid #333;
+            border-radius: 5px;
         }
-        #packs {
-            display: flex;
-            flex-wrap: wrap;
-            justify-content: center;
-            margin: 20px;
+        button {
+            background-color: #ff9e00;
+            color: white;
+            cursor: pointer;
+        }
+        button:hover {
+            background-color: #e89e00;
         }
         .pack {
-            border: 1px solid #ccc;
-            border-radius: 5px;
-            margin: 10px;
-            padding: 10px;
-            background: rgba(255, 255, 255, 0.8);
-            width: 200px;
+            background-color: rgba(0, 0, 0, 0.6);
+            margin: 20px;
+            padding: 20px;
+            border-radius: 10px;
             text-align: center;
+            box-shadow: 0 0 10px rgba(0, 0, 0, 0.5);
+        }
+        .pack img {
+            max-width: 100px;
+            height: 100px;
+            border-radius: 10px;
         }
         .modal {
             display: none;
             position: fixed;
-            z-index: 1;
-            left: 0;
             top: 0;
+            left: 0;
             width: 100%;
             height: 100%;
-            overflow: auto;
-            background-color: rgb(0,0,0);
-            background-color: rgba(0,0,0,0.4);
-            padding-top: 60px;
+            background-color: rgba(0, 0, 0, 0.7);
+            justify-content: center;
+            align-items: center;
+            z-index: 999;
         }
         .modal-content {
-            background-color: #fefefe;
-            margin: 5% auto;
+            background-color: white;
+            color: black;
             padding: 20px;
-            border: 1px solid #888;
+            border-radius: 10px;
             width: 80%;
+            max-width: 600px;
         }
         .comment {
-            border-bottom: 1px solid #ccc;
-            padding: 5px 0;
-        }
-        #searchInput {
-            margin: 20px;
+            background-color: #f1f1f1;
+            margin: 10px 0;
             padding: 10px;
             border-radius: 5px;
-            border: 1px solid #ccc;
         }
-        #loginButton {
-            position: absolute;
-            top: 20px;
-            right: 100px;
-            background-color: orange;
-            color: white;
-            border: none;
-            padding: 10px;
-            cursor: pointer;
-        }
-        #profilePic {
-            border-radius: 50%;
-            margin-left: 10px;
-            position: absolute;
-            top: 20px;
-            right: 20px;
-            cursor: pointer;
-        }
-        #profilePage {
-            display: none;
-            padding: 20px;
-            background-color: rgba(255, 255, 255, 0.8);
-            margin: 20px;
-        }
-        #profilePage img {
+        .profilePic {
             border-radius: 50%;
             width: 100px;
-        }
-        .followers {
-            font-weight: bold;
+            height: 100px;
         }
     </style>
 </head>
 <body>
-    <div id="header">
-        <h1>Welcome to Bloxd.io Pack Utils</h1>
-        <button id="loginButton" onclick="toggleLogin()">Login / Sign Up</button>
-        <img id="profilePic" src="https://via.placeholder.com/40" alt="Profile Picture" title="Profile" style="display: none;" onclick="goToProfile()">
-        <input type="text" id="searchInput" placeholder="Search packs..." oninput="searchPacks()">
-        <button id="logoutButton" style="display: none;" onclick="logout()">Logout</button>
-        <button id="publishPackButton" style="display: none;" onclick="showPublishPackForm()">Publish New Pack</button>
+
+<header>Bienvenue sur Bloxd.io Pack Utils</header>
+
+<!-- Login/Logout Form -->
+<div id="loginForm">
+    <h3>Connexion</h3>
+    <input type="text" id="usernameInput" placeholder="Nom d'utilisateur">
+    <input type="password" id="passwordInput" placeholder="Mot de passe">
+    <button onclick="login()">Se connecter</button>
+    <p>Vous n'avez pas de compte ? <a href="#" onclick="showSignupForm()">Créer un compte ici</a></p>
+</div>
+
+<!-- Publish Pack Form -->
+<div id="publishPackForm" style="display: none;">
+    <h3>Publier un pack</h3>
+    <input type="text" id="packName" placeholder="Nom du pack">
+    <input type="file" id="packImage" accept="image/*">
+    <textarea id="packDescription" placeholder="Description du pack"></textarea>
+    <input type="file" id="packFiles" multiple>
+    <button onclick="publishPack()">Publier</button>
+</div>
+
+<!-- Packs Display -->
+<div id="packs"></div>
+
+<!-- Modal for Viewing Packs -->
+<div id="modal" class="modal">
+    <div class="modal-content">
+        <span onclick="closeModal()">Fermer</span>
+        <h2 id="packTitle"></h2>
+        <img id="packImage" src="" alt="Pack Image" />
+        <p id="packDescription"></p>
+        <p>Téléchargements: <span id="packDownloads"></span></p>
+        <p>Vues: <span id="packViews"></span></p>
+        <p>Note: <span id="packRating"></span></p>
+        <div id="commentsSection"></div>
+        <textarea id="commentText" placeholder="Votre commentaire"></textarea>
+        <button onclick="addComment()">Ajouter un commentaire</button>
+        <button onclick="downloadPack()">Télécharger le pack</button>
     </div>
+</div>
 
-    <div id="packs"></div>
+<!-- Profile Page -->
+<div id="profilePage" style="display: none;">
+    <h2>Mon Profil</h2>
+    <img id="profilePic" class="profilePic" src="defaultProfilePic.png" alt="Profil">
+    <button onclick="changeProfilePic()">Changer la photo de profil</button>
+    <h3>Mes packs publiés</h3>
+    <div id="yourPacks"></div>
+</div>
 
-    <div id="modal" class="modal">
-        <div class="modal-content">
-            <span onclick="closeModal()" style="cursor:pointer; float:right;">&times;</span>
-            <h2 id="packTitle"></h2>
-            <img id="packImage" src="" alt="Pack Image">
-            <p><strong>Description:</strong> <span id="packDescription"></span></p>
-            <p><strong>Downloads:</strong> <span id="packDownloads"></span></p>
-            <p><strong>Views:</strong> <span id="packViews"></span></p>
-            <p><strong>Rating:</strong> <span id="packRating"></span></p>
-            <div>
-                <h3>Comments:</h3>
-                <div id="commentsSection"></div>
-                <input type="text" id="commentAuthor" placeholder="Your name">
-                <textarea id="commentText" placeholder="Your comment"></textarea>
-                <button onclick="addComment()">Add Comment</button>
-            </div>
-            <button onclick="downloadPack()">Download Pack</button>
-        </div>
-    </div>
+<script>
+    let loggedIn = false;
+    let username = '';
+    let profilePic = 'defaultProfilePic.png';
+    let packs = [];
 
-    <div id="profilePage">
-        <h2>Your Profile</h2>
-        <img id="profilePagePic" src="https://via.placeholder.com/100" alt="Profile Picture">
-        <h3 id="username"></h3>
-        <p class="followers">Followers: <span id="followersCount">0</span></p>
-        <h3>Your Published Packs:</h3>
-        <div id="yourPacks"></div>
-        <button onclick="changeProfilePic()">Change Profile Picture</button>
-    </div>
-
-    <div id="publishPackForm" style="display: none;">
-        <h2>Publish New Pack</h2>
-        <input type="text" id="newPackName" placeholder="Pack Name">
-        <textarea id="newPackDescription" placeholder="Pack Description"></textarea>
-        <input type="file" id="newPackImage" accept="image/*">
-        <input type="file" id="newPackFiles" multiple>
-        <button onclick="publishPack()">Publish</button>
-        <button onclick="cancelPublish()">Cancel</button>
-    </div>
-
-    <script>
-        let loggedIn = false;
-        let username = '';
-        let profilePic = 'https://via.placeholder.com/100';
-        let packs = [];
-        let followers = 0;
-
-        function toggleLogin() {
-            if (loggedIn) {
-                alert(`Welcome back, ${username}!`);
-                showProfile();
-            } else {
-                const enteredUsername = prompt("Enter your username:");
-                if (enteredUsername) {
-                    username = enteredUsername;
-                    loggedIn = true;
-                    localStorage.setItem('username', username);
-                    alert("Logged in successfully!");
-                    showProfile();
-                } else {
-                    alert("Username cannot be empty.");
-                }
-            }
+    function login() {
+        const inputUsername = document.getElementById('usernameInput').value;
+        const inputPassword = document.getElementById('passwordInput').value;
+        if (inputUsername && inputPassword) {
+            loggedIn = true;
+            username = inputUsername;
+            document.getElementById('loginForm').style.display = 'none';
+            displayProfilePage();
+        } else {
+            alert("Veuillez entrer un nom d'utilisateur et un mot de passe.");
         }
+    }
 
-        function showProfile() {
-            document.getElementById('loginButton').style.display = 'none';
-            document.getElementById('logoutButton').style.display = 'inline-block';
-            document.getElementById('publishPackButton').style.display = 'inline-block';
-            document.getElementById('profilePic').style.display = 'inline-block';
-            document.getElementById('profilePage').style.display = 'block';
-            document.getElementById('profilePagePic').src = profilePic;
-            document.getElementById('username').innerText = username;
-            document.getElementById('followersCount').innerText = followers;
-            displayYourPacks();
-        }
+    function showSignupForm() {
+        alert("La fonctionnalité d'inscription n'est pas encore implémentée.");
+    }
 
-        function logout() {
-            loggedIn = false;
-            localStorage.removeItem('username');
-            document.getElementById('loginButton').style.display = 'inline-block';
-            document.getElementById('logoutButton').style.display = 'none';
-            document.getElementById('publishPackButton').style.display = 'none';
-            document.getElementById('profilePic').style.display = 'none';
-            document.getElementById('profilePage').style.display = 'none';
-        }
+    function displayProfilePage() {
+        document.getElementById('profilePage').style.display = 'block';
+        displayYourPacks();
+    }
 
-        function showPublishPackForm() {
-            document.getElementById('publishPackForm').style.display = 'block';
-        }
+    function publishPack() {
+        const packName = document.getElementById('packName').value;
+        const packDescription = document.getElementById('packDescription').value;
+        const packImage = document.getElementById('packImage').files[0];
+        const packFiles = document.getElementById('packFiles').files;
 
-        function cancelPublish() {
+        if (packName && packDescription && packImage && packFiles.length) {
+            const newPack = {
+                name: packName,
+                description: packDescription,
+                image: URL.createObjectURL(packImage),
+                files: packFiles,
+                downloads: 0,
+                views: 0,
+                rating: 0,
+                comments: []
+            };
+            packs.push(newPack);
             document.getElementById('publishPackForm').style.display = 'none';
+            displayPacks();
+        } else {
+            alert("Veuillez remplir tous les champs.");
         }
+    }
 
-        function publishPack() {
-            const packName = document.getElementById('newPackName').value;
-            const packDescription = document.getElementById('newPackDescription').value;
-            const packImage = document.getElementById('newPackImage').files[0];
-            const packFiles = document.getElementById('newPackFiles').files;
+    function displayPacks() {
+        const packsContainer = document.getElementById('packs');
+        packsContainer.innerHTML = '';
+        packs.forEach((pack, index) => {
+            const packDiv = document.createElement('div');
+            packDiv.className = 'pack';
+            packDiv.innerHTML = `
+                <h3>${pack.name}</h3>
+                <img src="${pack.image}" alt="Pack Image">
+                <p>${pack.description}</p>
+                <button onclick="viewPack(${index})">Voir</button>
+            `;
+            packsContainer.appendChild(packDiv);
+        });
+    }
 
-            if (packName && packDescription && packImage && packFiles.length) {
-                const newPack = {
-                    name: packName,
-                    description: packDescription,
-                    image: URL.createObjectURL(packImage),
-                    files: packFiles,
-                    downloads: 0,
-                    views: 0,
-                    rating: 0,
-                    comments: []
-                };
-                packs.push(newPack);
-                document.getElementById('publishPackForm').style.display = 'none';
-                displayPacks();
-            } else {
-                alert("Please fill in all fields.");
+    function viewPack(index) {
+        const pack = packs[index];
+        document.getElementById('packTitle').innerText = pack.name;
+        document.getElementById('packImage').src = pack.image;
+        document.getElementById('packDescription').innerText = pack.description;
+        document.getElementById('packDownloads').innerText = pack.downloads;
+        document.getElementById('packViews').innerText = pack.views;
+        document.getElementById('packRating').innerText = pack.rating;
+        document.getElementById('commentsSection').innerHTML = pack.comments.map(comment => `
+            <div class="comment">
+                <strong>${comment.author}</strong>: ${comment.text}
+            </div>
+        `).join('');
+        document.getElementById('modal').style.display = 'block';
+    }
+
+    function closeModal() {
+        document.getElementById('modal').style.display = 'none';
+    }
+
+    function addComment() {
+        const commentText = document.getElementById('commentText').value;
+        if (commentText) {
+            const currentPack = packs.find(pack => pack.name === document.getElementById('packTitle').innerText);
+            currentPack.comments.push({ author: username, text: commentText });
+            displayPacks();
+            document.getElementById('commentText').value = '';
+        } else {
+            alert("Veuillez entrer un commentaire.");
+        }
+    }
+
+    function downloadPack() {
+        alert("Pack téléchargé !");
+    }
+
+    function changeProfilePic() {
+        const inputFile = document.createElement('input');
+        inputFile.type = 'file';
+        inputFile.accept = 'image/*';
+        inputFile.onchange = function(event) {
+            const file = event.target.files[0];
+            if (file) {
+                profilePic = URL.createObjectURL(file);
+                document.getElementById('profilePic').src = profilePic;
             }
-        }
+        };
+        inputFile.click();
+    }
 
-        function displayPacks() {
-            const packsContainer = document.getElementById('packs');
-            packsContainer.innerHTML = '';
-            packs.forEach((pack, index) => {
-                const packDiv = document.createElement('div');
-                packDiv.className = 'pack';
-                packDiv.innerHTML = `
-                    <h3>${pack.name}</h3>
-                    <img src="${pack.image}" alt="Pack Image" style="width: 100px; height: 100px;">
-                    <p>${pack.description}</p>
-                    <button onclick="viewPack(${index})">View</button>
-                `;
-                packsContainer.appendChild(packDiv);
-            });
-        }
+    function displayYourPacks() {
+        const yourPacksContainer = document.getElementById('yourPacks');
+        yourPacksContainer.innerHTML = packs.filter(pack => pack.name.includes(username)).map(pack => `
+            <div class="pack">
+                <h3>${pack.name}</h3>
+                <img src="${pack.image}" alt="Pack Image">
+                <button onclick="viewPack(packs.indexOf(${pack}))">Voir</button>
+            </div>
+        `).join('');
+    }
+</script>
 
-        function viewPack(index) {
-            const pack = packs[index];
-            document.getElementById('packTitle').innerText = pack.name;
-            document.getElementById('packImage').src = pack.image;
-            document.getElementById('packDescription').innerText = pack.description;
-            document.getElementById('packDownloads').innerText = pack.downloads;
-            document.getElementById('packViews').innerText = pack.views;
-            document.getElementById('packRating').innerText = pack.rating;
-            document.getElementById('commentsSection').innerHTML = pack.comments.map(comment => `
-                <div class="comment">
-                    <strong>${comment.author}</strong>: ${comment.text}
-                </div>
-            `).join('');
-            document.getElementById('modal').style.display = 'block';
-        }
-
-        function closeModal() {
-            document.getElementById('modal').style.display = 'none';
-        }
-
-        function addComment() {
-            if (!loggedIn) {
-                alert("You must be logged in to comment.");
-                return;
-            }
-            const commentAuthor = document.getElementById('commentAuthor').value;
-            const commentText = document.getElementById('commentText').value;
-            if (commentAuthor && commentText) {
-                const newComment = { author: commentAuthor, text: commentText };
-                const packIndex = packs.findIndex(pack => pack.name === document.getElementById('packTitle').innerText);
-                if (packIndex !== -1) {
-                    packs[packIndex].comments.push(newComment);
-                    displayPacks();
-                    viewPack(packIndex);
-                }
-            } else {
-                alert("Please enter a comment and your name.");
-            }
-        }
-
-        function downloadPack() {
-            const packIndex = packs.findIndex(pack => pack.name === document.getElementById('packTitle').innerText);
-            if (packIndex !== -1) {
-                packs[packIndex].downloads++;
-                alert("Pack downloaded!");
-            }
-        }
-
-        function changeProfilePic() {
-            const newPic = prompt("Enter the URL for your new profile picture:");
-            if (newPic) {
-                profilePic = newPic;
-                document.getElementById('profilePagePic').src = newPic;
-                document.getElementById('profilePic').src = newPic;
-            }
-        }
-
-        function displayYourPacks() {
-            const yourPacksDiv = document.getElementById('yourPacks');
-            yourPacksDiv.innerHTML = '';
-            packs.forEach(pack => {
-                if (pack.author === username) {
-                    const packDiv = document.createElement('div');
-                    packDiv.innerHTML = `<p>${pack.name}</p>`;
-                    yourPacksDiv.appendChild(packDiv);
-                }
-            });
-        }
-
-        function searchPacks() {
-            const query = document.getElementById('searchInput').value.toLowerCase();
-            const filteredPacks = packs.filter(pack => pack.name.toLowerCase().includes(query));
-            displayPacks(filteredPacks);
-        }
-    </script>
 </body>
 </html>
