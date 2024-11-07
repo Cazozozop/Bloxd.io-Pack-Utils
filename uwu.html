@@ -1,0 +1,49 @@
+<!-- Formulaire simple pour ajouter des packs -->
+<div id="addPackForm">
+    <h3>Publier un nouveau pack</h3>
+    <input type="text" id="newPackTitle" placeholder="Titre du pack" required>
+    <input type="file" id="newPackImage" accept="image/*">
+    <button onclick="publishPack()">Publier</button>
+</div>
+
+<!-- Affichage de la photo de profil avec option de changement -->
+<img id="profilePic" src="https://via.placeholder.com/40" alt="Profile Picture" title="Change Profile Picture" style="cursor: pointer;">
+<input type="file" id="profilePicInput" style="display: none;" accept="image/*" onchange="changeProfilePic(event)">
+
+<script>
+    // Fonction pour publier un pack
+    function publishPack() {
+        const title = document.getElementById('newPackTitle').value;
+        const imageFile = document.getElementById('newPackImage').files[0];
+
+        if (title && imageFile) {
+            const reader = new FileReader();
+            reader.onload = function(event) {
+                const newPack = {
+                    title: title,
+                    image: event.target.result
+                };
+                // Ici, tu peux ajouter le pack dans un tableau ou l'afficher directement
+                alert("Pack publié avec succès !");
+            };
+            reader.readAsDataURL(imageFile);
+        } else {
+            alert("Veuillez remplir tous les champs.");
+        }
+    }
+
+    // Fonction pour changer la photo de profil
+    document.getElementById('profilePic').onclick = () => document.getElementById('profilePicInput').click();
+
+    function changeProfilePic(event) {
+        const file = event.target.files[0];
+        if (file) {
+            const reader = new FileReader();
+            reader.onload = function(e) {
+                document.getElementById('profilePic').src = e.target.result;
+                alert("Photo de profil mise à jour !");
+            };
+            reader.readAsDataURL(file);
+        }
+    }
+</script>
