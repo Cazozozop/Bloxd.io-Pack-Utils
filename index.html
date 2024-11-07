@@ -4,255 +4,206 @@
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
     <title>Bloxd.io Pack Utils</title>
+    <!-- Firebase App (the core Firebase SDK) -->
+    <script src="https://www.gstatic.com/firebasejs/9.6.1/firebase-app.js"></script>
+    <script src="https://www.gstatic.com/firebasejs/9.6.1/firebase-auth.js"></script>
+    <script src="https://www.gstatic.com/firebasejs/9.6.1/firebase-firestore.js"></script>
+    <script src="https://www.gstatic.com/firebasejs/9.6.1/firebase-storage.js"></script>
     <style>
-        /* Styles inchangés */
+        /* Style pour rendre le site plus beau */
+        body {
+            font-family: Arial, sans-serif;
+            background-image: url('panorama_1.png');
+            background-size: cover;
+            background-attachment: fixed;
+            color: white;
+            margin: 0;
+            padding: 0;
+        }
+        header {
+            text-align: center;
+            padding: 20px;
+            font-size: 2rem;
+            color: #ff9e00;
+            text-shadow: 2px 2px 10px rgba(0, 0, 0, 0.5);
+        }
+        #loginForm, #publishPackForm {
+            max-width: 400px;
+            margin: 20px auto;
+            padding: 20px;
+            background-color: rgba(0, 0, 0, 0.7);
+            border-radius: 10px;
+        }
+        input, button {
+            width: 100%;
+            padding: 10px;
+            margin: 10px 0;
+            border: 1px solid #333;
+            border-radius: 5px;
+        }
+        button {
+            background-color: #ff9e00;
+            color: white;
+            cursor: pointer;
+        }
+        button:hover {
+            background-color: #e89e00;
+        }
+        .pack {
+            background-color: rgba(0, 0, 0, 0.6);
+            margin: 20px;
+            padding: 20px;
+            border-radius: 10px;
+            text-align: center;
+            box-shadow: 0 0 10px rgba(0, 0, 0, 0.5);
+        }
+        .pack img {
+            max-width: 100px;
+            height: 100px;
+            border-radius: 10px;
+        }
+        .modal {
+            display: none;
+            position: fixed;
+            top: 0;
+            left: 0;
+            width: 100%;
+            height: 100%;
+            background-color: rgba(0, 0, 0, 0.7);
+            justify-content: center;
+            align-items: center;
+            z-index: 999;
+        }
+        .modal-content {
+            background-color: white;
+            color: black;
+            padding: 20px;
+            border-radius: 10px;
+            width: 80%;
+            max-width: 600px;
+        }
     </style>
 </head>
 <body>
-
 <header>Bienvenue sur Bloxd.io Pack Utils</header>
 
-<!-- Login/Logout Form -->
 <div id="loginForm">
     <h3>Connexion</h3>
-    <input type="text" id="usernameInput" placeholder="Nom d'utilisateur">
+    <input type="text" id="usernameInput" placeholder="Email">
     <input type="password" id="passwordInput" placeholder="Mot de passe">
     <button onclick="login()">Se connecter</button>
     <p>Vous n'avez pas de compte ? <a href="#" onclick="showSignupForm()">Créer un compte ici</a></p>
 </div>
 
-<!-- Publish Pack Form -->
 <div id="publishPackForm" style="display: none;">
     <h3>Publier un pack</h3>
     <input type="text" id="packName" placeholder="Nom du pack">
     <input type="file" id="packImage" accept="image/*">
     <textarea id="packDescription" placeholder="Description du pack"></textarea>
-    <input type="file" id="packFiles" multiple>
     <button onclick="publishPack()">Publier</button>
 </div>
 
-<!-- Packs Display -->
 <div id="packs"></div>
 
-<!-- Modal for Viewing Packs -->
 <div id="modal" class="modal">
     <div class="modal-content">
         <span onclick="closeModal()">Fermer</span>
         <h2 id="packTitle"></h2>
-        <img id="packImage" src="" alt="Pack Image" />
-        <p id="packDescription"></p>
+        <img id="packImageModal" src="" alt="Pack Image" />
+        <p id="packDescriptionModal"></p>
         <p>Téléchargements: <span id="packDownloads"></span></p>
-        <p>Vues: <span id="packViews"></span></p>
-        <p>Note: <span id="packRating"></span></p>
-        <div id="commentsSection"></div>
-        <textarea id="commentText" placeholder="Votre commentaire"></textarea>
-        <button onclick="addComment()">Ajouter un commentaire</button>
         <button onclick="downloadPack()">Télécharger le pack</button>
     </div>
 </div>
 
-<!-- Profile Page -->
-<div id="profilePage" style="display: none;">
-    <h2>Mon Profil</h2>
-    <img id="profilePic" class="profilePic" src="defaultProfilePic.png" alt="Profil">
-    <button onclick="changeProfilePic()">Changer la photo de profil</button>
-    <h3>Mes packs publiés</h3>
-    <div id="yourPacks"></div>
-</div>
-
 <script>
-    let loggedIn = false;
-    let username = '';
-    let profilePic = 'defaultProfilePic.png';
-    let packs = [];
+    const firebaseConfig = {
+        apiKey: "YOUR_API_KEY",
+        authDomain: "YOUR_AUTH_DOMAIN",
+        projectId: "YOUR_PROJECT_ID",
+        storageBucket: "YOUR_STORAGE_BUCKET",
+        messagingSenderId: "YOUR_MESSAGING_SENDER_ID",
+        appId: "YOUR_APP_ID"
+    };
+    firebase.initializeApp(firebaseConfig);
 
-    async function login() {
-        const inputUsername = document.getElementById('usernameInput').value;
-        const inputPassword = document.getElementById('passwordInput').value;
-        
-        if (inputUsername && inputPassword) {
-            try {
-                const response = await fetch('/login', {
-                    method: 'POST',
-                    headers: { 'Content-Type': 'application/json' },
-                    body: JSON.stringify({ username: inputUsername, password: inputPassword })
-                });
-                const data = await response.json();
-                if (data.success) {
-                    loggedIn = true;
-                    username = inputUsername;
-                    document.getElementById('loginForm').style.display = 'none';
-                    displayProfilePage();
-                } else {
-                    alert("Nom d'utilisateur ou mot de passe incorrect.");
-                }
-            } catch (error) {
-                console.error('Erreur lors de la connexion:', error);
-            }
-        } else {
-            alert("Veuillez entrer un nom d'utilisateur et un mot de passe.");
+    const auth = firebase.auth();
+    const db = firebase.firestore();
+    const storage = firebase.storage();
+
+    auth.onAuthStateChanged(user => {
+        if (user) {
+            document.getElementById('loginForm').style.display = 'none';
+            document.getElementById('publishPackForm').style.display = 'block';
+            loadPacks();
         }
+    });
+
+    function login() {
+        const email = document.getElementById('usernameInput').value;
+        const password = document.getElementById('passwordInput').value;
+        auth.signInWithEmailAndPassword(email, password)
+            .catch(error => alert(error.message));
     }
 
-    function showSignupForm() {
-        alert("La fonctionnalité d'inscription n'est pas encore implémentée.");
-    }
-
-    function displayProfilePage() {
-        document.getElementById('profilePage').style.display = 'block';
-        displayYourPacks();
-    }
-
-    async function publishPack() {
+    function publishPack() {
         const packName = document.getElementById('packName').value;
         const packDescription = document.getElementById('packDescription').value;
-        const packImage = document.getElementById('packImage').files[0];
-        const packFiles = document.getElementById('packFiles').files;
+        const packImageFile = document.getElementById('packImage').files[0];
+        const packRef = storage.ref().child(`packs/${packImageFile.name}`);
 
-        if (packName && packDescription && packImage && packFiles.length) {
-            const formData = new FormData();
-            formData.append('username', username);
-            formData.append('packName', packName);
-            formData.append('packDescription', packDescription);
-            formData.append('packImage', packImage);
-            for (let file of packFiles) {
-                formData.append('packFiles', file);
-            }
-
-            try {
-                const response = await fetch('/publishPack', {
-                    method: 'POST',
-                    body: formData
+        packRef.put(packImageFile).then(snapshot => {
+            snapshot.ref.getDownloadURL().then(url => {
+                db.collection('packs').add({
+                    name: packName,
+                    description: packDescription,
+                    imageUrl: url,
+                    downloads: 0
+                }).then(() => {
+                    alert("Pack publié !");
+                    loadPacks();
                 });
-                const data = await response.json();
-                if (data.success) {
-                    displayPacks();
-                    document.getElementById('publishPackForm').style.display = 'none';
-                } else {
-                    alert("Erreur lors de la publication du pack.");
-                }
-            } catch (error) {
-                console.error('Erreur lors de la publication du pack:', error);
-            }
-        } else {
-            alert("Veuillez remplir tous les champs.");
-        }
+            });
+        });
     }
 
-    async function displayPacks() {
-        try {
-            const response = await fetch('/getPacks');
-            const data = await response.json();
-            packs = data.packs;
+    function loadPacks() {
+        db.collection('packs').get().then(snapshot => {
             const packsContainer = document.getElementById('packs');
             packsContainer.innerHTML = '';
-            packs.forEach((pack, index) => {
+            snapshot.forEach(doc => {
+                const pack = doc.data();
                 const packDiv = document.createElement('div');
                 packDiv.className = 'pack';
                 packDiv.innerHTML = `
                     <h3>${pack.name}</h3>
-                    <img src="${pack.image}" alt="Pack Image">
+                    <img src="${pack.imageUrl}" alt="Pack Image">
                     <p>${pack.description}</p>
-                    <button onclick="viewPack(${index})">Voir</button>
+                    <button onclick="viewPack('${doc.id}')">Voir</button>
                 `;
                 packsContainer.appendChild(packDiv);
             });
-        } catch (error) {
-            console.error('Erreur lors du chargement des packs:', error);
-        }
+        });
     }
 
-    function viewPack(index) {
-        const pack = packs[index];
-        document.getElementById('packTitle').innerText = pack.name;
-        document.getElementById('packImage').src = pack.image;
-        document.getElementById('packDescription').innerText = pack.description;
-        document.getElementById('packDownloads').innerText = pack.downloads;
-        document.getElementById('packViews').innerText = pack.views;
-        document.getElementById('packRating').innerText = pack.rating;
-        document.getElementById('commentsSection').innerHTML = pack.comments.map(comment => `
-            <div class="comment">
-                <strong>${comment.author}</strong>: ${comment.text}
-            </div>
-        `).join('');
-        document.getElementById('modal').style.display = 'block';
+    function viewPack(packId) {
+        db.collection('packs').doc(packId).get().then(doc => {
+            const pack = doc.data();
+            document.getElementById('packTitle').innerText = pack.name;
+            document.getElementById('packImageModal').src = pack.imageUrl;
+            document.getElementById('packDescriptionModal').innerText = pack.description;
+            document.getElementById('packDownloads').innerText = pack.downloads;
+            document.getElementById('modal').style.display = 'block';
+        });
     }
 
     function closeModal() {
         document.getElementById('modal').style.display = 'none';
     }
 
-    async function addComment() {
-        const commentText = document.getElementById('commentText').value;
-        if (commentText) {
-            const currentPackName = document.getElementById('packTitle').innerText;
-            try {
-                const response = await fetch('/addComment', {
-                    method: 'POST',
-                    headers: { 'Content-Type': 'application/json' },
-                    body: JSON.stringify({ username, packName: currentPackName, commentText })
-                });
-                const data = await response.json();
-                if (data.success) {
-                    displayPacks();
-                    document.getElementById('commentText').value = '';
-                } else {
-                    alert("Erreur lors de l'ajout du commentaire.");
-                }
-            } catch (error) {
-                console.error('Erreur lors de l\'ajout du commentaire:', error);
-            }
-        } else {
-            alert("Veuillez entrer un commentaire.");
-        }
-    }
-
-    async function downloadPack() {
+    function downloadPack() {
         alert("Pack téléchargé !");
     }
-
-    function changeProfilePic() {
-        const inputFile = document.createElement('input');
-        inputFile.type = 'file';
-        inputFile.accept = 'image/*';
-        inputFile.onchange = async function(event) {
-            const file = event.target.files[0];
-            if (file) {
-                const formData = new FormData();
-                formData.append('profilePic', file);
-                try {
-                    const response = await fetch('/changeProfilePic', {
-                        method: 'POST',
-                        body: formData
-                    });
-                    const data = await response.json();
-                    if (data.success) {
-                        profilePic = data.newProfilePic;
-                        document.getElementById('profilePic').src = profilePic;
-                    } else {
-                        alert("Erreur lors de la modification de la photo de profil.");
-                    }
-                } catch (error) {
-                    console.error('Erreur lors du changement de la photo de profil:', error);
-                }
-            }
-        };
-        inputFile.click();
-    }
-
-    async function displayYourPacks() {
-        const yourPacksContainer = document.getElementById('yourPacks');
-        const response = await fetch(`/getYourPacks?username=${username}`);
-        const data = await response.json();
-        yourPacksContainer.innerHTML = data.packs.map(pack => `
-            <div class="pack">
-                <h3>${pack.name}</h3>
-                <img src="${pack.image}" alt="Pack Image">
-                <button onclick="viewPack(${packs.indexOf(pack)})">Voir</button>
-            </div>
-        `).join('');
-    }
 </script>
-
 </body>
 </html>
